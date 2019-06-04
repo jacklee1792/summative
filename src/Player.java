@@ -3,7 +3,4 @@ class Player extends MapComponent {
     private String name;
     private double health, hungerFactor;
 
-    public Player() {
-
-    }
 }
