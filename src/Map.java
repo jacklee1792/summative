@@ -11,32 +11,40 @@ class Map {
     //Instance variables
     private MapComponent[][][] map;
     private int squareSize;
-    public int currentRow, currentCol;
+    private int r, c;
 
     //Static variables
     final static int GROUND_LAYER = 0;
     final static int ABOVE_GROUND_LAYER = 1;
 
     //Constructors
-    public Map (int rows, int columns) {
-        map = new MapComponent[rows][columns][2];
+    public Map(int rows, int columns) {
+        map = new MapComponent[rows][columns][2]; //empty map
     }
-    public Map(Map m, Tile t, int height, int width) {
-        MapComponent[][][] subMap = new Map;
-        for(int h = Map.GROUND_LAYER; h <= Map.ABOVE_GROUND_LAYER; h++) {
-            for(int r = 0; r < height; r++) {
-                for(int c = 0; c < width; c++) {
-                    subMap[r][c][h] = map[t.getRow() + r][t.getColumn() + c][h];
+    public Map(Map m, Tile t, int rows, int columns) {
+        map = new MapComponent[rows][columns][2];
+        for(int hgt = Map.GROUND_LAYER; hgt <= Map.ABOVE_GROUND_LAYER; hgt++) {
+            for(int row = 0; row < rows; row++) {
+                for(int col = 0; col < columns; col++) {
+                    map[row][col][hgt] = m.map[t.getRow() + r][t.getColumn() + c][h];
                 }
             }
         }
-        return subMap
+        squareSize = m.getSquareSize();
+        r = rows;
+        c = columns;
     }
     public Map (File loadFile) {
     }
 
-    /**  GRAPHICAL COMPONENTS **/
-    public void paint(Graphics g) {
-
+    //Methods
+    public int getSquareSize() {
+        return squareSize;
+    }
+    public int getRows() {
+        return r;
+    }
+    public int getColumns() {
+        return c;
     }
 }

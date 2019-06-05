@@ -13,9 +13,36 @@ import java.awt.event.MouseListener;
 
 class World extends JFrame implements MouseListener, KeyListener {
 
-    private Map map;
+    private Map map, subMap;
     private Mission[] missions;
     private Player player;
+    private int tileSize = 30;
+
+    public World() {
+        //Set up the window
+        setTitle("Binecraft");
+        setVisible(true);
+        setResizable(false);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+    //Graphics
+    @Override
+    public void paint(Graphics g) { //I am still figuring this out, leave it alone for now
+        int x = 0, y = 0;
+        for(int h = Map.GROUND_LAYER; h <= Map.ABOVE_GROUND_LAYER; h++) {
+            for(int y = 0; y < subMap.getRows(); r++) {
+                for(MapComponent mc : row) {
+                    g.drawImage(MapComponent.texture[mc.getMapComponentID()], x, y, tileSize, tileSize, null);
+                    x += tileSize; //shift target x over by one tile
+                }
+                x = 0; //reset the target x value
+                y += tileSize; //shift target y over by one tile
+            }
+            x = 0;
+            y = 0;
+        }
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -49,8 +76,4 @@ class World extends JFrame implements MouseListener, KeyListener {
     public void mouseExited(MouseEvent e) {
     }
 
-    /**  GRAPHICAL COMPONENTS **/
-    public void paint(Graphics g) {
-
-    }
 }
