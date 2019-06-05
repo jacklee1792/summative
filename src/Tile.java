@@ -24,4 +24,10 @@ class Tile {
     public int getColumn() {
         return c;
     }
+    public void setRow(int row) {
+        r = row;
+    }
+    public void setColumn(int column) {
+        c = column;
+    }
 }

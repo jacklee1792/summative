@@ -5,6 +5,7 @@
  */
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,21 +17,18 @@ class MapComponent {
     protected int height, width;
 
     //Static variables
-    final static int NULL = -1;
-    final static int GRASS = 0;
-    final static int SOIL = 1;
-    final static int SAND = 2;
-    final static int WATER = 3;
-    final static int SMALL_TREE = 4;
-    final static int SMALL_BUSH = 5;
-    final static int ROCKS = 6;
-    static BufferedImage[] texture = new BufferedImage[7];
+    final static int NULL = 0;
+    final static int GRASS = 1;
+    final static int SOIL = 2;
+    final static int SAND = 3;
+    final static int WATER = 4;
+    final static int SMALL_TREE = 5;
+    final static int SMALL_BUSH = 6;
+    final static int ROCKS = 7;
+    static BufferedImage[] texture = new BufferedImage[8];
 
     //Constructors
     public MapComponent() {
-        try {
-            texture[GRASS] = ImageIO.read(new File("0.png"));
-        } catch(IOException e) { System.out.println("oopsies"); }
     }
 
     public MapComponent (int MapComponentID) {
@@ -38,12 +36,14 @@ class MapComponent {
     }
 
     //Methods
+    public static void importTextures() throws IOException { //import textures
+        for(int i = 0; i < 8; i++) {
+            texture[i] = ImageIO.read(MapComponent.class.getResourceAsStream(i + ".png"));
+        }
+    }
+
     public int getMapComponentID() {
         return MC_ID;
     }
 
-    //Tester
-    public static void main(String[] args ) {
-
-    }
 }
