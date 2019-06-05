@@ -1,11 +1,16 @@
+/**
+ * MapComponent class
+ * In-depth documentation at:
+ *  https://docs.google.com/document/d/1Hu6XnzeBDa0TvPOOIS6JWaDXK1A8l10doPGio8VgK84/edit?usp=sharing
+ */
+
 import java.awt.image.BufferedImage;
 
 class MapComponent {
 
     //Instance variables
     protected BufferedImage image;
-    protected int row, col;
-    protected int MapComponentID;
+    protected int MC_ID;
     protected int height, width;
 
     //Static variables
@@ -23,8 +28,8 @@ class MapComponent {
 
     }
 
-    public MapComponent (int MC_ID, int r, int c) {
-        MapComponentID = MC_ID;
+    public MapComponent (int MapComponentID) {
+        MC_ID = MapComponentID;
     }
 
     //Tester

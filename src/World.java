@@ -1,3 +1,9 @@
+/**
+ * World class
+ * In-depth documentation at:
+ *  https://docs.google.com/document/d/1Hu6XnzeBDa0TvPOOIS6JWaDXK1A8l10doPGio8VgK84/edit?usp=sharing
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
