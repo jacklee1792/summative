@@ -4,8 +4,8 @@
  *  https://docs.google.com/document/d/1Hu6XnzeBDa0TvPOOIS6JWaDXK1A8l10doPGio8VgK84/edit?usp=sharing
  */
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
+import javax.imageio.*;
+import java.awt.image.*;
 
 class MapComponent {
 
@@ -14,14 +14,7 @@ class MapComponent {
     protected int height, width;
 
     //Static variables
-    final static int NULL = -1;
-    final static int GRASS = 0;
-    final static int SOIL = 1;
-    final static int SAND = 2;
-    final static int WATER = 3;
-    final static int SMALL_TREE = 4;
-    final static int SMALL_BUSH = 5;
-    final static int ROCKS = 6;
+    static final int NULL = -1, GRASS = 0, SOIL = 1, SAND = 2, WATER = 3, SMALL_TREE = 4, SMALL_BUSH = 5, ROCKS = 6;
     static BufferedImage[] texture = new BufferedImage[7];
 
     //Constructors
