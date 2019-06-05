@@ -13,10 +13,12 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.Random;
 
-class Map extends JFrame implements MouseListener, KeyListener {
+class Map extends JFrame {
 
     private MapComponent[][][] map;
     private MapComponent[][][] subMap;
+    private Tile subMapTile = new Tile(50, 50);
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 20, subMapWidth = 20;
     private int tileSize = 30;
 
     class DrawArea extends JPanel {
@@ -42,6 +44,34 @@ class Map extends JFrame implements MouseListener, KeyListener {
         }
     }
 
+    class MovementListener implements KeyListener {
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+        @Override
+        public void keyPressed(KeyEvent e) {
+            char key = e.getKeyChar();
+            Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new submap is valid
+            if (key == 'w') {
+                temp.setRow(subMapTile.getRow() - 1); //move up by one
+            } else if (key == 'a') {
+                temp.setColumn(subMapTile.getColumn() - 1); //move left by one
+            } else if (key == 's') {
+                temp.setRow(subMapTile.getRow() + 1); //move down by one
+            } else if (key == 'd') {
+                temp.setColumn(subMapTile.getColumn() + 1); //move left by one
+            }
+            try {
+                setSubMap(temp); //change the submap
+                subMapTile = temp; //if line above doesn't throw exception
+            } catch (ArrayIndexOutOfBoundsException ex) {}
+            repaint();
+        }
+        @Override
+        public void keyReleased(KeyEvent e) {
+        }
+    }
+
     //Test
     public static void main(String[] args) {
         new Map();
@@ -56,10 +86,10 @@ class Map extends JFrame implements MouseListener, KeyListener {
 
         //Fill the map with random shitto
         Random rand = new Random();
-        map = new MapComponent[2][100][100];
+        map = new MapComponent[2][mapHeight][mapWidth];
         for(int h = 0; h < 2; h++) {
-            for(int r = 0; r < 100; r++) {
-                for(int c = 0; c < 100; c++) {
+            for(int r = 0; r < mapHeight; r++) {
+                for(int c = 0; c < mapWidth; c++) {
                     if(h == 0) map[h][r][c] = new MapComponent(rand.nextInt(4));
                     else if(h == 1) map[h][r][c] = new MapComponent(rand.nextInt(3) + 4);
                 }
@@ -67,7 +97,7 @@ class Map extends JFrame implements MouseListener, KeyListener {
         }
 
         //Testing for subMap
-        getSubMap(0, 0, 20, 20);
+        setSubMap(subMapTile);
 
         //Initialize textures
         try {
@@ -78,53 +108,23 @@ class Map extends JFrame implements MouseListener, KeyListener {
         DrawArea mapArea = new DrawArea(600, 600);
         add(mapArea);
 
+        //KeyListener
+        addKeyListener(new MovementListener());
+
         //Pack
         pack();
     }
 
-    public void getSubMap(int row, int column, int height, int width) {
-        subMap = new MapComponent[2][height][width];
+    public void setSubMap(Tile t) throws ArrayIndexOutOfBoundsException {
+        MapComponent[][][] temp = new MapComponent[2][subMapHeight][subMapWidth]; //we need a temp because we don't want to change subMap if this throws an exception
         for(int h = 0; h < 2; h++) {
-            for(int r = 0; r < height; r++) {
-                for(int c = 0; c < height; c++) {
-                    subMap[h][r][c] = map[h][row + r][column + c];
+            for(int r = 0; r < subMapHeight; r++) {
+                for(int c = 0; c < subMapWidth; c++) {
+                    temp[h][r][c] = map[h][t.getRow() + r][t.getColumn() + c];
                 }
             }
         }
-
-    }
-
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
+        subMap = temp; //temp is destroyed upon exit
     }
 
 }
