@@ -29,19 +29,10 @@ class World extends JFrame implements MouseListener, KeyListener {
     //Graphics
     @Override
     public void paint(Graphics g) { //I am still figuring this out, leave it alone for now
-        int x = 0, y = 0;
-        for(int h = Map.GROUND_LAYER; h <= Map.ABOVE_GROUND_LAYER; h++) {
-            for(int y = 0; y < subMap.getRows(); r++) {
-                for(MapComponent mc : row) {
-                    g.drawImage(MapComponent.texture[mc.getMapComponentID()], x, y, tileSize, tileSize, null);
-                    x += tileSize; //shift target x over by one tile
-                }
-                x = 0; //reset the target x value
-                y += tileSize; //shift target y over by one tile
-            }
-            x = 0;
-            y = 0;
-        }
+        //Ground layer
+
+        //Above ground layer
+
     }
 
     @Override

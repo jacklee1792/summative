@@ -6,6 +6,8 @@
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 class MapComponent {
 
@@ -26,7 +28,9 @@ class MapComponent {
 
     //Constructors
     public MapComponent() {
-        texture[GRASS] = ImageIO.read("0.png");
+        try {
+            texture[GRASS] = ImageIO.read(new File("0.png"));
+        } catch(IOException e) { System.out.println("oopsies"); }
     }
 
     public MapComponent (int MapComponentID) {

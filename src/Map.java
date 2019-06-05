@@ -9,7 +9,7 @@ import java.io.File;
 
 class Map {
     //Instance variables
-    private MapComponent[][][] map;
+    private MapComponent[][] map;
     private int squareSize;
     private int r, c;
 
@@ -19,20 +19,10 @@ class Map {
 
     //Constructors
     public Map(int rows, int columns) {
-        map = new MapComponent[rows][columns][2]; //empty map
+        map = new MapComponent[rows][columns]; //empty map
     }
     public Map(Map m, Tile t, int rows, int columns) {
-        map = new MapComponent[rows][columns][2];
-        for(int hgt = Map.GROUND_LAYER; hgt <= Map.ABOVE_GROUND_LAYER; hgt++) {
-            for(int row = 0; row < rows; row++) {
-                for(int col = 0; col < columns; col++) {
-                    map[row][col][hgt] = m.map[t.getRow() + r][t.getColumn() + c][h];
-                }
-            }
-        }
-        squareSize = m.getSquareSize();
-        r = rows;
-        c = columns;
+
     }
     public Map (File loadFile) {
     }
