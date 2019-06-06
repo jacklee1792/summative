@@ -4,3 +4,5 @@ class Player extends MapComponent {
     private double health, hungerFactor;
 
 }
+
+
