@@ -25,6 +25,10 @@ class MapComponent {
     final static int SMALL_TREE = 5;
     final static int SMALL_BUSH = 6;
     final static int ROCKS = 7;
+    final static int STICK = 8;
+    final static int APPLE = 9;
+    final static int BUG = 10;
+
     static BufferedImage[] texture = new BufferedImage[8];
 
     //Constructors

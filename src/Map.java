@@ -21,8 +21,8 @@ class Map extends JFrame {
 
     //Instance variables
     private MapComponent[][][] map, subMap;
-    private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(5, 5);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 11, subMapWidth = 11, tileSize = 80;
+    private Tile subMapTile = new Tile(0, 0), playerTile = new Tile(45, 45);
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 91, subMapWidth = 91, tileSize = 10;
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -43,24 +43,9 @@ class Map extends JFrame {
         //Map
         map = new MapComponent[2][mapHeight][mapWidth];
 
-        //Fill the map with random shitto
-        Random rand = new Random();
-        for(int h = 0; h < 2; h++) {
-            for(int r = 0; r < mapHeight; r++) {
-                for(int c = 0; c < mapWidth; c++) {
-                    if(h == 0) map[h][r][c] = new MapComponent(rand.nextInt(4) + 1);
-                    else if(h == 1) {
-                        double randDouble = Math.random();
-                        if(randDouble < 0.15) {
-                            map[h][r][c] = new MapComponent(rand.nextInt(3) + 5); //15% of spawning an item
-                        }
-                        else {
-                            map[h][r][c] = new MapComponent(0);
-                        }
-                    }
-                }
-            }
-        }
+        //Generate map
+        MapGenerator m = new MapGenerator(69);
+        map = m.generate(mapHeight, mapWidth);
 
         //Testing for subMap
         setSubMap(subMapTile);
@@ -93,7 +78,7 @@ class Map extends JFrame {
         subMap = temp; //temp is destroyed upon exit
     }
 
-    public boolean checkCollision(Tile t, int direction) { //for submap
+    public boolean checkCollision(Tile t, int direction) { //for subMap
         MapComponent target = new MapComponent(); //need to initialize
         if(direction == NORTH) {
             target = subMap[ITEM_LAYER][t.getRow() - 1][t.getColumn()];

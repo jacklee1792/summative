@@ -9,9 +9,9 @@ public abstract class Entity extends MapComponent
 
     // Instance variables
     private String name;
-    private int health;
+    protected int health;
     private int orientation;
-    private int maxHealth;
+    protected int maxHealth;
     private int attackDamage;
     private int movementSpeed;
 
@@ -19,7 +19,7 @@ public abstract class Entity extends MapComponent
         return name;
     }
 
-    public String setName(String inname) {name = inname; }
+    /* public String setName(String inname) {name = inname; } */
 
     public int getHealth() {
         return health;
