@@ -19,12 +19,10 @@ class Map extends JFrame {
         new Map();
     }
 
-    private MapComponent[][][] map;
-    private MapComponent[][][] subMap;
-    private Tile subMapTile = new Tile(50, 50);
-    private Tile playerTile = new Tile(5, 5);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 11, subMapWidth = 11;
-    private int tileSize = 80;
+    //Instance variables
+    private MapComponent[][][] map, subMap;
+    private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(5, 5);
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 11, subMapWidth = 11, tileSize = 80;
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -33,64 +31,6 @@ class Map extends JFrame {
     final static int WEST = 1;
     final static int SOUTH = 2;
     final static int EAST = 3;
-
-    class DrawArea extends JPanel {
-
-        public DrawArea(int width, int height) {
-            setPreferredSize(new Dimension(width, height));
-        }
-
-        @Override
-        public void paintComponent(Graphics g) {
-            int x = 0, y = 0;
-            for(MapComponent[][] layer : subMap) {
-                for(MapComponent[] row : layer) {
-                    for(MapComponent item : row) {
-                        BufferedImage itemTexture = MapComponent.texture[item.getMapComponentID()];
-                        g.drawImage(itemTexture, x, y, tileSize, tileSize, null);
-                        x += tileSize; //advance to next item
-                    }
-                    x = 0;
-                    y += tileSize; //advance to next line
-                }
-                x = 0;
-                y = 0;
-            }
-            g.setColor(Color.RED);
-            g.fillRect(playerTile.getColumn() * tileSize, playerTile.getColumn() * tileSize, tileSize, tileSize);
-        }
-
-    }
-
-    class MovementListener implements KeyListener {
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            char key = e.getKeyChar();
-            Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new subMap is valid
-            if (key == 'w') {
-                if(!checkCollision(playerTile, NORTH)) temp.setRow(subMapTile.getRow() - 1); //move up by one
-            } else if (key == 'a') {
-                if(!checkCollision(playerTile, WEST)) temp.setColumn(subMapTile.getColumn() - 1); //move left by one
-            } else if (key == 's') {
-                if(!checkCollision(playerTile, SOUTH)) temp.setRow(subMapTile.getRow() + 1); //move down by one
-            } else if (key == 'd') {
-                if(!checkCollision(playerTile, EAST)) temp.setColumn(subMapTile.getColumn() + 1); //move left by one
-            }
-            try {
-                setSubMap(temp); //change the submap
-                subMapTile = temp; //if line above doesn't throw exception
-            } catch (ArrayIndexOutOfBoundsException ex) {}
-            repaint();
-        }
-        @Override
-        public void keyReleased(KeyEvent e) {
-        }
-    }
 
     //Constructor
     public Map() {
@@ -154,17 +94,76 @@ class Map extends JFrame {
     }
 
     public boolean checkCollision(Tile t, int direction) { //for submap
-        boolean result = true; //assume there is a collision
+        MapComponent target = new MapComponent(); //need to initialize
         if(direction == NORTH) {
-            if(subMap[ITEM_LAYER][t.getRow() - 1][t.getColumn()].getMapComponentID() == MapComponent.NULL) return false;
+            target = subMap[ITEM_LAYER][t.getRow() - 1][t.getColumn()];
         } else if(direction == WEST) {
-            if(subMap[ITEM_LAYER][t.getRow()][t.getColumn() - 1].getMapComponentID() == MapComponent.NULL) return false;
+            target = subMap[ITEM_LAYER][t.getRow()][t.getColumn() - 1];
         } else if(direction == SOUTH) {
-            if(subMap[ITEM_LAYER][t.getRow() + 1][t.getColumn()].getMapComponentID() == MapComponent.NULL) return false;
+            target = subMap[ITEM_LAYER][t.getRow() + 1][t.getColumn()];
         } else if(direction == EAST) {
-            if(subMap[ITEM_LAYER][t.getRow()][t.getColumn() + 1].getMapComponentID() == MapComponent.NULL) return false;
+            target = subMap[ITEM_LAYER][t.getRow()][t.getColumn() + 1];
         }
-        return result;
+        boolean isItem = ("" + target.getClass()).equals("class Item");
+
+        return (target.getMapComponentID() != MapComponent.NULL && !isItem); //if not null, and not item, collision is true
     }
 
+    //DrawArea and KeyListener
+    class DrawArea extends JPanel {
+
+        public DrawArea(int width, int height) {
+            setPreferredSize(new Dimension(width, height));
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            int x = 0, y = 0;
+            for(MapComponent[][] layer : subMap) {
+                for(MapComponent[] row : layer) {
+                    for(MapComponent item : row) {
+                        BufferedImage itemTexture = MapComponent.texture[item.getMapComponentID()];
+                        g.drawImage(itemTexture, x, y, tileSize, tileSize, null);
+                        x += tileSize; //advance to next item
+                    }
+                    x = 0;
+                    y += tileSize; //advance to next line
+                }
+                x = 0;
+                y = 0;
+            }
+            g.setColor(Color.RED);
+            g.fillRect(playerTile.getColumn() * tileSize, playerTile.getColumn() * tileSize, tileSize, tileSize);
+        }
+
+    }
+    class MovementListener implements KeyListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            char key = e.getKeyChar();
+            Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new subMap is valid
+            if (key == 'w') {
+                if(!checkCollision(playerTile, NORTH)) temp.setRow(subMapTile.getRow() - 1); //move up by one
+            } else if (key == 'a') {
+                if(!checkCollision(playerTile, WEST)) temp.setColumn(subMapTile.getColumn() - 1); //move left by one
+            } else if (key == 's') {
+                if(!checkCollision(playerTile, SOUTH)) temp.setRow(subMapTile.getRow() + 1); //move down by one
+            } else if (key == 'd') {
+                if(!checkCollision(playerTile, EAST)) temp.setColumn(subMapTile.getColumn() + 1); //move left by one
+            }
+            try {
+                setSubMap(temp); //change the submap
+                subMapTile = temp; //if line above doesn't throw exception
+            } catch (ArrayIndexOutOfBoundsException ex) {}
+            repaint();
+        }
+        @Override
+        public void keyReleased(KeyEvent e) {
+        }
+    }
 }
