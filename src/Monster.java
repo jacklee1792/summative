@@ -1,3 +1,6 @@
-class Monster extends Player implements MonsterAI {
+class Monster extends Entity implements MonsterAI
+{
+
+
 
 }

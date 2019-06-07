@@ -1,4 +1,4 @@
-public class Entity
+public abstract class Entity extends MapComponent
 {
     // Static variables
     final static int NORTH = 0;
@@ -18,6 +18,8 @@ public class Entity
     public String getName() {
         return name;
     }
+
+    public String setName(String inname) {name = inname; }
 
     public int getHealth() {
         return health;
@@ -46,8 +48,8 @@ public class Entity
         return movementSpeed;
     }
 
-    public void setAttackDamage(int ad) {
-        attackDamage = ad;
+    public void setAttackDamage(int attackdam) {
+        attackDamage = attackdam;
     }
 
     public void addHealth(int toadd) {
