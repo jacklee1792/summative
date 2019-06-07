@@ -8,8 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
 
@@ -21,13 +20,14 @@ class Map extends JFrame {
     }
 
     private MapComponent[][][] map;
-    private boolean[][] collisionMap;
     private MapComponent[][][] subMap;
-    private boolean[][] collisionSubMap;
     private Tile subMapTile = new Tile(50, 50);
-    private Tile playerTile = new Tile(10, 10);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 21, subMapWidth = 21;
-    private int tileSize = 40;
+    private Tile playerTile = new Tile(5, 5);
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 11, subMapWidth = 11;
+    private int tileSize = 80;
+
+    final static int GROUND_LAYER = 0;
+    final static int ITEM_LAYER = 1;
 
     final static int NORTH = 0;
     final static int WEST = 1;
@@ -35,6 +35,7 @@ class Map extends JFrame {
     final static int EAST = 3;
 
     class DrawArea extends JPanel {
+
         public DrawArea(int width, int height) {
             setPreferredSize(new Dimension(width, height));
         }
@@ -45,7 +46,8 @@ class Map extends JFrame {
             for(MapComponent[][] layer : subMap) {
                 for(MapComponent[] row : layer) {
                     for(MapComponent item : row) {
-                        g.drawImage(MapComponent.texture[item.getMapComponentID()], x, y, tileSize, tileSize, null);
+                        BufferedImage itemTexture = MapComponent.texture[item.getMapComponentID()];
+                        g.drawImage(itemTexture, x, y, tileSize, tileSize, null);
                         x += tileSize; //advance to next item
                     }
                     x = 0;
@@ -54,16 +56,18 @@ class Map extends JFrame {
                 x = 0;
                 y = 0;
             }
-
             g.setColor(Color.RED);
             g.fillRect(playerTile.getColumn() * tileSize, playerTile.getColumn() * tileSize, tileSize, tileSize);
         }
+
     }
 
     class MovementListener implements KeyListener {
+
         @Override
         public void keyTyped(KeyEvent e) {
         }
+
         @Override
         public void keyPressed(KeyEvent e) {
             char key = e.getKeyChar();
@@ -79,7 +83,6 @@ class Map extends JFrame {
             }
             try {
                 setSubMap(temp); //change the submap
-                setCollisionSubMap(temp); //change the collsion submap
                 subMapTile = temp; //if line above doesn't throw exception
             } catch (ArrayIndexOutOfBoundsException ex) {}
             repaint();
@@ -89,6 +92,7 @@ class Map extends JFrame {
         }
     }
 
+    //Constructor
     public Map() {
         //Set up the window
         setTitle("Binecraft");
@@ -96,9 +100,8 @@ class Map extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        //Map and collision map
+        //Map
         map = new MapComponent[2][mapHeight][mapWidth];
-        collisionMap = new boolean[mapHeight][mapWidth];
 
         //Fill the map with random shitto
         Random rand = new Random();
@@ -110,11 +113,9 @@ class Map extends JFrame {
                         double randDouble = Math.random();
                         if(randDouble < 0.15) {
                             map[h][r][c] = new MapComponent(rand.nextInt(3) + 5); //15% of spawning an item
-                            collisionMap[r][c] = true;
                         }
                         else {
                             map[h][r][c] = new MapComponent(0);
-                            collisionMap[r][c] = false;
                         }
                     }
                 }
@@ -123,9 +124,6 @@ class Map extends JFrame {
 
         //Testing for subMap
         setSubMap(subMapTile);
-
-        //Set collision map
-        setCollisionSubMap(subMapTile);
 
         //Initialize textures
         try {
@@ -155,28 +153,17 @@ class Map extends JFrame {
         subMap = temp; //temp is destroyed upon exit
     }
 
-    public void setCollisionSubMap(Tile t) throws ArrayIndexOutOfBoundsException {
-        boolean[][] temp = new boolean[subMapHeight][subMapWidth];
-        for(int r = 0; r < subMapHeight; r++) {
-            for(int c = 0; c < subMapWidth; c++) {
-                temp[r][c] = collisionMap[t.getRow() + r][t.getColumn() + c];
-            }
-        }
-        collisionSubMap = temp; //temp is destroyed upon exit
-    }
-
     public boolean checkCollision(Tile t, int direction) { //for submap
-        boolean result = false;
+        boolean result = true; //assume there is a collision
         if(direction == NORTH) {
-            if(collisionSubMap[t.getRow() - 1][t.getColumn()]) return true;
+            if(subMap[ITEM_LAYER][t.getRow() - 1][t.getColumn()].getMapComponentID() == MapComponent.NULL) return false;
         } else if(direction == WEST) {
-            if(collisionSubMap[t.getRow()][t.getColumn() - 1]) return true;
+            if(subMap[ITEM_LAYER][t.getRow()][t.getColumn() - 1].getMapComponentID() == MapComponent.NULL) return false;
         } else if(direction == SOUTH) {
-            if(collisionSubMap[t.getRow() + 1][t.getColumn()]) return true;
+            if(subMap[ITEM_LAYER][t.getRow() + 1][t.getColumn()].getMapComponentID() == MapComponent.NULL) return false;
         } else if(direction == EAST) {
-            if(collisionSubMap[t.getRow()][t.getColumn() + 1]) return true;
+            if(subMap[ITEM_LAYER][t.getRow()][t.getColumn() + 1].getMapComponentID() == MapComponent.NULL) return false;
         }
-        System.out.println(result);
         return result;
     }
 
