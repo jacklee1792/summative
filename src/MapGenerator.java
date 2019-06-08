@@ -24,7 +24,6 @@ public class MapGenerator { //I'll add getters and setters on map later
             }
         }
 
-        //Grass
         for (int r = 0; r < h; r++) {
             for (int c = 0; c < w; c++) { //C++ hehe
                 map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.GRASS);
@@ -37,12 +36,12 @@ public class MapGenerator { //I'll add getters and setters on map later
                 if (chance(0.003)) map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER); //randomly spawning water
                 else { //not randomly spawning water
                     int touching = touching(Map.GROUND_LAYER, r, c, MapComponent.WATER);
-                    if (chance(touching / 2.3)) map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER);
+                    if (chance(touching / 2.05)) map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER);
                 }
             }
         }
 
-        //Smoothen water generation three times
+        //Smoothen water generation
         for(int i = 0; i < 2; i++) {
             MapComponent[][][] temp = map; //temp used so changes in one cycle don't affect the same cycle
             for (int r = 0; r < h; r++) {
@@ -58,6 +57,15 @@ public class MapGenerator { //I'll add getters and setters on map later
                 }
             }
             map = temp; //temp destroyed on exit
+        }
+
+        //Random dirt spots
+        for (int r = 0; r < h; r++) {
+            for (int c = 0; c < w; c++) {
+                if (chance(0.1) && map[Map.GROUND_LAYER][r][c].getMapComponentID() == MapComponent.GRASS) {
+                    map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.SOIL);
+                }
+            }
         }
 
         return map;

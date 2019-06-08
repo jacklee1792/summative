@@ -1,17 +1,20 @@
+import java.awt.image.BufferedImage;
+
 public abstract class Entity extends MapComponent
 {
     // Static variables
     final static int NORTH = 0;
-    final static int EAST = 1;
+    final static int WEST = 1;
     final static int SOUTH = 2;
-    final static int WEST = 3;
+    final static int EAST = 3;
 
 
     // Instance variables
     private String name;
     protected int health;
-    private int orientation;
+    protected int orientation;
     protected int maxHealth;
+    protected BufferedImage currentTexture;
     private int attackDamage;
     private int movementSpeed;
 
@@ -30,6 +33,10 @@ public abstract class Entity extends MapComponent
             return true;
         else
             return false;
+    }
+
+    public BufferedImage getTexture() {
+        return currentTexture;
     }
 
     public int getOrientation() {

@@ -21,8 +21,8 @@ class Map extends JFrame {
 
     //Instance variables
     private MapComponent[][][] map, subMap;
-    private Tile subMapTile = new Tile(0, 0), playerTile = new Tile(45, 45);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 91, subMapWidth = 91, tileSize = 10;
+    private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(10, 10);
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 21, subMapWidth = 21, tileSize = 50;
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -53,6 +53,7 @@ class Map extends JFrame {
         //Initialize textures
         try {
             MapComponent.importTextures();
+            Player.importTextures();
         } catch(IOException e) { System.out.println("Image import error!"); }
 
         //DrawArea
