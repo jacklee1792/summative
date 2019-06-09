@@ -18,15 +18,19 @@ class Player extends Entity {
         maxHealth = 3;
         hungerFactor = 100;
         orientation = NORTH;
-        walkCycle = true;
+        walkCycle = 1;
     }
 
     static BufferedImage[] texture = new BufferedImage[8];
 
+    public BufferedImage getTexture() {
+        return texture[walkCycle * orientation];
+    }
+
     public static void importTextures() throws IOException { //import textures
         texture = new BufferedImage[8];
-        for(int i = 0; i < 8; i++) {
-            texture[i] = ImageIO.read(MapComponent.class.getResourceAsStream("_PLYR" + i + ".png"));
+        for(int i = 1; i <= 8; i++) {
+            texture[i - 1] = ImageIO.read(Player.class.getResourceAsStream("_PLYR" + i + ".png"));
         }
     }
 

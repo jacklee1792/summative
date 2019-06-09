@@ -55,6 +55,9 @@ class Map extends JFrame {
 
         //Player
         p = new Player();
+        try {
+            p.importTextures();
+        } catch (IOException ex) {}
 
         //Initialize textures
         try {
@@ -127,7 +130,7 @@ class Map extends JFrame {
             }
 
             //Player
-            g.drawImage();
+            g.drawImage(p.getTexture(), playerTile.getColumn() * tileSize, playerTile.getRow() * tileSize, tileSize, tileSize, null );
 
             //HUD
             try {
@@ -149,15 +152,19 @@ class Map extends JFrame {
             Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new subMap is valid
             if (key == 'w') {
                 p.setOrientation(NORTH);
+                p.walkCycle();
                 if(!checkCollision(playerTile, NORTH)) temp.setRow(subMapTile.getRow() - 1); //move up by one
             } else if (key == 'a') {
                 p.setOrientation(WEST);
+                p.walkCycle();
                 if(!checkCollision(playerTile, WEST)) temp.setColumn(subMapTile.getColumn() - 1); //move left by one
             } else if (key == 's') {
                 p.setOrientation(SOUTH);
+                p.walkCycle();
                 if(!checkCollision(playerTile, SOUTH)) temp.setRow(subMapTile.getRow() + 1); //move down by one
             } else if (key == 'd') {
                 p.setOrientation(EAST);
+                p.walkCycle();
                 if(!checkCollision(playerTile, EAST)) temp.setColumn(subMapTile.getColumn() + 1); //move left by one
             }
             try {
