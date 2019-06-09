@@ -9,7 +9,8 @@ class Player extends Entity {
     private String name;
     private double hungerFactor;
     private ArrayList<Item> inventory;
-    Item selectedIndex;
+    private int inventoryCap = 5;
+    private int selectedIndex;
     private int stackSize = 6;
 
     public Player() {
@@ -29,6 +30,16 @@ class Player extends Entity {
         return texture[0];
     }
 
+    public int getSelectedIndex() {
+        return selectedIndex;
+    }
+    public void setSelectedIndex(int index) {
+        selectedIndex = index;
+    }
+    public ArrayList<Item> getInventory() {
+        return inventory;
+    }
+
     public static void importTextures() throws IOException { //import textures
         texture = new BufferedImage[8];
         for(int i = 1; i <= 8; i++) {
@@ -37,13 +48,16 @@ class Player extends Entity {
     }
 
     public void interact(MapComponent m) {
-        if(m.getMapComponentID() == MapComponent.SMALL_TREE) {
-            inventory.add(new Item(STICK));
-            health--;
+        if(m.getMapComponentID() == MapComponent.SMALL_TREE && inventory.size() < inventoryCap) {
+            inventory.add(new Item(Item.STICK));
             System.out.println("Interaction with small tree detected");
-        } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH) {
+        } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH && inventory.size() < inventoryCap) {
             System.out.println("Interaction with small bush detected");
         }
+        for(Item i : inventory) {
+            System.out.print(i.getItemID());
+        }
+        System.out.println();
     }
 
 }

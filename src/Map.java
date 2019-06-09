@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 class Map extends JFrame {
@@ -64,20 +65,17 @@ class Map extends JFrame {
         //Initialize textures
         try {
             MapComponent.importTextures();
+            Item.importTextures();
             //Player.importTextures();
         } catch(IOException e) { System.out.println("Image import error!"); }
 
         //DrawArea
         DrawArea mapArea = new DrawArea(subMapWidth * tileSize, subMapHeight * tileSize);
-        add(mapArea, BorderLayout.NORTH);
-
-        //Inventory bar
-        HUDBar hBar = new HUDBar();
-        add(hBar, BorderLayout.SOUTH);
+        add(mapArea, BorderLayout.CENTER);
 
         //KeyListener
         addKeyListener(new MovementListener());
-        addKeyListener(new AttackListener());
+        // addKeyListener(new AttackListener());
 
         //Pack
         pack();
@@ -116,6 +114,13 @@ class Map extends JFrame {
 
         public DrawArea(int width, int height) {
             setPreferredSize(new Dimension(width, height));
+            setLayout(null);
+            //Inventory bar
+            InventoryBar inv = new InventoryBar();
+            int invX = tileSize / 2;
+            int invY = subMapHeight * tileSize - (3 * invX);
+            inv.setBounds(invX, invY, 5 * tileSize, tileSize);
+            add(inv);
         }
 
         @Override
@@ -143,6 +148,7 @@ class Map extends JFrame {
 
     }
 
+    /*
     class AttackListener implements KeyListener{
         @Override
         public void keyTyped(KeyEvent e) {
@@ -150,7 +156,7 @@ class Map extends JFrame {
 
         @Override
         public void keyPressed (KeyEvent e){
-            char key = e.getKeyChar
+            char key = e.getKeyChar;
             Tile temp = new Tile(sumMapTile.getRow(), subMapTile.getColumn());
 
             if (key == 'j'){
@@ -184,6 +190,7 @@ class Map extends JFrame {
         public void keyReleased(KeyEvent e) {
         }
     }
+    */
 
     class MovementListener implements KeyListener {
 
@@ -229,51 +236,55 @@ class Map extends JFrame {
         }
     }
 
-    class HUDBar extends JPanel implements MouseListener {
-        private int x, y, invHeight, invWidth;
+    class InventoryBar extends JPanel implements MouseListener {
+        private int invHeight, invWidth;
         BufferedImage invBar;
 
-        public HUDBar() {
-            x = tileSize / 2;
-            y = (int)(tileSize * (subMapHeight - 1.5));
+        public InventoryBar() {
             invWidth = 5 * tileSize;
             invHeight = 1 * tileSize;
             try {
                 invBar = ImageIO.read(MapComponent.class.getResourceAsStream("_HUD1.png"));
             } catch (IOException ex) {}
-            setPreferredSize(new Dimension(tileSize * subMapWidth, invHeight));
+            addMouseListener(this);
         }
 
         @Override
         public void paintComponent(Graphics g) {
-            try {
-                g.drawImage(invBar,0, 0, invWidth, invHeight, null);
-            } catch (Exception ex) {System.out.println("Read error!");}
+            //Draw inventory bar
+            g.drawImage(invBar,0, 0, invWidth, invHeight, null);
+            //Red rectangle around selected index
+            g.setColor(Color.RED);
+            g.drawRect(p.getSelectedIndex() * tileSize, 0, tileSize, tileSize);
+            //Draw item icons
+            ArrayList<Item> inventory = p.getInventory();
+            for(int i = 0; i < inventory.size(); i++) {
+                int x = (int)((i * invWidth / 5) + (0.1 * invWidth / 5));
+                int y = 2;
+                int size = (int)(0.8 * tileSize);
+                g.drawImage(Item.texture[inventory.get(i).getItemID()], x, y, size, size, null);
+            }
+        }
+
+        //Detect which inventory slot was selected
+        @Override
+        public void mousePressed(MouseEvent e) {
+            int mouseX = e.getX();
+            p.setSelectedIndex(mouseX / tileSize);
+            repaint();
         }
 
         @Override
         public void mouseClicked(MouseEvent e) {
-
         }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
-
         @Override
         public void mouseReleased(MouseEvent e) {
-
         }
-
         @Override
         public void mouseEntered(MouseEvent e) {
-
         }
-
         @Override
         public void mouseExited(MouseEvent e) {
-
         }
     }
 }
