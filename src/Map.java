@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
@@ -22,8 +24,8 @@ class Map extends JFrame {
 
     //Instance variables
     private MapComponent[][][] map, subMap;
-    private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(7, 7);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 15, subMapWidth = 15, tileSize = 60;
+    private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(5, 7);
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 11, subMapWidth = 15, tileSize = 60;
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -56,7 +58,7 @@ class Map extends JFrame {
         //Player
         p = new Player();
         try {
-            p.importTextures();
+            Player.importTextures();
         } catch (IOException ex) {}
 
         //Initialize textures
@@ -67,7 +69,11 @@ class Map extends JFrame {
 
         //DrawArea
         DrawArea mapArea = new DrawArea(subMapWidth * tileSize, subMapHeight * tileSize);
-        add(mapArea);
+        add(mapArea, BorderLayout.NORTH);
+
+        //Inventory bar
+        HUDBar hBar = new HUDBar();
+        add(hBar, BorderLayout.SOUTH);
 
         //KeyListener
         addKeyListener(new MovementListener());
@@ -104,7 +110,7 @@ class Map extends JFrame {
         return (target.getMapComponentID() != MapComponent.NULL && !isItem); //if not null, and not item, collision is true
     }
 
-    //DrawArea and KeyListener
+    //DrawArea and KeyListener and InventoryBar
     class DrawArea extends JPanel {
 
         public DrawArea(int width, int height) {
@@ -132,11 +138,6 @@ class Map extends JFrame {
             //Player
             g.drawImage(p.getTexture(), playerTile.getColumn() * tileSize, playerTile.getRow() * tileSize, tileSize, tileSize, null );
 
-            //HUD
-            try {
-                BufferedImage invBar = ImageIO.read(MapComponent.class.getResourceAsStream("_HUD1.png"));
-                g.drawImage(invBar,tileSize / 2, (int)(tileSize * (subMapHeight - 1.5)), (int) (5 * tileSize), (int) (1 * tileSize), null);
-            } catch (Exception ex) {System.out.println("Read error!");}
         }
 
     }
@@ -152,20 +153,26 @@ class Map extends JFrame {
             Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new subMap is valid
             if (key == 'w') {
                 p.setOrientation(NORTH);
-                p.walkCycle();
                 if(!checkCollision(playerTile, NORTH)) temp.setRow(subMapTile.getRow() - 1); //move up by one
             } else if (key == 'a') {
                 p.setOrientation(WEST);
-                p.walkCycle();
                 if(!checkCollision(playerTile, WEST)) temp.setColumn(subMapTile.getColumn() - 1); //move left by one
             } else if (key == 's') {
                 p.setOrientation(SOUTH);
-                p.walkCycle();
                 if(!checkCollision(playerTile, SOUTH)) temp.setRow(subMapTile.getRow() + 1); //move down by one
             } else if (key == 'd') {
                 p.setOrientation(EAST);
-                p.walkCycle();
                 if(!checkCollision(playerTile, EAST)) temp.setColumn(subMapTile.getColumn() + 1); //move left by one
+            } else if (key == 'f') {
+                if(p.getOrientation() == NORTH) {
+                    p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow() - 1][playerTile.getColumn()]);
+                } else if(p.getOrientation() == WEST) {
+                    p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow()][playerTile.getColumn() - 1]);
+                } else if(p.getOrientation() == SOUTH) {
+                    p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow() + 1][playerTile.getColumn()]);
+                } else if(p.getOrientation() == EAST) {
+                    p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow()][playerTile.getColumn() + 1]);
+                }
             }
             try {
                 setSubMap(temp); //change the submap
@@ -175,6 +182,54 @@ class Map extends JFrame {
         }
         @Override
         public void keyReleased(KeyEvent e) {
+        }
+    }
+
+    class HUDBar extends JPanel implements MouseListener {
+        private int x, y, invHeight, invWidth;
+        BufferedImage invBar;
+
+        public HUDBar() {
+            x = tileSize / 2;
+            y = (int)(tileSize * (subMapHeight - 1.5));
+            invWidth = 5 * tileSize;
+            invHeight = 1 * tileSize;
+            try {
+                invBar = ImageIO.read(MapComponent.class.getResourceAsStream("_HUD1.png"));
+            } catch (IOException ex) {}
+            setPreferredSize(new Dimension(tileSize * subMapWidth, invHeight));
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            try {
+                g.drawImage(invBar,0, 0, invWidth, invHeight, null);
+            } catch (Exception ex) {System.out.println("Read error!");}
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
         }
     }
 }

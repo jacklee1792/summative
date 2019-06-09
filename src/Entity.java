@@ -11,7 +11,7 @@ public abstract class Entity extends MapComponent
 
     // Instance variables
     private String name;
-    protected int walkCycle; //flip-flop cycle
+    //protected int walkCycle; //flip-flop cycle
     protected int health;
     protected int orientation;
     protected int maxHealth;
@@ -52,10 +52,12 @@ public abstract class Entity extends MapComponent
         return attackDamage;
     }
 
-    public void walkCycle() {
+    /* Too many textures I don't have time to make right now
+     public void walkCycle() {
         if (walkCycle == 1) walkCycle++;
         else walkCycle--;
     }
+    */
 
     public int getMovementSpeed() {
         return movementSpeed;
