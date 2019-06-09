@@ -30,40 +30,67 @@ public class MapGenerator { //I'll add getters and setters on map later
             }
         }
 
-        //Some ponds
+        //Initial lake point generation
         for (int r = 0; r < h; r++) {
             for (int c = 0; c < w; c++) {
-                if (chance(0.003)) map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER); //randomly spawning water
-                else { //not randomly spawning water
-                    int touching = touching(Map.GROUND_LAYER, r, c, MapComponent.WATER);
-                    if (chance(touching / 2.05)) map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER);
-                }
+                if (chance(0.001)) map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER); //randomly spawning water
             }
         }
 
-        //Smoothen water generation
-        for(int i = 0; i < 2; i++) {
-            MapComponent[][][] temp = map; //temp used so changes in one cycle don't affect the same cycle
+        //Lake generation based on initial points
+        for(int i = 0; i < 70; i++) {
+            //Temp
+            MapComponent[][][] temp = new MapComponent[2][h][w];
+            copyMap(map, temp); //copy everything from map to temp
+            //Check map, write to temp
             for (int r = 0; r < h; r++) {
                 for (int c = 0; c < w; c++) {
-                    //if you are water and touched by >= 3 grass, turn yourself into grass
-                    if(map[Map.GROUND_LAYER][r][c].getMapComponentID() == MapComponent.WATER && touching(Map.GROUND_LAYER, r, c, MapComponent.GRASS) >= 3) {
+                    {
+                        int touching = countTouching(map, Map.GROUND_LAYER, r, c, MapComponent.WATER);
+                        if (chance(touching / 10.0)) temp[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER);
+                    }
+                }
+            }
+            copyMap(temp, map); //copy everything from temp to map
+        }
+
+        //Smoothen water generation
+        for(int i = 0; i < 10; i++) {
+            //Temp
+            MapComponent[][][] temp = new MapComponent[2][h][w];
+            copyMap(map, temp);
+            for (int r = 0; r < h; r++) {
+                for (int c = 0; c < w; c++) {
+                    if(map[Map.GROUND_LAYER][r][c].getMapComponentID() == MapComponent.WATER &&
+                            countTouching(map, Map.GROUND_LAYER, r, c, MapComponent.GRASS) >= 3 &&
+                            chance(0.2)) {
                         temp[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.GRASS);
                     }
-                    //..and the other way around
-                    else if(map[Map.GROUND_LAYER][r][c].getMapComponentID() == MapComponent.GRASS && touching(Map.GROUND_LAYER, r, c, MapComponent.WATER) >= 3) {
+                    else if(map[Map.GROUND_LAYER][r][c].getMapComponentID() == MapComponent.GRASS &&
+                            countTouching(map, Map.GROUND_LAYER, r, c, MapComponent.WATER) >= 3 &&
+                            chance(0.8)) {
                         temp[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER);
                     }
                 }
             }
-            map = temp; //temp destroyed on exit
+            copyMap(temp, map);
         }
 
         //Random dirt spots
         for (int r = 0; r < h; r++) {
             for (int c = 0; c < w; c++) {
-                if (chance(0.1) && map[Map.GROUND_LAYER][r][c].getMapComponentID() == MapComponent.GRASS) {
+                if (chance(0.1) && map[Map.GROUND_LAYER][r][c].getMapComponentID() == MapComponent.GRASS) { //if grass and chance(0.1)
                     map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.SOIL);
+                }
+            }
+        }
+
+        //Trees and bushes
+        for (int r = 0; r < h; r++) {
+            for (int c = 0; c < w; c++) {
+                if (chance(0.08) && map[Map.GROUND_LAYER][r][c].getMapComponentID() != MapComponent.WATER) { //if grass and chance(0.1)
+                    if(chance(0.5)) map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.SMALL_TREE);
+                    else map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.SMALL_BUSH);
                 }
             }
         }
@@ -89,21 +116,31 @@ public class MapGenerator { //I'll add getters and setters on map later
         return count;
     }
 
-    private int touching(int layer, int row, int column, int MapComponentID) {
+    private int countTouching(MapComponent[][][] m, int layer, int row, int column, int MapComponentID) {
         int count = 0;
         try {
-            if (map[layer][row + 1][column].getMapComponentID() == MapComponentID) count++;
+            if (m[layer][row + 1][column].getMapComponentID() == MapComponentID) count++;
         } catch(ArrayIndexOutOfBoundsException ex) {}
         try {
-            if(map[layer][row - 1][column].getMapComponentID() == MapComponentID) count++;
+            if(m[layer][row - 1][column].getMapComponentID() == MapComponentID) count++;
         } catch(ArrayIndexOutOfBoundsException ex) {}
         try {
-            if(map[layer][row][column + 1].getMapComponentID() == MapComponentID) count++;
+            if(m[layer][row][column + 1].getMapComponentID() == MapComponentID) count++;
         } catch(ArrayIndexOutOfBoundsException ex) {}
         try {
-            if(map[layer][row][column - 1].getMapComponentID() == MapComponentID) count++;
+            if(m[layer][row][column - 1].getMapComponentID() == MapComponentID) count++;
         } catch(ArrayIndexOutOfBoundsException ex) {}
         return count;
+    }
+
+    public void copyMap(MapComponent[][][] original, MapComponent[][][] copy) {
+        for(int l = 0; l < 2; l++) {
+            for (int r = 0; r < h; r++) {
+                for (int c = 0; c < w; c++) {
+                    copy[l][r][c] = new MapComponent(original[l][r][c].getMapComponentID());
+                }
+            }
+        }
     }
 
 }

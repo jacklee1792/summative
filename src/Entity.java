@@ -11,6 +11,7 @@ public abstract class Entity extends MapComponent
 
     // Instance variables
     private String name;
+    protected boolean walkCycle; //flip-flop cycle
     protected int health;
     protected int orientation;
     protected int maxHealth;
@@ -43,12 +44,20 @@ public abstract class Entity extends MapComponent
         return orientation;
     }
 
+    public void setOrientation(int direction) {
+        orientation = direction;
+    }
+
     public int getMaxHealth() {
         return maxHealth;
     }
 
     public int getAttackDamage() {
         return attackDamage;
+    }
+
+    public boolean getWalkCycle() {
+        return walkCycle;
     }
 
     public int getMovementSpeed() {

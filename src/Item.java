@@ -1,6 +1,3 @@
-class Item extends MapComponent {
+class Item {
 
-    public Item(int MapComponentID) {
-        super(MapComponentID);
-    }
 }

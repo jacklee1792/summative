@@ -30,12 +30,4 @@ public class Test {
         else return false;
     }
 
-    public void parenting101() {
-        //Storing an item in a MapComponent array because i don't know if it actually works
-        MapComponent[] yeet = new MapComponent[3];
-        yeet[0] = new Item(1);
-        System.out.println(yeet[0].getMapComponentID());
-        //Hmm can I check if it's an item
-        System.out.println(yeet[0].getClass());
-    }
 }

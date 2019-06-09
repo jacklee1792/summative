@@ -4,6 +4,7 @@
  *  https://docs.google.com/document/d/1Hu6XnzeBDa0TvPOOIS6JWaDXK1A8l10doPGio8VgK84/edit?usp=sharing
  */
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -21,8 +22,8 @@ class Map extends JFrame {
 
     //Instance variables
     private MapComponent[][][] map, subMap;
-    private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(10, 10);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 21, subMapWidth = 21, tileSize = 50;
+    private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(7, 7);
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 15, subMapWidth = 15, tileSize = 60;
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -31,6 +32,8 @@ class Map extends JFrame {
     final static int WEST = 1;
     final static int SOUTH = 2;
     final static int EAST = 3;
+
+    Player p;
 
     //Constructor
     public Map() {
@@ -44,16 +47,19 @@ class Map extends JFrame {
         map = new MapComponent[2][mapHeight][mapWidth];
 
         //Generate map
-        MapGenerator m = new MapGenerator(69);
+        MapGenerator m = new MapGenerator(39187);
         map = m.generate(mapHeight, mapWidth);
 
-        //Testing for subMap
+        //subMap
         setSubMap(subMapTile);
+
+        //Player
+        p = new Player();
 
         //Initialize textures
         try {
             MapComponent.importTextures();
-            Player.importTextures();
+            //Player.importTextures();
         } catch(IOException e) { System.out.println("Image import error!"); }
 
         //DrawArea
@@ -104,6 +110,7 @@ class Map extends JFrame {
 
         @Override
         public void paintComponent(Graphics g) {
+            //Map
             int x = 0, y = 0;
             for(MapComponent[][] layer : subMap) {
                 for(MapComponent[] row : layer) {
@@ -118,8 +125,15 @@ class Map extends JFrame {
                 x = 0;
                 y = 0;
             }
-            g.setColor(Color.RED);
-            g.fillRect(playerTile.getColumn() * tileSize, playerTile.getColumn() * tileSize, tileSize, tileSize);
+
+            //Player
+            g.drawImage();
+
+            //HUD
+            try {
+                BufferedImage invBar = ImageIO.read(MapComponent.class.getResourceAsStream("_HUD1.png"));
+                g.drawImage(invBar,tileSize / 2, (int)(tileSize * (subMapHeight - 1.5)), (int) (5 * tileSize), (int) (1 * tileSize), null);
+            } catch (Exception ex) {System.out.println("Read error!");}
         }
 
     }
@@ -134,12 +148,16 @@ class Map extends JFrame {
             char key = e.getKeyChar();
             Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new subMap is valid
             if (key == 'w') {
+                p.setOrientation(NORTH);
                 if(!checkCollision(playerTile, NORTH)) temp.setRow(subMapTile.getRow() - 1); //move up by one
             } else if (key == 'a') {
+                p.setOrientation(WEST);
                 if(!checkCollision(playerTile, WEST)) temp.setColumn(subMapTile.getColumn() - 1); //move left by one
             } else if (key == 's') {
+                p.setOrientation(SOUTH);
                 if(!checkCollision(playerTile, SOUTH)) temp.setRow(subMapTile.getRow() + 1); //move down by one
             } else if (key == 'd') {
+                p.setOrientation(EAST);
                 if(!checkCollision(playerTile, EAST)) temp.setColumn(subMapTile.getColumn() + 1); //move left by one
             }
             try {

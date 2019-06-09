@@ -42,7 +42,7 @@ class MapComponent {
     //Methods
     public static void importTextures() throws IOException { //import textures
         for(int i = 0; i < 8; i++) {
-            texture[i] = ImageIO.read(MapComponent.class.getResourceAsStream("TEX" + i + ".png"));
+            texture[i] = ImageIO.read(MapComponent.class.getResourceAsStream("_TEX" + i + ".png"));
         }
     }
 

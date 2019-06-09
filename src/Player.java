@@ -1,12 +1,13 @@
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.ArrayList;
 
 class Player extends Entity {
     /**  INSTANCE VARIABLES  **/
     private String name;
     private double hungerFactor;
-    private boolean walkCycle; //flip-flop cycle
     private ArrayList<Item> inventory;
     private ArrayList<Integer> inventoryQtys;
     private int stackSize = 6;
@@ -20,17 +21,14 @@ class Player extends Entity {
         walkCycle = true;
     }
 
+    static BufferedImage[] texture = new BufferedImage[8];
+
     public static void importTextures() throws IOException { //import textures
+        texture = new BufferedImage[8];
         for(int i = 0; i < 8; i++) {
-            texture[i] = ImageIO.read(MapComponent.class.getResourceAsStream("PLYR" + i + ".png"));
+            texture[i] = ImageIO.read(MapComponent.class.getResourceAsStream("_PLYR" + i + ".png"));
         }
     }
-
-    public void addItem(Item targetItem) {
-
-    }
-
-
 
 }
 
