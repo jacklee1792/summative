@@ -17,6 +17,7 @@ public abstract class Entity extends MapComponent
     protected int maxHealth;
     protected BufferedImage currentTexture;
     private int attackDamage;
+    private int attackRange;
     private int movementSpeed;
 
     public String getName() {
@@ -58,6 +59,10 @@ public abstract class Entity extends MapComponent
         else walkCycle--;
     }
     */
+
+    public void setAttackRange(int attrange){attackRange = attrange; }
+
+    public int getAttackRange() {return attackRange; }
 
     public int getMovementSpeed() {
         return movementSpeed;
