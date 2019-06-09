@@ -77,7 +77,7 @@ class Map extends JFrame {
 
         //KeyListener
         addKeyListener(new MovementListener());
-        addKeyListener(new AttackListener());
+//        addKeyListener(new AttackListener());
 
         //Pack
         pack();
@@ -143,47 +143,47 @@ class Map extends JFrame {
 
     }
 
-    class AttackListener implements KeyListener{
-        @Override
-        public void keyTyped(KeyEvent e) {
-        }
-
-        @Override
-        public void keyPressed (KeyEvent e){
-            char key = e.getKeyChar
-            Tile temp = new Tile(sumMapTile.getRow(), subMapTile.getColumn());
-
-            if (key == 'j'){
-                if(p.getOrientation() == NORTH){
-                    for (int r = subMapTile.getRow() - 1; r >= subMapTile.getRow() - p.getAttackRange; r--){
-                        // make the tile red or smth
-                        try {
-                            temp.setRow(r);
-                            Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn());
-                            setSubMap(temp); //change the submap
-                            subMapTile = temp; //if line above doesn't throw exception
-                        } catch (ArrayIndexOutOfBoundsException ex) {}
-                        repaint();
-                        Thread.sleep(50);
-                        // check if there is a thing on the squares, which requires accessing entities through map
-                    }
-                }
-                if(p.getOrientation() == WEST){
-                    // copy paste
-                }
-                if(p.getOrientation() == SOUTH){
-
-                }
-                if(p.getOrientation() == EAST){
-
-                }
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-        }
-    }
+//    class AttackListener implements KeyListener{
+//        @Override
+//        public void keyTyped(KeyEvent e) {
+//        }
+//
+//        @Override
+//        public void keyPressed (KeyEvent e){
+//            char key = e.getKeyChar
+//            Tile temp = new Tile(sumMapTile.getRow(), subMapTile.getColumn());
+//
+//            if (key == 'j'){
+//                if(p.getOrientation() == NORTH){
+//                    for (int r = subMapTile.getRow() - 1; r >= subMapTile.getRow() - p.getAttackRange; r--){
+//                        // make the tile red or smth
+//                        try {
+//                            temp.setRow(r);
+//                            Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn());
+//                            setSubMap(temp); //change the submap
+//                            subMapTile = temp; //if line above doesn't throw exception
+//                        } catch (ArrayIndexOutOfBoundsException ex) {}
+//                        repaint();
+//                        Thread.sleep(50);
+//                        // check if there is a thing on the squares, which requires accessing entities through map
+//                    }
+//                }
+//                if(p.getOrientation() == WEST){
+//                    // copy paste
+//                }
+//                if(p.getOrientation() == SOUTH){
+//
+//                }
+//                if(p.getOrientation() == EAST){
+//
+//                }
+//            }
+//        }
+//
+//        @Override
+//        public void keyReleased(KeyEvent e) {
+//        }
+//    }
 
     class MovementListener implements KeyListener {
 
