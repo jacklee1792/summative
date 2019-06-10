@@ -4,13 +4,14 @@ public class MapGenerator { //I'll add getters and setters on map later
 
     static Random rand;
     MapComponent[][][] map;
+    Tile spawnTile;
     int h, w;
 
     public MapGenerator(int seed) {
         rand = new Random(seed);
     }
 
-    public MapComponent[][][] generate(int height, int width) {
+    public void generate(int height, int width) {
         map = new MapComponent[2][height][width];
         h = height;
         w = width;
@@ -104,8 +105,41 @@ public class MapGenerator { //I'll add getters and setters on map later
             }
         }
 
-        return map;
+        //Generate spawn tile
+        boolean spawnTileFound = false;
+        while(!spawnTileFound) {
+            spawnTileFound = true; //True until proven otherwise
+            int row = rand.nextInt(h / 2) + h / 4; //Somewhere in the middle
+            int column = rand.nextInt(w / 2) + w / 4;
+            spawnTile = new Tile(row, column);
+            for(int r = spawnTile.getRow(); r < spawnTile.getRow() + 4; r++) { //Find a 4x3 area where there is no water on the base layer
+                for(int c = spawnTile.getColumn(); c < spawnTile.getColumn() + 3; c++) {
+                    if(map[Map.GROUND_LAYER][r][c].getMapComponentID() == MapComponent.WATER) spawnTileFound = false;
+                }
+            }
+        }
+
+        //Plane
+        for(int r = spawnTile.getRow() + 1; r < spawnTile.getRow() + 2; r++) { //4 by 2 region of plane
+            for(int c = spawnTile.getColumn(); c < spawnTile.getColumn() + 4; c++) {
+                map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.FILLED_NULL);
+            }
+        }
+        map[Map.ITEM_LAYER][spawnTile.getRow() + 1][spawnTile.getColumn()] = new MapComponent(MapComponent.PLANE); //top left corner of plane
+
+        //Rock
+        while(true) {
+            int row = spawnTile.getRow() + rand.nextInt(11) - 5; // up to 5 away
+            int column = spawnTile.getColumn() + rand.nextInt(11) - 5;
+            if(map[Map.GROUND_LAYER][row][column].getMapComponentID() != MapComponent.WATER && //if ground not water and what is above it empty
+                    map[Map.ITEM_LAYER][row][column].getMapComponentID() == MapComponent.NULL) {
+                map[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.WISE_ROCK);
+                System.out.println(row + " " + column);
+                break; //exit the loop
+            }
+        }
     }
+
 
     private boolean chance(double probability) {
         if(rand.nextInt(10000) < probability * 10000) return true; //Limited accuracy but it works for this purpose
@@ -150,6 +184,13 @@ public class MapGenerator { //I'll add getters and setters on map later
                 }
             }
         }
+    }
+
+    public MapComponent[][][] getMap() {
+        return map;
+    }
+    public Tile getSpawnTile() {
+        return spawnTile;
     }
 
 }

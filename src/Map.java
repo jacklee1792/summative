@@ -25,7 +25,7 @@ class Map extends JFrame {
 
     //Instance variables
     private MapComponent[][][] map, subMap;
-    private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(4, 7);
+    private Tile subMapTile, playerTile = new Tile(4, 7);
     private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize = 120;
     boolean fullScreen = true;
 
@@ -50,9 +50,14 @@ class Map extends JFrame {
         //Map
         map = new MapComponent[2][mapHeight][mapWidth];
 
-        //Generate map
-        MapGenerator m = new MapGenerator(2121);
-        map = m.generate(mapHeight, mapWidth);
+        //Generate map, player tile, subMap tile
+        MapGenerator m = new MapGenerator(212169);
+        m.generate(mapHeight, mapWidth);
+        map = m.getMap();
+        Tile spawnTile = m.getSpawnTile();
+
+        subMapTile = new Tile(spawnTile.getRow() - playerTile.getRow(), spawnTile.getColumn() - playerTile.getColumn());
+        System.out.println(subMapTile.getRow() + " " + subMapTile.getColumn());
 
         //subMap
         setSubMap(subMapTile);
@@ -146,8 +151,9 @@ class Map extends JFrame {
             for(MapComponent[][] layer : subMap) {
                 for(MapComponent[] row : layer) {
                     for(MapComponent item : row) {
-                        BufferedImage itemTexture = MapComponent.texture[item.getMapComponentID()];
-                        g.drawImage(itemTexture, x, y, tileSize, tileSize, null);
+                        int itemID = item.getMapComponentID();
+                        BufferedImage itemTexture = MapComponent.texture[itemID];
+                        g.drawImage(itemTexture, x, y, tileSize * (int)item.getComponentSize().getWidth(), tileSize * (int)item.getComponentSize().getHeight(), null);
                         x += tileSize; //advance to next item
                     }
                     x = 0;
