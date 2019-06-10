@@ -26,8 +26,8 @@ class Map extends JFrame {
     //Instance variables
     private MapComponent[][][] map, subMap;
     private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(4, 7);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize = 120;
-    boolean fullScreen = true;
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize = 80;
+    boolean fullScreen = false ;
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -44,7 +44,7 @@ class Map extends JFrame {
         //Set up the window
         setTitle("Binecraft");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setUndecorated(true);
+        //setUndecorated(true);
         setVisible(true);
 
         //Map
