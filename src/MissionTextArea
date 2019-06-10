@@ -1,0 +1,10 @@
+// You should add this onto Map later
+
+// GUI for the mission box
+class MissionTextArea extends JFrame {
+    Mission missions;
+
+    public MissionTextArea() throws IOException{
+        missions = new Mission(new File("filepath.txt"));
+    }
+}
