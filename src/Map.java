@@ -25,8 +25,9 @@ class Map extends JFrame {
 
     //Instance variables
     private MapComponent[][][] map, subMap;
-    private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(5, 7);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 11, subMapWidth = 15, tileSize = 60;
+    private Tile subMapTile = new Tile(50, 50), playerTile = new Tile(4, 7);
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize = 120;
+    boolean fullScreen = true;
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -42,15 +43,15 @@ class Map extends JFrame {
     public Map() {
         //Set up the window
         setTitle("Binecraft");
-        setVisible(true);
-        setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setUndecorated(true);
+        setVisible(true);
 
         //Map
         map = new MapComponent[2][mapHeight][mapWidth];
 
         //Generate map
-        MapGenerator m = new MapGenerator(39187);
+        MapGenerator m = new MapGenerator(2121);
         map = m.generate(mapHeight, mapWidth);
 
         //subMap
@@ -91,6 +92,21 @@ class Map extends JFrame {
             }
         }
         subMap = temp; //temp is destroyed upon exit
+    }
+
+    public boolean checkWater(Tile t, int direction) { //also for subMap
+        MapComponent target = new MapComponent(); //need to initialize
+        if(direction == NORTH) {
+            target = subMap[GROUND_LAYER][t.getRow() - 1][t.getColumn()];
+        } else if(direction == WEST) {
+            target = subMap[GROUND_LAYER][t.getRow()][t.getColumn() - 1];
+        } else if(direction == SOUTH) {
+            target = subMap[GROUND_LAYER][t.getRow() + 1][t.getColumn()];
+        } else if(direction == EAST) {
+            target = subMap[GROUND_LAYER][t.getRow()][t.getColumn() + 1];
+        }
+        boolean water = target.getMapComponentID() == MapComponent.WATER;
+        return water; //return whether or not the cell is water
     }
 
     public boolean checkCollision(Tile t, int direction) { //for subMap
@@ -204,16 +220,24 @@ class Map extends JFrame {
             Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new subMap is valid
             if (key == 'w') {
                 p.setOrientation(NORTH);
-                if(!checkCollision(playerTile, NORTH)) temp.setRow(subMapTile.getRow() - 1); //move up by one
+                if(!checkCollision(playerTile, NORTH) && !checkWater(playerTile, NORTH)) {
+                    temp.setRow(subMapTile.getRow() - 1); //move up by one
+                }
             } else if (key == 'a') {
                 p.setOrientation(WEST);
-                if(!checkCollision(playerTile, WEST)) temp.setColumn(subMapTile.getColumn() - 1); //move left by one
+                if(!checkCollision(playerTile, WEST) && !checkWater(playerTile, WEST)) {
+                    temp.setColumn(subMapTile.getColumn() - 1); //move left by one
+                }
             } else if (key == 's') {
                 p.setOrientation(SOUTH);
-                if(!checkCollision(playerTile, SOUTH)) temp.setRow(subMapTile.getRow() + 1); //move down by one
+                if(!checkCollision(playerTile, SOUTH) && !checkWater(playerTile, SOUTH)) {
+                    temp.setRow(subMapTile.getRow() + 1); //move down by one
+                }
             } else if (key == 'd') {
                 p.setOrientation(EAST);
-                if(!checkCollision(playerTile, EAST)) temp.setColumn(subMapTile.getColumn() + 1); //move left by one
+                if(!checkCollision(playerTile, EAST) && !checkWater(playerTile, EAST)) {
+                    temp.setColumn(subMapTile.getColumn() + 1); //move left by one
+                }
             } else if (key == 'f') {
                 if(p.getOrientation() == NORTH) {
                     p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow() - 1][playerTile.getColumn()]);

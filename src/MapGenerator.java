@@ -95,6 +95,15 @@ public class MapGenerator { //I'll add getters and setters on map later
             }
         }
 
+        //Rocks
+        for (int r = 0; r < h; r++) {
+            for (int c = 0; c < w; c++) {
+                if (chance(0.01) && map[Map.GROUND_LAYER][r][c].getMapComponentID() != MapComponent.WATER) { //if grass and chance(0.1)
+                    map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.ROCKS);
+                }
+            }
+        }
+
         return map;
     }
 
