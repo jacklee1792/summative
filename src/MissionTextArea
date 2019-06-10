@@ -1,10 +1,26 @@
+import java.util.ArrayList;
+import java.io.*;
+
 // You should add this onto Map later
 
 // GUI for the mission box
 class MissionTextArea extends JFrame {
-    Mission missions;
+    // Instance variables
+    private ArrayList<Mission> missions;
+    private int currentMission;
 
+    // Methods
     public MissionTextArea() throws IOException{
-        missions = new Mission(new File("filepath.txt"));
+        missions = new Mission(new File("filepath.txt"));           // fix later
+        currentMission = 0;
+    }
+    public int getCurrentMission() { return currentMission; }
+    public void setCurrentMission(int newMission) { currentMission = newMission; }
+    public boolean isComplete(int missionNum) throws ArrayIndexOutOfBoundsException { return missions.get(missionNum).complete(); }
+
+    // Graphical methods
+    @Override
+    public void paint(Graphics g){
+
     }
 }

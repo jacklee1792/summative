@@ -1,32 +1,19 @@
-import java.io.File;
 
 class Mission {
     // Instance variables
-    private int currentStage;
-    private ArrayList<String> text;
-    private boolean ArrayList<Boolean> isComplete;
+    private String title, text;
+    private boolean isComplete;
 
     // Constructors
-    public Mission (File loadFile) throws IOException {
-        FileReader fr = new FileReader(loadFile);
-        BufferedReader br = new BufferedReader(fr);
-        String line = " ";
-
-        while(line != null){
-            if(line == null)
-                break;
-            line = br.readLine();
-            text.add(line);
-        }
+    public Mission (String input) throws ArrayIndexOutOfBoundsException {
+        String[] tmp = input.split("\n");
+        title = tmp[0];
+        text = tmp[1];
     }
 
     // Methods
-    public String runCurrentStage(){
-        return text.get(currentStage);
-    }
-    public int getStage() { return currentStage; }
-    public void setStage(int newStage){
-        if(newStage < text.size())
-            currentStage = newStage;
-    }
+    public String getText(){ return text; }
+    public String getTitle() { return title; }
+    public boolean complete() { return isComplete; }
+    public void setCompleteness(boolean completeness) { isComplete = completeness; }
 }
