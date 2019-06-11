@@ -16,7 +16,13 @@ class MapComponent {
     protected int MC_ID;
     protected int height, width;
 
-    //Static variables
+    //Static variables and their properties
+
+    static int numOfComponents = 11; //Nunmber of currently implemented components
+    static BufferedImage[] texture = new BufferedImage[numOfComponents];
+    static Dimension[] size = new Dimension[numOfComponents];
+    static boolean[] walkable = new boolean[numOfComponents];
+
     final static int NULL = 0;
     final static int GRASS = 1;
     final static int SOIL = 2;
@@ -28,8 +34,6 @@ class MapComponent {
     final static int PLANE = 8;
     final static int FILLED_NULL = 9;
     final static int WISE_ROCK = 10;
-
-    static BufferedImage[] texture = new BufferedImage[11];
 
     //Constructors
     public MapComponent() {
@@ -50,6 +54,19 @@ class MapComponent {
         return MC_ID;
     }
 
+    //getWalkable can be applied to be items in ground and item layer
+    public boolean getWalkable() {
+        boolean b = true;
+        if(MC_ID == WATER) b = false;
+        else if (MC_ID == SMALL_TREE) b = false;
+        else if (MC_ID == SMALL_BUSH) b = false;
+        else if (MC_ID == ROCKS) b = false;
+        else if (MC_ID == PLANE) b = false;
+        else if (MC_ID == FILLED_NULL) b = false;
+        else if (MC_ID == WISE_ROCK) b = false;
+        return b;
+    }
+
     public Dimension getComponentSize() {
         Dimension d = new Dimension(0, 0);
         if(MC_ID == NULL) { d = new Dimension(1, 1); }
@@ -61,6 +78,7 @@ class MapComponent {
         else if(MC_ID == SMALL_BUSH) { d = new Dimension(1, 1); }
         else if(MC_ID == ROCKS) { d = new Dimension(1, 1); }
         else if(MC_ID == PLANE) { d = new Dimension(4, 2); }
+        else if(MC_ID == FILLED_NULL) { d = new Dimension(4, 2); }
         else if(MC_ID == WISE_ROCK) { d = new Dimension(1, 1); }
         return d;
     }

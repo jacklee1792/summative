@@ -47,6 +47,10 @@ class Player extends Entity {
         }
     }
 
+    /*
+    TODO
+    -Better interaction logic -> interacting with both ground layer and item layer within player
+     */
     public void interact(MapComponent m) {
         if(m.getMapComponentID() == MapComponent.SMALL_TREE && inventory.size() < inventoryCap) {
             inventory.add(new Item(Item.STICK));
