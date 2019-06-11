@@ -9,18 +9,47 @@ class MissionTextArea extends JFrame {
     private ArrayList<Mission> missions;
     private int currentMission;
 
+    // Constructor
+    public MissionTextArea(File loadFile) throws IOException{
+        FileReader fr = new FileReader(loadFile);
+        BufferedReader br = new BufferedReader(fr);
+        String line = " ";
+
+        while(line != null){
+            if(line == null)
+                break;
+            line = br.readLine();
+            missions.add(new Mission(line));
+        }
+    }
+
     // Methods
     public MissionTextArea() throws IOException{
         missions = new Mission(new File("filepath.txt"));           // fix later
         currentMission = 0;
     }
+    public String getCurrentTitle() { return missions.get(currentMission).getTitle(); }
+    public String runCurrentMission() { return missions.get(currentMission).getText(); }
     public int getCurrentMission() { return currentMission; }
     public void setCurrentMission(int newMission) { currentMission = newMission; }
     public boolean isComplete(int missionNum) throws ArrayIndexOutOfBoundsException { return missions.get(missionNum).complete(); }
+    public boolean completeCurrentMission(){
+        missions.get(currentMission).setCompleteness(true);
+        if(currentMission >= missions.size() - 1)               // every mission completed: win condition
+            return true;
+        currentMission++;
+        return false;
+    }
 
     // Graphical methods
     @Override
     public void paint(Graphics g){
 
+    }
+
+    // Testing main
+    public static void main(String[] args){
+        MissionTextArea test = new MissionTextArea(new File("mission_test.txt"));
+        System.out.println(test.getCurrentTitle() + test.getCurrentMission());
     }
 }

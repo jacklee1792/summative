@@ -5,10 +5,16 @@ class Mission {
     private boolean isComplete;
 
     // Constructors
-    public Mission (String input) throws ArrayIndexOutOfBoundsException {
-        String[] tmp = input.split("\n");
-        title = tmp[0];
-        text = tmp[1];
+    public Mission (String input) {
+        String[] tmp = input.split(" !!! ");
+        try {
+            title = tmp[0];
+            text = tmp[1];
+        }
+        catch(ArrayIndexOutOfBoundsException e){
+            title = tmp[0];
+            text = "";
+        }
     }
 
     // Methods
