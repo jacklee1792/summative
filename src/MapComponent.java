@@ -83,4 +83,6 @@ class MapComponent {
         return d;
     }
 
+    public void addHealth(int dummy) {} // dummy;
+
 }

@@ -8,6 +8,7 @@ class Item {
 
     final static int NULL = 0;
     final static int STICK = 1;
+    final static int SWORD = 2;
 
     public Item(int ItemID) {
         I_ID = ItemID;

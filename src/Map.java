@@ -27,8 +27,9 @@ class Map extends JFrame {
     //Instance variables
     private MapComponent[][][] map, subMap;
     private Tile subMapTile, playerTile = new Tile(4, 7);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize = 120;
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize = 80;
     boolean fullScreen = true;
+    InventoryBar inv;
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -172,49 +173,8 @@ class Map extends JFrame {
 
     }
 
-    /*
-    class AttackListener implements KeyListener{
-        @Override
-        public void keyTyped(KeyEvent e) {
-        }
 
-        @Override
-        public void keyPressed (KeyEvent e){
-            char key = e.getKeyChar;
-            Tile temp = new Tile(sumMapTile.getRow(), subMapTile.getColumn());
 
-            if (key == 'j'){
-                if(p.getOrientation() == NORTH){
-                    for (int r = subMapTile.getRow() - 1; r >= subMapTile.getRow() - p.getAttackRange; r--){
-                        // make the tile red or smth
-                        try {
-                            temp.setRow(r);
-                            Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn());
-                            setSubMap(temp); //change the submap
-                            subMapTile = temp; //if line above doesn't throw exception
-                        } catch (ArrayIndexOutOfBoundsException ex) {}
-                        repaint();
-                        Thread.sleep(50);
-                        // check if there is a thing on the squares, which requires accessing entities through map
-                    }
-                }
-                if(p.getOrientation() == WEST){
-                    // copy paste
-                }
-                if(p.getOrientation() == SOUTH){
-
-                }
-                if(p.getOrientation() == EAST){
-
-                }
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-        }
-    }
-    */
 
     class MovementListener implements KeyListener {
 
@@ -256,7 +216,41 @@ class Map extends JFrame {
                 } else if(p.getOrientation() == EAST) {
                     p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow()][playerTile.getColumn() + 1]);
                 }
+            } else if (key == 't'){
+                p.dropItem();
+            } else if (key == 'j'){
+                if(p.getOrientation() == NORTH){
+                    for (int r = subMapTile.getRow() - 1; r >= subMapTile.getRow() - p.getAttackRange(); r--){
+                        // make the tile red or smth
+                        subMap[r][subMapTile.getColumn()][GROUND_LAYER].addHealth((-1)*p.getAttackDamage());
+                        // check if there is a thing on the squares, which requires accessing entities through map
+                    }
+                }
+                if(p.getOrientation() == WEST){
+                    for (int c = subMapTile.getColumn() - 1; c >= subMapTile.getColumn() - p.getAttackRange(); c--){
+                        // make the tile red or smth
+                        subMap[c][subMapTile.getColumn()][GROUND_LAYER].addHealth((-1)*p.getAttackDamage());
+                        // check if there is a thing on the squares, which requires accessing entities through map
+                    }
+                }
+                if(p.getOrientation() == SOUTH){
+                    for (int r = subMapTile.getRow() + 1; r <= subMapTile.getRow() + p.getAttackRange(); r++){
+                        // make the tile red or smth
+                        subMap[r][subMapTile.getColumn()][GROUND_LAYER].addHealth((-1)*p.getAttackDamage());
+                        // check if there is a thing on the squares, which requires accessing entities through map
+                    }
+                }
+                if(p.getOrientation() == EAST){
+                    for (int c = subMapTile.getColumn() + 1; c >= subMapTile.getColumn() + p.getAttackRange(); c++){
+                        // make the tile red or smth
+                        subMap[c][subMapTile.getColumn()][GROUND_LAYER].addHealth((-1)*p.getAttackDamage());
+                        // check if there is a thing on the squares, which requires accessing entities through map
+                    }
+                }
             }
+
+
+
             try {
                 setSubMap(temp); //change the submap
                 subMapTile = temp; //if line above doesn't throw exception
@@ -268,7 +262,7 @@ class Map extends JFrame {
         }
     }
 
-    class InventoryBar extends JPanel implements MouseListener {
+    class InventoryBar extends JPanel implements MouseListener, KeyListener {
         private int invHeight, invWidth;
         BufferedImage invBar;
 
@@ -279,6 +273,7 @@ class Map extends JFrame {
                 invBar = ImageIO.read(MapComponent.class.getResourceAsStream("_HUD1.png"));
             } catch (IOException ex) {}
             addMouseListener(this);
+            addKeyListener(this);
         }
 
         @Override
@@ -317,6 +312,34 @@ class Map extends JFrame {
         }
         @Override
         public void mouseExited(MouseEvent e) {
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            char key = e.getKeyChar();
+            if (key == 'y') {
+                p.setSelectedIndex(0);
+                System.out.println("u");
+            }
+            else if (key == '2')
+                p.setSelectedIndex(1);
+            else if (key == '3')
+                p.setSelectedIndex(2);
+            else if (key == '4')
+                p.setSelectedIndex(3);
+            else if (key == '5')
+                p.setSelectedIndex(4);
+            repaint();
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
         }
     }
 
