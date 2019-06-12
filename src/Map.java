@@ -12,7 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,7 +20,8 @@ class Map extends JFrame {
 
     //Main Test
     public static void main(String[] args) {
-        new Map();
+        Map test = new Map();
+        test.saveMap(new File("test_save.txt"));
     }
 
     //Instance variables
@@ -36,6 +37,7 @@ class Map extends JFrame {
     final static int WEST = 1;
     final static int SOUTH = 2;
     final static int EAST = 3;
+    final static String lineSeparator = "!end";
 
     static Player p;
 
@@ -315,6 +317,116 @@ class Map extends JFrame {
         }
         @Override
         public void mouseExited(MouseEvent e) {
+        }
+    }
+
+    class MissionTextArea extends JPanel {
+        // Instance variables
+        private ArrayList<Mission> missions;
+        private int currentMission;
+
+        // Constructor
+        public MissionTextArea(File loadFile) throws IOException{
+            FileReader fr = new FileReader(loadFile);
+            BufferedReader br = new BufferedReader(fr);
+            String line = " ";
+
+            while(line != null){
+                if(line == null)
+                    break;
+                line = br.readLine();
+                missions.add(new Mission(line));
+            }
+        }
+
+        // Methods
+        public String getCurrentTitle() { return missions.get(currentMission).getTitle(); }
+        public String runCurrentMission() { return missions.get(currentMission).getText(); }
+        public int getCurrentMission() { return currentMission; }
+        public void setCurrentMission(int newMission) { currentMission = newMission; }
+        public boolean isComplete(int missionNum) throws ArrayIndexOutOfBoundsException { return missions.get(missionNum).complete(); }
+        public boolean completeCurrentMission(){
+            missions.get(currentMission).setCompleteness(true);
+            if(currentMission >= missions.size() - 1)               // every mission completed: win condition
+                return true;
+            currentMission++;
+            return false;
+        }
+
+        // Graphical methods
+        @Override
+        public void paint(Graphics g){
+
+        }
+    }
+
+    // IO Methods
+    public boolean saveMap(File saveFile) {
+        try {
+            if(!saveFile.exists()){
+                saveFile.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(saveFile);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            for (MapComponent[][] i : map) {
+                for (MapComponent[] j : i) {
+                    for (MapComponent k : j) {
+                        bw.write(k.getMapComponentID() + " ");
+                    }
+                    bw.newLine();
+                    bw.flush();
+                }
+                bw.write(lineSeparator);
+                bw.newLine();
+            }
+            bw.close();
+            return true;
+        }
+        catch(IOException e){
+            return false;
+        }
+        // Implement saving inventory, progress, etc.
+    }
+    public boolean loadMap(File loadFile){
+        ArrayList<String> inputData = new ArrayList<>();
+        String line = " ";
+        try {
+            FileReader fw = new FileReader(loadFile);
+            BufferedReader br = new BufferedReader(fw);
+
+            while(line != null && !line.equals(lineSeparator)){     // ground layer
+                inputData.add(line);
+            }
+            fillLayer(GROUND_LAYER, inputData);
+            inputData.clear();
+            while(line != null && !line.equals(lineSeparator)){     // textures layer
+                inputData.add(line);
+            }
+            fillLayer(ITEM_LAYER, inputData);
+            inputData.clear();
+
+            // Implement inventory, progress
+
+            return true;
+        }
+        catch(IOException e){
+            return false;
+        }
+    }
+    private void fillLayer(int layer, ArrayList<String> data){      // helper method
+        mapHeight = data.size();
+        int row = 0, col = 0;
+        for(String i : data){
+            String[] data_split = i.split(" ");
+            mapWidth = data_split.length;
+
+            for(String j : data_split){
+                map[layer][row][col] = new MapComponent(Integer.parseInt(j));
+                col++;
+            }
+            row++;
         }
     }
 }
