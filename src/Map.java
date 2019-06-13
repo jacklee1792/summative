@@ -14,6 +14,8 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 class Map extends JFrame {
 
@@ -26,8 +28,10 @@ class Map extends JFrame {
     //Instance variables
     private MapComponent[][][] map, subMap;
     private Tile subMapTile, playerTile = new Tile(4, 7);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize = 120;
-    boolean fullScreen = true;
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
+    boolean[] keys = new boolean[255];
+
+    Timer timer = new Timer();
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -47,6 +51,7 @@ class Map extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setUndecorated(true);
         setVisible(true);
+        adaptToScreen(); //Set tile size based on screen resolution
 
         //Map
         map = new MapComponent[2][mapHeight][mapWidth];
@@ -83,6 +88,9 @@ class Map extends JFrame {
         //KeyListener
         addKeyListener(new MovementListener());
         // addKeyListener(new AttackListener());
+
+        //MovementUpdater TODO
+        new MovementUpdater();
 
         //Pack
         pack();
@@ -129,6 +137,48 @@ class Map extends JFrame {
         boolean isItem = ("" + target.getClass()).equals("class Item");
 
         return (target.getMapComponentID() != MapComponent.NULL && !isItem); //if not null, and not item, collision is true
+    }
+
+    public void walk(int direction) {
+        p.setOrientation(direction);
+        Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new subMap is valid
+
+        if (direction == NORTH) {
+            p.setOrientation(NORTH);
+            if(!checkCollision(playerTile, NORTH) && !checkWater(playerTile, NORTH)) {
+                temp.setRow(subMapTile.getRow() - 1); //move up by one
+                p.walkAnimation();
+            }
+        } else if (direction == WEST) {
+            p.setOrientation(WEST);
+            if(!checkCollision(playerTile, WEST) && !checkWater(playerTile, WEST)) {
+                temp.setColumn(subMapTile.getColumn() - 1); //move left by one
+                p.walkAnimation();
+            }
+        } else if (direction == SOUTH) {
+            p.setOrientation(SOUTH);
+            if(!checkCollision(playerTile, SOUTH) && !checkWater(playerTile, SOUTH)) {
+                temp.setRow(subMapTile.getRow() + 1); //move down by one
+                p.walkAnimation();
+            }
+        } else if (direction == EAST) {
+            p.setOrientation(EAST);
+            if (!checkCollision(playerTile, EAST) && !checkWater(playerTile, EAST)) {
+                temp.setColumn(subMapTile.getColumn() + 1); //move left by one
+                p.walkAnimation();
+            }
+        }
+
+        try {
+            setSubMap(temp); //change the submap
+            subMapTile = temp; //if line above doesn't throw exception
+        } catch (ArrayIndexOutOfBoundsException ex) {}
+
+    }
+
+    public void adaptToScreen() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        tileSize = (int)(screenSize.getWidth() / 16);
     }
 
     //DrawArea and KeyListener and InventoryBar
@@ -224,28 +274,9 @@ class Map extends JFrame {
         @Override
         public void keyPressed(KeyEvent e) {
             char key = e.getKeyChar();
-            Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new subMap is valid
-            if (key == 'w') {
-                p.setOrientation(NORTH);
-                if(!checkCollision(playerTile, NORTH) && !checkWater(playerTile, NORTH)) {
-                    temp.setRow(subMapTile.getRow() - 1); //move up by one
-                }
-            } else if (key == 'a') {
-                p.setOrientation(WEST);
-                if(!checkCollision(playerTile, WEST) && !checkWater(playerTile, WEST)) {
-                    temp.setColumn(subMapTile.getColumn() - 1); //move left by one
-                }
-            } else if (key == 's') {
-                p.setOrientation(SOUTH);
-                if(!checkCollision(playerTile, SOUTH) && !checkWater(playerTile, SOUTH)) {
-                    temp.setRow(subMapTile.getRow() + 1); //move down by one
-                }
-            } else if (key == 'd') {
-                p.setOrientation(EAST);
-                if(!checkCollision(playerTile, EAST) && !checkWater(playerTile, EAST)) {
-                    temp.setColumn(subMapTile.getColumn() + 1); //move left by one
-                }
-            } else if (key == 'f') {
+            if(key < 255) keys[key] = true;
+
+            if (key == 'f') {
                 if(p.getOrientation() == NORTH) {
                     p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow() - 1][playerTile.getColumn()]);
                 } else if(p.getOrientation() == WEST) {
@@ -256,14 +287,14 @@ class Map extends JFrame {
                     p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow()][playerTile.getColumn() + 1]);
                 }
             }
-            try {
-                setSubMap(temp); //change the submap
-                subMapTile = temp; //if line above doesn't throw exception
-            } catch (ArrayIndexOutOfBoundsException ex) {}
+
             repaint();
         }
+
         @Override
         public void keyReleased(KeyEvent e) {
+            char key = e.getKeyChar();
+            if(key < 255) keys[(int)key] = false;
         }
     }
 
@@ -360,6 +391,29 @@ class Map extends JFrame {
         public void paint(Graphics g){
 
         }
+    }
+
+    //TODO Fix initial movement jitter
+    class MovementUpdater extends TimerTask {
+
+        boolean moving = false;
+
+        public MovementUpdater() {
+            timer.schedule(this, 0, 300);
+        }
+
+        @Override
+        public void run() {
+            if (keys['w']) walk(NORTH);
+            else if (keys['a']) walk(WEST);
+            else if (keys['s']) walk(SOUTH);
+            else if (keys['d']) walk(EAST);
+            else {
+                p.setWalkState(Player.STILL);
+                repaint();
+            }
+        }
+
     }
 
     // IO Methods
