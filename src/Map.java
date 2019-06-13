@@ -14,22 +14,20 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Random;
 
 class Map extends JFrame {
 
     //Main Test
     public static void main(String[] args) {
         Map test = new Map();
-        test.saveMap(new File("test_save.txt"));
+        test.saveMap(new File("-test_save.txt"));
     }
 
     //Instance variables
     private MapComponent[][][] map, subMap;
     private Tile subMapTile, playerTile = new Tile(4, 7);
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize = 80;
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize = 120;
     boolean fullScreen = true;
-    InventoryBar inv;
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -38,7 +36,7 @@ class Map extends JFrame {
     final static int WEST = 1;
     final static int SOUTH = 2;
     final static int EAST = 3;
-    final static String lineSeparator = "!end";
+    final static String LINE_SEPARATOR = " !!! ";
 
     static Player p;
 
@@ -173,8 +171,49 @@ class Map extends JFrame {
 
     }
 
+    /*
+    class AttackListener implements KeyListener{
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
 
+        @Override
+        public void keyPressed (KeyEvent e){
+            char key = e.getKeyChar;
+            Tile temp = new Tile(sumMapTile.getRow(), subMapTile.getColumn());
 
+            if (key == 'j'){
+                if(p.getOrientation() == NORTH){
+                    for (int r = subMapTile.getRow() - 1; r >= subMapTile.getRow() - p.getAttackRange; r--){
+                        // make the tile red or smth
+                        try {
+                            temp.setRow(r);
+                            Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn());
+                            setSubMap(temp); //change the submap
+                            subMapTile = temp; //if line above doesn't throw exception
+                        } catch (ArrayIndexOutOfBoundsException ex) {}
+                        repaint();
+                        Thread.sleep(50);
+                        // check if there is a thing on the squares, which requires accessing entities through map
+                    }
+                }
+                if(p.getOrientation() == WEST){
+                    // copy paste
+                }
+                if(p.getOrientation() == SOUTH){
+
+                }
+                if(p.getOrientation() == EAST){
+
+                }
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+        }
+    }
+    */
 
     class MovementListener implements KeyListener {
 
@@ -216,41 +255,7 @@ class Map extends JFrame {
                 } else if(p.getOrientation() == EAST) {
                     p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow()][playerTile.getColumn() + 1]);
                 }
-            } else if (key == 't'){
-                p.dropItem();
-            } else if (key == 'j'){
-                if(p.getOrientation() == NORTH){
-                    for (int r = subMapTile.getRow() - 1; r >= subMapTile.getRow() - p.getAttackRange(); r--){
-                        // make the tile red or smth
-                        subMap[r][subMapTile.getColumn()][GROUND_LAYER].addHealth((-1)*p.getAttackDamage());
-                        // check if there is a thing on the squares, which requires accessing entities through map
-                    }
-                }
-                if(p.getOrientation() == WEST){
-                    for (int c = subMapTile.getColumn() - 1; c >= subMapTile.getColumn() - p.getAttackRange(); c--){
-                        // make the tile red or smth
-                        subMap[c][subMapTile.getColumn()][GROUND_LAYER].addHealth((-1)*p.getAttackDamage());
-                        // check if there is a thing on the squares, which requires accessing entities through map
-                    }
-                }
-                if(p.getOrientation() == SOUTH){
-                    for (int r = subMapTile.getRow() + 1; r <= subMapTile.getRow() + p.getAttackRange(); r++){
-                        // make the tile red or smth
-                        subMap[r][subMapTile.getColumn()][GROUND_LAYER].addHealth((-1)*p.getAttackDamage());
-                        // check if there is a thing on the squares, which requires accessing entities through map
-                    }
-                }
-                if(p.getOrientation() == EAST){
-                    for (int c = subMapTile.getColumn() + 1; c >= subMapTile.getColumn() + p.getAttackRange(); c++){
-                        // make the tile red or smth
-                        subMap[c][subMapTile.getColumn()][GROUND_LAYER].addHealth((-1)*p.getAttackDamage());
-                        // check if there is a thing on the squares, which requires accessing entities through map
-                    }
-                }
             }
-
-
-
             try {
                 setSubMap(temp); //change the submap
                 subMapTile = temp; //if line above doesn't throw exception
@@ -262,7 +267,7 @@ class Map extends JFrame {
         }
     }
 
-    class InventoryBar extends JPanel implements MouseListener, KeyListener {
+    class InventoryBar extends JPanel implements MouseListener {
         private int invHeight, invWidth;
         BufferedImage invBar;
 
@@ -273,7 +278,6 @@ class Map extends JFrame {
                 invBar = ImageIO.read(MapComponent.class.getResourceAsStream("_HUD1.png"));
             } catch (IOException ex) {}
             addMouseListener(this);
-            addKeyListener(this);
         }
 
         @Override
@@ -313,40 +317,13 @@ class Map extends JFrame {
         @Override
         public void mouseExited(MouseEvent e) {
         }
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            char key = e.getKeyChar();
-            if (key == 'y') {
-                p.setSelectedIndex(0);
-                System.out.println("u");
-            }
-            else if (key == '2')
-                p.setSelectedIndex(1);
-            else if (key == '3')
-                p.setSelectedIndex(2);
-            else if (key == '4')
-                p.setSelectedIndex(3);
-            else if (key == '5')
-                p.setSelectedIndex(4);
-            repaint();
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-
-        }
     }
 
     class MissionTextArea extends JPanel {
         // Instance variables
         private ArrayList<Mission> missions;
         private int currentMission;
+        private BufferedImage textBox;
 
         // Constructor
         public MissionTextArea(File loadFile) throws IOException{
@@ -360,6 +337,8 @@ class Map extends JFrame {
                 line = br.readLine();
                 missions.add(new Mission(line));
             }
+
+            textBox = ImageIO.read(MapComponent.class.getResourceAsStream("_HUD2.png"));            // make texture for this
         }
 
         // Methods
@@ -401,7 +380,7 @@ class Map extends JFrame {
                     bw.newLine();
                     bw.flush();
                 }
-                bw.write(lineSeparator);
+                bw.write(LINE_SEPARATOR);
                 bw.newLine();
             }
             bw.close();
@@ -419,12 +398,12 @@ class Map extends JFrame {
             FileReader fw = new FileReader(loadFile);
             BufferedReader br = new BufferedReader(fw);
 
-            while(line != null && !line.equals(lineSeparator)){     // ground layer
+            while(line != null && !line.equals(LINE_SEPARATOR)){     // ground layer
                 inputData.add(line);
             }
             fillLayer(GROUND_LAYER, inputData);
             inputData.clear();
-            while(line != null && !line.equals(lineSeparator)){     // textures layer
+            while(line != null && !line.equals(LINE_SEPARATOR)){     // textures layer
                 inputData.add(line);
             }
             fillLayer(ITEM_LAYER, inputData);
