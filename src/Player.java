@@ -65,7 +65,7 @@ class Player extends Entity {
     TODO
     -Better interaction logic -> interacting with both ground layer and item layer within player
      */
-    public void interact(MapComponent m) {
+    public void interact(MapComponent m, Tile t) {
         if (m.getMapComponentID() == MapComponent.SMALL_TREE && inventory.size() < inventoryCap) {
             inventory.add(new Item(Item.STICK));
             System.out.println("Interaction with small tree detected");
@@ -73,14 +73,16 @@ class Player extends Entity {
             System.out.println("Interaction with small bush detected");
         } else if (m.getMapComponentID() == MapComponent.ROCKS && inventory.size() < inventoryCap) {
             System.out.println("Interaction with rocks detected");
+        } else if (m.getMapComponentID() == MapComponent.MONSTER) {
+
         }
+
         for (Item i : inventory) {
             System.out.print(i.getItemID());
         }
         System.out.println();
     }
     public int interact(MapComponent m, int currentMission) {
-        interact(m);
         return checkMission(m, currentMission);
     }
     private int checkMission(MapComponent m, int missionNumber){

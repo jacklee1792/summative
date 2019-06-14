@@ -79,7 +79,7 @@ class Map extends JFrame {
                 updateMonster();
             }
         };
-        monsterTimer.schedule(monsterTick, 0, 600); //Every 600 ms
+        monsterTimer.schedule(monsterTick, 0, 300); //Every 300 ms
         Timer playerTimer = new Timer();
         TimerTask playerTick = new TimerTask(){
             @Override
@@ -364,7 +364,7 @@ class Map extends JFrame {
         @Override
         public void mousePressed(MouseEvent e) {
             if(isSelecting) {
-                p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()]);
+                p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile);
                 repaint();
             }
         }

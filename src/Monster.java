@@ -7,6 +7,9 @@ class Monster extends Entity
 
     private Tile location;
 
+    public Monster() {
+    }
+
     public static ArrayList<Tile> updateMonster(MapComponent[][][] subMap, Tile subMapTile, Tile playerTile, ArrayList<Tile> list) {
         for(int i = 0; i < list.size(); i++) {
             int row = list.get(i).getRow(), column = list.get(i).getColumn();
