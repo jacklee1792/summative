@@ -28,6 +28,7 @@ class Map extends JFrame {
     private Tile selectedTile;
     private boolean isSelecting = false;
     private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
+    private boolean[] keys = new boolean[255];
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -78,7 +79,15 @@ class Map extends JFrame {
                 updateMonster();
             }
         };
-        monsterTimer.schedule(monsterTick, 0, 600); //Every second
+        monsterTimer.schedule(monsterTick, 0, 600); //Every 600 ms
+        Timer playerTimer = new Timer();
+        TimerTask playerTick = new TimerTask(){
+            @Override
+            public void run() {
+                updatePlayer();
+            }
+        };
+        playerTimer.schedule(playerTick, 0, 17); //~60Hz
 
         //Initialize textures
         try {
@@ -112,6 +121,23 @@ class Map extends JFrame {
             }
         }
         subMap = temp; //temp is destroyed upon exit
+    }
+
+    public void updatePlayer() {
+        if(System.currentTimeMillis() - p.getLastMovement() > 1000 / p.getMovementSpeed()) {
+            if(keys['w']) {
+                walk(NORTH);
+            } else if (keys['a']) {
+                walk(WEST);
+            } else if (keys['s']) {
+                walk(SOUTH);
+            } else if (keys['d']) {
+                walk(EAST);
+            }
+            p.setLastMovement(System.currentTimeMillis());
+        }
+
+        repaint();
     }
 
     public void updateMonster() {
@@ -301,25 +327,15 @@ class Map extends JFrame {
         @Override
         public void keyPressed(KeyEvent e) {
             char key = e.getKeyChar();
+            try {
+                keys[key] = true;
+            } catch (ArrayIndexOutOfBoundsException ex) {}
 
-            if(System.currentTimeMillis() - p.getLastMovement() > 1000 / p.getMovementSpeed()) {
-                if(key == 'w') {
-                    walk(NORTH);
-                } else if (key == 'a') {
-                    walk(WEST);
-                } else if (key == 's') {
-                    walk(SOUTH);
-                } else if (key == 'd') {
-                    walk(EAST);
-                }
-                p.setLastMovement(System.currentTimeMillis());
-            }
-
-            repaint();
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
+            keys[e.getKeyChar()] = false;
             p.setWalkState(Player.STILL);
             repaint();
         }
