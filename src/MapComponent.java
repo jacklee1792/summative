@@ -18,7 +18,7 @@ class MapComponent {
 
     //Static variables and their properties
 
-    static int numOfComponents = 12; //Nunmber of currently implemented components
+    static int numOfComponents = 13; //Nunmber of currently implemented components
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
@@ -35,6 +35,7 @@ class MapComponent {
     final static int FILLED_NULL = 9;
     final static int WISE_ROCK = 10;
     final static int MONSTER = 11;
+    final static int SWORD_OBJECT = 12;
 
     //Constructors
     public MapComponent() {
@@ -82,7 +83,8 @@ class MapComponent {
         else if(MC_ID == PLANE) { d = new Dimension(4, 2); }
         else if(MC_ID == FILLED_NULL) { d = new Dimension(4, 2); }
         else if(MC_ID == WISE_ROCK) { d = new Dimension(1, 1); }
-        else if(MC_ID == MONSTER) { d = new Dimension(1, 1);}
+        else if(MC_ID == MONSTER) { d = new Dimension(1, 1); }
+        else if(MC_ID == SWORD_OBJECT) { d = new Dimension(1, 1); }
         return d;
     }
 

@@ -44,6 +44,9 @@ class Map extends JFrame {
     //Constructor
     public Map() {
         //Set up the window
+        File directory = new File("./");
+        System.out.println(directory.getAbsolutePath());
+
         setTitle("Binecraft");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -64,6 +67,8 @@ class Map extends JFrame {
 
         //subMap
         setSubMap(subMapTile);
+
+
 
         //Player
         p = new Player();
@@ -274,49 +279,6 @@ class Map extends JFrame {
 
     }
 
-    /*
-    class AttackListener implements KeyListener{
-        @Override
-        public void keyTyped(KeyEvent e) {
-        }
-
-        @Override
-        public void keyPressed (KeyEvent e){
-            char key = e.getKeyChar;
-            Tile temp = new Tile(sumMapTile.getRow(), subMapTile.getColumn());
-
-            if (key == 'j'){
-                if(p.getOrientation() == NORTH){
-                    for (int r = subMapTile.getRow() - 1; r >= subMapTile.getRow() - p.getAttackRange; r--){
-                        // make the tile red or smth
-                        try {
-                            temp.setRow(r);
-                            Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn());
-                            setSubMap(temp); //change the submap
-                            subMapTile = temp; //if line above doesn't throw exception
-                        } catch (ArrayIndexOutOfBoundsException ex) {}
-                        repaint();
-                        Thread.sleep(50);
-                        // check if there is a thing on the squares, which requires accessing entities through map
-                    }
-                }
-                if(p.getOrientation() == WEST){
-                    // copy paste
-                }
-                if(p.getOrientation() == SOUTH){
-
-                }
-                if(p.getOrientation() == EAST){
-
-                }
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-        }
-    }
-    */
 
     class ActionProcessor implements KeyListener, MouseMotionListener, MouseListener {
 
