@@ -127,7 +127,6 @@ class Map extends JFrame {
         ArrayList<Tile> newList = Monster.updateMonster(subMap, subMapTile, playerTile, monsterList);
         for(Tile t : newList) {
             map[ITEM_LAYER][t.getRow()][t.getColumn()] = new MapComponent(MapComponent.MONSTER);
-            System.out.println(t.getRow() + " " + t.getColumn());
         }
         setSubMap(subMapTile); //Update the subMap
         repaint();
