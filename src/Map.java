@@ -71,6 +71,16 @@ class Map extends JFrame {
             Player.importTextures();
         } catch (IOException ex) {}
 
+        //Monster timer
+        Timer monsterTimer = new Timer();
+        TimerTask monsterTick = new TimerTask(){
+            @Override
+            public void run() {
+                updateMonster();
+            }
+        };
+        monsterTimer.schedule(monsterTick, 0, 600); //Every second
+
         //Initialize textures
         try {
             MapComponent.importTextures();
@@ -92,6 +102,7 @@ class Map extends JFrame {
 
     public void setSubMap(Tile t) throws ArrayIndexOutOfBoundsException {
         MapComponent[][][] temp = new MapComponent[2][subMapHeight][subMapWidth]; //we need a temp because we don't want to change subMap if this throws an exception
+        //Copy map to subMap
         for(int h = 0; h < 2; h++) {
             for(int r = 0; r < subMapHeight; r++) {
                 for(int c = 0; c < subMapWidth; c++) {
@@ -113,12 +124,12 @@ class Map extends JFrame {
                 }
             }
         }
-        ArrayList<Tile> newList = Monster.updateMonster(monsterList);
+        ArrayList<Tile> newList = Monster.updateMonster(subMap, subMapTile, playerTile, monsterList);
         for(Tile t : newList) {
             map[ITEM_LAYER][t.getRow()][t.getColumn()] = new MapComponent(MapComponent.MONSTER);
             System.out.println(t.getRow() + " " + t.getColumn());
         }
-        setSubMap(subMapTile); //Update the submap
+        setSubMap(subMapTile); //Update the subMap
         repaint();
     }
 

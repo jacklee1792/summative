@@ -118,6 +118,7 @@ public class MapGenerator { //I'll add getters and setters on map later
                 }
             }
         }
+        map[Map.ITEM_LAYER][spawnTile.getRow()][spawnTile.getColumn()] = new MapComponent(MapComponent.FILLED_NULL); //Player tile not passable
 
         //Plane
         for(int r = spawnTile.getRow() + 1; r < spawnTile.getRow() + 2; r++) { //4 by 2 region of plane
