@@ -48,6 +48,7 @@ class Player extends Entity {
 
     public void setSelectedIndex(int index) {
         selectedIndex = index;
+
     }
 
     public ArrayList<Item> getInventory() {
@@ -73,14 +74,26 @@ class Player extends Entity {
             System.out.println("Interaction with small bush detected");
         } else if (m.getMapComponentID() == MapComponent.ROCKS && inventory.size() < inventoryCap) {
             System.out.println("Interaction with rocks detected");
-        } else if (m.getMapComponentID() == MapComponent.MONSTER) {
+        } else if (m.getMapComponentID() == MapComponent.SWORD_OBJECT && inventory.size() < inventoryCap) {
+            inventory.add(new Item(Item.SWORD));
+            System.out.println("Interaction with sword object detected");
+        }
+
+        else if (m.getMapComponentID() == MapComponent.MONSTER) {
+            damageOther(m);
+            System.out.println("Attacked for " + getAttackDamage());
+            System.out.println("that nibber has " + m.getHealth() + " health left");
 
         }
 
-        for (Item i : inventory) {
-            System.out.print(i.getItemID());
+//        for (Item i : inventory) {
+//            System.out.print(i.getItemID());
+//        }
+//        System.out.println();
+        try {
+            attackDamage = inventory.get(selectedIndex).getDamage();
         }
-        System.out.println();
+        catch (IndexOutOfBoundsException how) {}
     }
     public int interact(MapComponent m, int currentMission) {
         return checkMission(m, currentMission);
@@ -102,6 +115,7 @@ class Player extends Entity {
         if(walkState == STILL) walkState ++; //If you are still, move out left foot
         else if (walkState == WALK_L) walkState++; //If you have left foot out, change to right foot
         else if(walkState == WALK_R) walkState--; //If you have right foot out, change to left foot
+
     }
 
     public void setLastMovement(long time) {

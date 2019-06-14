@@ -82,6 +82,7 @@ class Map extends JFrame {
             @Override
             public void run() {
                 updateMonster();
+
             }
         };
         monsterTimer.schedule(monsterTick, 0, 300); //Every 300 ms
@@ -153,6 +154,9 @@ class Map extends JFrame {
                 if(subMap[ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER) {
                     monsterList.add(new Tile(r + subMapTile.getRow(), c + subMapTile.getColumn()));
                     map[ITEM_LAYER][r + subMapTile.getRow()][c + subMapTile.getColumn()] = new MapComponent(MapComponent.NULL);
+                    if (subMap[ITEM_LAYER][r][c].isDead())
+                    {subMap[ITEM_LAYER][r][c] = new MapComponent(MapComponent.NULL);
+                        repaint();}
                 }
             }
         }
@@ -329,6 +333,7 @@ class Map extends JFrame {
                 p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile);
                 repaint();
             }
+
         }
 
         @Override
@@ -526,5 +531,11 @@ class Map extends JFrame {
             }
             row++;
         }
+    }
+
+    public void checkComponentDeath(MapComponent mc) {
+        if (mc.getHealth() <= 0)
+            mc = null;
+        System.out.println("where the love go");
     }
 }

@@ -11,8 +11,20 @@ class Item {
     final static int STICK = 1;
     final static int SWORD = 2;
 
+    final static int NULL_DAMAGE = 0;
+    final static int STICK_DAMAGE = 1;
+    final static int SWORD_DAMAGE = 4;
+
+    private int damage;
+
     public Item(int ItemID) {
         I_ID = ItemID;
+        if (I_ID == NULL)
+            damage = NULL_DAMAGE;
+        else if (I_ID == STICK)
+            damage = STICK_DAMAGE;
+        else if (I_ID == SWORD)
+            damage = SWORD_DAMAGE;
     }
 
     public int getItemID() {
@@ -27,5 +39,7 @@ class Item {
             texture[i] = ImageIO.read(MapComponent.class.getResourceAsStream("_ITM" + i + ".png"));
         }
     }
+
+    public int getDamage() {return damage; }
 
 }

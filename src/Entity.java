@@ -26,9 +26,9 @@ public abstract class Entity extends MapComponent
 
     /* public String setName(String inname) {name = inname; } */
 
-    public int getHealth() {
-        return health;
-    }
+//    public int getHealth() { // already defined in MapComponent
+//        return health;
+//    }
 
     public boolean isDead() {
         if (health < 0)
@@ -76,7 +76,7 @@ public abstract class Entity extends MapComponent
         health += toadd;
     }
 
-    public void damageOther(Entity other)
+    public void damageOther(MapComponent other)
     {
         other.addHealth((-1) * attackDamage);
     }

@@ -18,7 +18,7 @@ class MapComponent {
 
     //Static variables and their properties
 
-    static int numOfComponents = 13; //Nunmber of currently implemented components
+    static int numOfComponents = 13; //Number of currently implemented components
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
@@ -37,12 +37,16 @@ class MapComponent {
     final static int MONSTER = 11;
     final static int SWORD_OBJECT = 12;
 
+    int health = 6236;
+
     //Constructors
     public MapComponent() {
     }
 
     public MapComponent (int MapComponentID) {
         MC_ID = MapComponentID;
+        if (MC_ID == MONSTER)
+            health = 2;
     }
 
     //Methods
@@ -88,6 +92,22 @@ class MapComponent {
         return d;
     }
 
-    public void addHealth(int dummy) {} // dummy;
+    public void addHealth(int toadd) {
+        health += toadd;
+    }
+    public int getHealth() {return health; }
+
+    public void checkDeath() {
+        if (MC_ID == MONSTER && health <= 0)
+            MC_ID = ROCKS;
+    }
+
+    public boolean isDead() {
+        if (health <= 0)
+            return true;
+        else
+            return false;
+    }
+
 
 }
