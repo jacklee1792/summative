@@ -207,7 +207,9 @@ class Map extends JFrame {
             add(inv);
 
             //Mission Text Area
-            MissionTextArea mta = new MissionTextArea(new File("-missions_test.txt"));
+            File directory = new File("./");
+            System.out.println(directory.getAbsolutePath());
+            MissionTextArea mta = new MissionTextArea(new File("./src/-missions_test.txt"));
             int mtaX = 15 * tileSize / 2;
             int mtaY = subMapHeight * tileSize - (3 * invX);
             mta.setBounds(mtaX, mtaY, 8 * tileSize, tileSize);
@@ -317,8 +319,6 @@ class Map extends JFrame {
                 } else if(p.getOrientation() == EAST) {
                     p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow()][playerTile.getColumn() + 1]);
                 }
-            } else if (key == 'p') { //TODO Remove this when timed monster movement is done
-                updateMonster();
             }
 
             repaint();
@@ -339,7 +339,7 @@ class Map extends JFrame {
             invWidth = 5 * tileSize;
             invHeight = 1 * tileSize;
             try {
-                invBar = ImageIO.read(MapComponent.class.getResourceAsStream("_HUD1.png"));
+                invBar = ImageIO.read(new File("./src/_HUD1.png"));
             } catch (IOException ex) {}
             addMouseListener(this);
         }
@@ -410,7 +410,7 @@ class Map extends JFrame {
             } catch(Exception ex) {System.out.println("Load file not found!");}
 
             try {
-                textBox = ImageIO.read(Map.class.getResourceAsStream("_HUD2.png"));            // make texture for this
+                textBox = ImageIO.read(new File("./src/_HUD2.png"));            // make texture for this
             } catch (IOException ex) {System.out.println("_HUD2.png not found!");}
 
         }
@@ -432,10 +432,7 @@ class Map extends JFrame {
         // Graphical methods
         @Override
         public void paintComponent(Graphics g){
-            g.setColor(Color.RED);
-            g.fillRect(0, 0, 8 * tileSize, tileSize);
             g.drawImage(textBox, 0, 0, 8 * tileSize, tileSize, null);
-
             g.setColor(titleColour);
             g.setFont(titleFont);
             g.drawString(missions.get(currentMission).getTitle(), titleX, titleY);

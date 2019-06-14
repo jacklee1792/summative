@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ class Player extends Entity {
     public static void importTextures() throws IOException { //import textures
         texture = new BufferedImage[3];
         for (int i = 1; i <= 3; i++) {
-            texture[i - 1] = ImageIO.read(Player.class.getResourceAsStream("_PLYR" + i + ".png"));
+            texture[i - 1] = ImageIO.read(new File("./src/_PLYR" + i + ".png"));
         }
     }
 
