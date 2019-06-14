@@ -16,7 +16,7 @@ public abstract class Entity extends MapComponent
     protected int orientation;
     protected int maxHealth;
     protected BufferedImage currentTexture;
-    private int attackDamage;
+    protected int attackDamage;
     private int attackRange;
     protected double movementSpeed;
 

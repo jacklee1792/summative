@@ -29,6 +29,7 @@ class Player extends Entity {
         orientation = NORTH;
         walkState = 0;
         movementSpeed = 3.5;
+        attackDamage = 5;
 
         inventory = new ArrayList<>();
     }

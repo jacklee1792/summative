@@ -1,5 +1,5 @@
 
+class MonsterAI {
 
-interface MonsterAI {
 
 }

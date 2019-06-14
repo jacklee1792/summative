@@ -102,6 +102,26 @@ class Map extends JFrame {
         subMap = temp; //temp is destroyed upon exit
     }
 
+    public void updateMonster() {
+        ArrayList<Tile> monsterList = new ArrayList<>();
+        for(int r = 0; r < subMapHeight; r++) {
+            for(int c = 0; c < subMapWidth; c++) {
+                //Write locations to monster list
+                if(subMap[ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER) {
+                    monsterList.add(new Tile(r + subMapTile.getRow(), c + subMapTile.getColumn()));
+                    map[ITEM_LAYER][r + subMapTile.getRow()][c + subMapTile.getColumn()] = new MapComponent(MapComponent.NULL);
+                }
+            }
+        }
+        ArrayList<Tile> newList = Monster.updateMonster(monsterList);
+        for(Tile t : newList) {
+            map[ITEM_LAYER][t.getRow()][t.getColumn()] = new MapComponent(MapComponent.MONSTER);
+            System.out.println(t.getRow() + " " + t.getColumn());
+        }
+        setSubMap(subMapTile); //Update the submap
+        repaint();
+    }
+
     public boolean collision(Tile t, int direction) { //for subMap
         MapComponent target1 = new MapComponent(), target2 = new MapComponent();
         if(direction == NORTH) {
@@ -117,9 +137,6 @@ class Map extends JFrame {
             target1 = subMap[ITEM_LAYER][t.getRow()][t.getColumn() + 1];
             target2 = subMap[GROUND_LAYER][t.getRow()][t.getColumn() + 1];
         }
-
-        System.out.print(target1.getWalkable() + " ");
-        System.out.println(target2.getWalkable());
 
         return !(target1.getWalkable() && target2.getWalkable()); //if both ground and item layer are ok, then is no collision
     }
@@ -185,6 +202,7 @@ class Map extends JFrame {
             int mtaY = subMapHeight * tileSize - (3 * invX);
             mta.setBounds(mtaX, mtaY, 8 * tileSize, tileSize);
             add(mta);
+
         }
 
         @Override
@@ -279,7 +297,6 @@ class Map extends JFrame {
                 }
                 p.setLastMovement(System.currentTimeMillis());
             }
-
             if (key == 'f') {
                 if(p.getOrientation() == NORTH) {
                     p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow() - 1][playerTile.getColumn()]);
@@ -290,6 +307,8 @@ class Map extends JFrame {
                 } else if(p.getOrientation() == EAST) {
                     p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow()][playerTile.getColumn() + 1]);
                 }
+            } else if (key == 'p') { //TODO Remove this when timed monster movement is done
+                updateMonster();
             }
 
             repaint();

@@ -18,7 +18,7 @@ class MapComponent {
 
     //Static variables and their properties
 
-    static int numOfComponents = 11; //Nunmber of currently implemented components
+    static int numOfComponents = 12; //Nunmber of currently implemented components
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
@@ -34,6 +34,7 @@ class MapComponent {
     final static int PLANE = 8;
     final static int FILLED_NULL = 9;
     final static int WISE_ROCK = 10;
+    final static int MONSTER = 11;
 
     //Constructors
     public MapComponent() {
@@ -45,7 +46,7 @@ class MapComponent {
 
     //Methods
     public static void importTextures() throws IOException { //import textures
-        for(int i = 0; i <= 10; i++) {
+        for(int i = 0; i < numOfComponents; i++) {
             texture[i] = ImageIO.read(MapComponent.class.getResourceAsStream("_TEX" + i + ".png"));
         }
     }
@@ -64,6 +65,7 @@ class MapComponent {
         else if (MC_ID == PLANE) b = false;
         else if (MC_ID == FILLED_NULL) b = false;
         else if (MC_ID == WISE_ROCK) b = false;
+        else if (MC_ID == MONSTER) b = false;
         return b;
     }
 
@@ -80,6 +82,7 @@ class MapComponent {
         else if(MC_ID == PLANE) { d = new Dimension(4, 2); }
         else if(MC_ID == FILLED_NULL) { d = new Dimension(4, 2); }
         else if(MC_ID == WISE_ROCK) { d = new Dimension(1, 1); }
+        else if(MC_ID == MONSTER) { d = new Dimension(1, 1);}
         return d;
     }
 
