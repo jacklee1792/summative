@@ -13,9 +13,9 @@ class Mission {
             title = tmp[0];
             text = tmp[1];
         }
-        catch(ArrayIndexOutOfBoundsException e){
-            title = tmp[0];
-            text = "";
+        catch(Exception e){
+            text = tmp[0];
+            title = "";
         }
     }
 

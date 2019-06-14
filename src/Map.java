@@ -389,22 +389,25 @@ class Map extends JFrame {
         private int currentMission;
         private BufferedImage textBox;
 
+        // Constants
+        final int titleX = tileSize, titleY = (int)(tileSize / 3.3), textX = tileSize / 6, textY = (int)(tileSize / 2.1);
+        final Font titleFont = new Font("Comic Sans MS", Font.BOLD, 20), textFont = new Font("Comic Sans MS", Font.BOLD, 16);
+        final Color titleColour = Color.black, textColour = Color.black;
+
         // Constructor
         public MissionTextArea(File loadFile) {
+            missions = new ArrayList<>();
             try {
                 FileReader fr = new FileReader(loadFile);
                 BufferedReader br = new BufferedReader(fr);
 
                 String line = " ";
-
-                while(line != null){
-                    if(line == null)
-                        break;
+                while(!line.equals("")){
                     line = br.readLine();
                     missions.add(new Mission(line));
                 }
 
-            } catch(IOException ex) {System.out.println("Load file not found!");}
+            } catch(Exception ex) {System.out.println("Load file not found!");}
 
             try {
                 textBox = ImageIO.read(Map.class.getResourceAsStream("_HUD2.png"));            // make texture for this
@@ -432,6 +435,13 @@ class Map extends JFrame {
             g.setColor(Color.RED);
             g.fillRect(0, 0, 8 * tileSize, tileSize);
             g.drawImage(textBox, 0, 0, 8 * tileSize, tileSize, null);
+
+            g.setColor(titleColour);
+            g.setFont(titleFont);
+            g.drawString(missions.get(currentMission).getTitle(), titleX, titleY);
+            g.setColor(textColour);
+            g.setFont(textFont);
+            g.drawString(missions.get(currentMission).getText(), textX, textY);
         }
     }
 
