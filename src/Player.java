@@ -77,6 +77,16 @@ class Player extends Entity {
         }
         System.out.println();
     }
+    public int interact(MapComponent m, int currentMission) {
+        interact(m);
+        return checkMission(m, currentMission);
+    }
+    private int checkMission(MapComponent m, int missionNumber){
+        /* TODO
+            Implement this
+         */
+        return 0;
+    }
 
     public int getWalkState() { return walkState;}
 
