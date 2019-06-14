@@ -18,7 +18,7 @@ public abstract class Entity extends MapComponent
     protected BufferedImage currentTexture;
     private int attackDamage;
     private int attackRange;
-    private int movementSpeed;
+    protected double movementSpeed;
 
     public String getName() {
         return name;
@@ -64,7 +64,7 @@ public abstract class Entity extends MapComponent
 
     public int getAttackRange() {return attackRange; }
 
-    public int getMovementSpeed() {
+    public double getMovementSpeed() {
         return movementSpeed;
     }
 

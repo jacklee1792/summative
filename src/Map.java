@@ -29,9 +29,6 @@ class Map extends JFrame {
     private MapComponent[][][] map, subMap;
     private Tile subMapTile, playerTile = new Tile(4, 7);
     private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
-    boolean[] keys = new boolean[255];
-
-    Timer timer = new Timer();
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -89,9 +86,6 @@ class Map extends JFrame {
         addKeyListener(new MovementListener());
         // addKeyListener(new AttackListener());
 
-        //MovementUpdater TODO
-        new MovementUpdater();
-
         //Pack
         pack();
     }
@@ -108,35 +102,26 @@ class Map extends JFrame {
         subMap = temp; //temp is destroyed upon exit
     }
 
-    public boolean checkWater(Tile t, int direction) { //also for subMap
-        MapComponent target = new MapComponent(); //need to initialize
+    public boolean collision(Tile t, int direction) { //for subMap
+        MapComponent target1 = new MapComponent(), target2 = new MapComponent();
         if(direction == NORTH) {
-            target = subMap[GROUND_LAYER][t.getRow() - 1][t.getColumn()];
+            target1 = subMap[ITEM_LAYER][t.getRow() - 1][t.getColumn()];
+            target2 = subMap[GROUND_LAYER][t.getRow() - 1][t.getColumn()];
         } else if(direction == WEST) {
-            target = subMap[GROUND_LAYER][t.getRow()][t.getColumn() - 1];
+            target1 = subMap[ITEM_LAYER][t.getRow()][t.getColumn() - 1];
+            target2 = subMap[GROUND_LAYER][t.getRow()][t.getColumn() - 1];
         } else if(direction == SOUTH) {
-            target = subMap[GROUND_LAYER][t.getRow() + 1][t.getColumn()];
+            target1 = subMap[ITEM_LAYER][t.getRow() + 1][t.getColumn()];
+            target2 = subMap[GROUND_LAYER][t.getRow() + 1][t.getColumn()];
         } else if(direction == EAST) {
-            target = subMap[GROUND_LAYER][t.getRow()][t.getColumn() + 1];
+            target1 = subMap[ITEM_LAYER][t.getRow()][t.getColumn() + 1];
+            target2 = subMap[GROUND_LAYER][t.getRow()][t.getColumn() + 1];
         }
-        boolean water = target.getMapComponentID() == MapComponent.WATER;
-        return water; //return whether or not the cell is water
-    }
 
-    public boolean checkCollision(Tile t, int direction) { //for subMap
-        MapComponent target = new MapComponent(); //need to initialize
-        if(direction == NORTH) {
-            target = subMap[ITEM_LAYER][t.getRow() - 1][t.getColumn()];
-        } else if(direction == WEST) {
-            target = subMap[ITEM_LAYER][t.getRow()][t.getColumn() - 1];
-        } else if(direction == SOUTH) {
-            target = subMap[ITEM_LAYER][t.getRow() + 1][t.getColumn()];
-        } else if(direction == EAST) {
-            target = subMap[ITEM_LAYER][t.getRow()][t.getColumn() + 1];
-        }
-        boolean isItem = ("" + target.getClass()).equals("class Item");
+        System.out.print(target1.getWalkable() + " ");
+        System.out.println(target2.getWalkable());
 
-        return (target.getMapComponentID() != MapComponent.NULL && !isItem); //if not null, and not item, collision is true
+        return !(target1.getWalkable() && target2.getWalkable()); //if both ground and item layer are ok, then is no collision
     }
 
     public void walk(int direction) {
@@ -145,25 +130,25 @@ class Map extends JFrame {
 
         if (direction == NORTH) {
             p.setOrientation(NORTH);
-            if(!checkCollision(playerTile, NORTH) && !checkWater(playerTile, NORTH)) {
+            if(!collision(playerTile, NORTH)) {
                 temp.setRow(subMapTile.getRow() - 1); //move up by one
                 p.walkAnimation();
             }
         } else if (direction == WEST) {
             p.setOrientation(WEST);
-            if(!checkCollision(playerTile, WEST) && !checkWater(playerTile, WEST)) {
+            if(!collision(playerTile, WEST)) {
                 temp.setColumn(subMapTile.getColumn() - 1); //move left by one
                 p.walkAnimation();
             }
         } else if (direction == SOUTH) {
             p.setOrientation(SOUTH);
-            if(!checkCollision(playerTile, SOUTH) && !checkWater(playerTile, SOUTH)) {
+            if(!collision(playerTile, SOUTH)) {
                 temp.setRow(subMapTile.getRow() + 1); //move down by one
                 p.walkAnimation();
             }
         } else if (direction == EAST) {
             p.setOrientation(EAST);
-            if (!checkCollision(playerTile, EAST) && !checkWater(playerTile, EAST)) {
+            if (!collision(playerTile, EAST)) {
                 temp.setColumn(subMapTile.getColumn() + 1); //move left by one
                 p.walkAnimation();
             }
@@ -173,7 +158,6 @@ class Map extends JFrame {
             setSubMap(temp); //change the submap
             subMapTile = temp; //if line above doesn't throw exception
         } catch (ArrayIndexOutOfBoundsException ex) {}
-
     }
 
     public void adaptToScreen() {
@@ -186,13 +170,21 @@ class Map extends JFrame {
 
         public DrawArea(int width, int height) {
             setPreferredSize(new Dimension(width, height));
-            setLayout(null);
+            setLayout(null); //Required for setBounds
+
             //Inventory bar
             InventoryBar inv = new InventoryBar();
             int invX = tileSize / 2;
             int invY = subMapHeight * tileSize - (3 * invX);
             inv.setBounds(invX, invY, 5 * tileSize, tileSize);
             add(inv);
+
+            //Mission Text Area
+            MissionTextArea mta = new MissionTextArea(new File("-missions_test.txt"));
+            int mtaX = 15 * tileSize / 2;
+            int mtaY = subMapHeight * tileSize - (3 * invX);
+            mta.setBounds(mtaX, mtaY, 8 * tileSize, tileSize);
+            add(mta);
         }
 
         @Override
@@ -274,7 +266,19 @@ class Map extends JFrame {
         @Override
         public void keyPressed(KeyEvent e) {
             char key = e.getKeyChar();
-            if(key < 255) keys[key] = true;
+
+            if(System.currentTimeMillis() - p.getLastMovement() > 1000 / p.getMovementSpeed()) {
+                if(key == 'w') {
+                    walk(NORTH);
+                } else if (key == 'a') {
+                    walk(WEST);
+                } else if (key == 's') {
+                    walk(SOUTH);
+                } else if (key == 'd') {
+                    walk(EAST);
+                }
+                p.setLastMovement(System.currentTimeMillis());
+            }
 
             if (key == 'f') {
                 if(p.getOrientation() == NORTH) {
@@ -293,8 +297,8 @@ class Map extends JFrame {
 
         @Override
         public void keyReleased(KeyEvent e) {
-            char key = e.getKeyChar();
-            if(key < 255) keys[(int)key] = false;
+            p.setWalkState(Player.STILL);
+            repaint();
         }
     }
 
@@ -357,19 +361,26 @@ class Map extends JFrame {
         private BufferedImage textBox;
 
         // Constructor
-        public MissionTextArea(File loadFile) throws IOException{
-            FileReader fr = new FileReader(loadFile);
-            BufferedReader br = new BufferedReader(fr);
-            String line = " ";
+        public MissionTextArea(File loadFile) {
+            try {
+                FileReader fr = new FileReader(loadFile);
+                BufferedReader br = new BufferedReader(fr);
 
-            while(line != null){
-                if(line == null)
-                    break;
-                line = br.readLine();
-                missions.add(new Mission(line));
-            }
+                String line = " ";
 
-            textBox = ImageIO.read(MapComponent.class.getResourceAsStream("_HUD2.png"));            // make texture for this
+                while(line != null){
+                    if(line == null)
+                        break;
+                    line = br.readLine();
+                    missions.add(new Mission(line));
+                }
+
+            } catch(IOException ex) {System.out.println("Load file not found!");}
+
+            try {
+                textBox = ImageIO.read(Map.class.getResourceAsStream("_HUD2.png"));            // make texture for this
+            } catch (IOException ex) {System.out.println("_HUD2.png not found!");}
+
         }
 
         // Methods
@@ -388,32 +399,11 @@ class Map extends JFrame {
 
         // Graphical methods
         @Override
-        public void paint(Graphics g){
-
+        public void paintComponent(Graphics g){
+            g.setColor(Color.RED);
+            g.fillRect(0, 0, 8 * tileSize, tileSize);
+            g.drawImage(textBox, 0, 0, 8 * tileSize, tileSize, null);
         }
-    }
-
-    //TODO Fix initial movement jitter
-    class MovementUpdater extends TimerTask {
-
-        boolean moving = false;
-
-        public MovementUpdater() {
-            timer.schedule(this, 0, 300);
-        }
-
-        @Override
-        public void run() {
-            if (keys['w']) walk(NORTH);
-            else if (keys['a']) walk(WEST);
-            else if (keys['s']) walk(SOUTH);
-            else if (keys['d']) walk(EAST);
-            else {
-                p.setWalkState(Player.STILL);
-                repaint();
-            }
-        }
-
     }
 
     // IO Methods

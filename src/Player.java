@@ -14,7 +14,8 @@ class Player extends Entity {
     private int inventoryCap = 5;
     private int selectedIndex;
     private int stackSize = 6;
-    private int walkState; // still
+    private int walkState;
+    private long lastMovement = 0;
 
     final static int STILL = 0;
     final static int WALK_L = 1;
@@ -27,6 +28,7 @@ class Player extends Entity {
         hungerFactor = 100;
         orientation = NORTH;
         walkState = 0;
+        movementSpeed = 3.5;
 
         inventory = new ArrayList<>();
     }
@@ -75,14 +77,24 @@ class Player extends Entity {
         System.out.println();
     }
 
+    public int getWalkState() { return walkState;}
+
     public void setWalkState(int state) {
         walkState = state;
     }
 
     public void walkAnimation() { //Walking animation
-        if(walkState == 0) walkState += Math.floor(Math.random() * 2); //If you are still, move out a random foot
-        else if (walkState == 1) walkState++; //If you have left foot out, change to right foot
-        else if(walkState == 2) walkState--; //If you have right foot out, change to left foot
+        if(walkState == STILL) walkState ++; //If you are still, move out left foot
+        else if (walkState == WALK_L) walkState++; //If you have left foot out, change to right foot
+        else if(walkState == WALK_R) walkState--; //If you have right foot out, change to left foot
+    }
+
+    public void setLastMovement(long time) {
+        lastMovement = time;
+    }
+
+    public long getLastMovement() {
+        return lastMovement;
     }
 
     public void dropItem(){
