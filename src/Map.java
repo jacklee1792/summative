@@ -7,10 +7,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
@@ -28,6 +25,8 @@ class Map extends JFrame {
     //Instance variables
     private MapComponent[][][] map, subMap;
     private Tile subMapTile, playerTile = new Tile(4, 7);
+    private Tile selectedTile;
+    private boolean isSelecting = false;
     private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
 
     final static int GROUND_LAYER = 0;
@@ -93,7 +92,9 @@ class Map extends JFrame {
         add(mapArea, BorderLayout.CENTER);
 
         //KeyListener
-        addKeyListener(new MovementListener());
+        addKeyListener(new ActionProcessor());
+        addMouseMotionListener(new ActionProcessor());
+        addMouseListener(new ActionProcessor());
         // addKeyListener(new AttackListener());
 
         //Pack
@@ -239,6 +240,10 @@ class Map extends JFrame {
             //Player
             g.drawImage(p.getTexture(), playerTile.getColumn() * tileSize, playerTile.getRow() * tileSize, tileSize, tileSize, null );
 
+            //Selected tile
+            g.setColor(Color.WHITE);
+            if(isSelecting) g.drawRect(selectedTile.getColumn() * tileSize, selectedTile.getRow() * tileSize, tileSize, tileSize);
+
         }
 
     }
@@ -287,7 +292,7 @@ class Map extends JFrame {
     }
     */
 
-    class MovementListener implements KeyListener {
+    class ActionProcessor implements KeyListener, MouseMotionListener, MouseListener {
 
         @Override
         public void keyTyped(KeyEvent e) {
@@ -309,17 +314,6 @@ class Map extends JFrame {
                 }
                 p.setLastMovement(System.currentTimeMillis());
             }
-            if (key == 'f') {
-                if(p.getOrientation() == NORTH) {
-                    p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow() - 1][playerTile.getColumn()]);
-                } else if(p.getOrientation() == WEST) {
-                    p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow()][playerTile.getColumn() - 1]);
-                } else if(p.getOrientation() == SOUTH) {
-                    p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow() + 1][playerTile.getColumn()]);
-                } else if(p.getOrientation() == EAST) {
-                    p.interact(subMap[Map.ITEM_LAYER][playerTile.getRow()][playerTile.getColumn() + 1]);
-                }
-            }
 
             repaint();
         }
@@ -328,6 +322,50 @@ class Map extends JFrame {
         public void keyReleased(KeyEvent e) {
             p.setWalkState(Player.STILL);
             repaint();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            selectedTile = new Tile(e.getY() / tileSize, e.getX() / tileSize);
+            int dX = Math.abs(selectedTile.getColumn() - playerTile.getColumn());
+            int dY = Math.abs(selectedTile.getRow() - playerTile.getRow());
+            if(dX <= p.getRange() && dY <= p.getRange()) {
+                isSelecting = true;
+            }
+            else isSelecting = false;
+            repaint();
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if(isSelecting) {
+                p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()]);
+                repaint();
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
         }
     }
 

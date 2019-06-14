@@ -17,7 +17,7 @@ public abstract class Entity extends MapComponent
     protected int maxHealth;
     protected BufferedImage currentTexture;
     protected int attackDamage;
-    private int attackRange;
+    protected int range;
     protected double movementSpeed;
 
     public String getName() {
@@ -60,9 +60,9 @@ public abstract class Entity extends MapComponent
     }
     */
 
-    public void setAttackRange(int attrange){attackRange = attrange; }
+    public void setRange(int range){this.range = range; }
 
-    public int getAttackRange() {return attackRange; }
+    public int getRange() {return range; }
 
     public double getMovementSpeed() {
         return movementSpeed;

@@ -29,8 +29,9 @@ class Player extends Entity {
         hungerFactor = 100;
         orientation = NORTH;
         walkState = 0;
-        movementSpeed = 3.5;
+        movementSpeed = 5;
         attackDamage = 5;
+        range = 2;
 
         inventory = new ArrayList<>();
     }
