@@ -72,21 +72,43 @@ class Player {
     -Better interaction logic -> interacting with both ground layer and item layer within player
      */
     public void interact(MapComponent m, Tile t) {
+
+        try {
+            if (inventory.get(selectedIndex).getHunger() > 0) {
+                addHunger(inventory.get(selectedIndex).getHunger());
+                health -= inventory.get(selectedIndex).getSelfHarm();
+                if (inventory.get(selectedIndex).getUsage() == 1)
+                    dropItem();
+            }
+        }
+        catch (IndexOutOfBoundsException jennifer) {}
+
         if (m.getMapComponentID() == MapComponent.SMALL_TREE && inventory.size() < inventoryCap) {
+
             inventory.add(new Item(Item.STICK));
             System.out.println("Interaction with small tree detected");
         } else if (m.getMapComponentID() == MapComponent.SMALL_BUSH && inventory.size() < inventoryCap) {
+            inventory.add(new Item(Item.BERRY));
             System.out.println("Interaction with small bush detected");
         } else if (m.getMapComponentID() == MapComponent.ROCKS && inventory.size() < inventoryCap) {
+            inventory.add(new Item(Item.ROCK));
             System.out.println("Interaction with rocks detected");
-        } else if (m.getMapComponentID() == MapComponent.SWORD_OBJECT && inventory.size() < inventoryCap) {
-            inventory.add(new Item(Item.SWORD));
-            System.out.println("Interaction with sword object detected");
+        } else if (m.getMapComponentID() == MapComponent.CHEST && inventory.size() < inventoryCap) {
+            inventory.add(new Item(Item.BOWANDARROW));
+            System.out.println("Interaction with chest detected");
         }
+//        else if (m.getMapComponentID() == MapComponent.xxx && inventory.size() < inventoryCap) {
+//            inventory.add(new Item(Item.xxx));
+//            System.out.println("Interaction with xxx object detected");
+//        }
 
         else if (m.getMapComponentID() == MapComponent.MONSTER) {
             m.addHealth(-1 * attackDamage);
+            if (inventory.get(selectedIndex).getUsage() == 1)
+                dropItem();
         }
+
+
 
 //        for (Item i : inventory) {
 //            System.out.print(i.getItemID());
@@ -94,8 +116,12 @@ class Player {
 //        System.out.println();
         try {
             attackDamage = inventory.get(selectedIndex).getDamage();
+            range = inventory.get(selectedIndex).getRange();
         }
         catch (IndexOutOfBoundsException how) {}
+
+        addHunger(-1);
+        checkHunger();
     }
     public int interact(MapComponent m, int currentMission) {
         return checkMission(m, currentMission);
@@ -142,6 +168,19 @@ class Player {
 
     public int getMaxHealth() {
         return maxHealth;
+    }
+
+    public void addHunger(int toadd) {
+        hunger += toadd;
+        if (hunger > maxHunger)
+            hunger = maxHunger;
+        if (hunger < 0)
+            hunger = 0;
+    }
+
+    public void checkHunger(){
+        if (hunger <= 0)
+            health -= 1;
     }
 
     public double getMovementSpeed() {

@@ -35,9 +35,9 @@ class MapComponent {
     final static int FILLED_NULL = 9;
     final static int WISE_ROCK = 10;
     final static int MONSTER = 11;
-    final static int SWORD_OBJECT = 12;
+    final static int CHEST = 12;
 
-    private int health;
+    private int health, maxHealth;
 
     //Constructors
     public MapComponent() {
@@ -92,12 +92,14 @@ class MapComponent {
         else if(MC_ID == FILLED_NULL) { d = new Dimension(4, 2); }
         else if(MC_ID == WISE_ROCK) { d = new Dimension(1, 1); }
         else if(MC_ID == MONSTER) { d = new Dimension(1, 1); }
-        else if(MC_ID == SWORD_OBJECT) { d = new Dimension(1, 1); }
+        else if(MC_ID == CHEST) { d = new Dimension(1, 1); }
         return d;
     }
 
     public void addHealth(int toAdd) {
         health += toAdd;
+        if (health > maxHealth)
+            health = maxHealth;
     }
     public int getHealth() {return health; }
 

@@ -140,6 +140,8 @@ class Map extends JFrame {
                 walk(SOUTH);
             } else if (keys['d']) {
                 walk(EAST);
+            } else if (keys['t']) {
+                p.dropItem();
             }
             p.setLastMovement(System.currentTimeMillis());
         }
