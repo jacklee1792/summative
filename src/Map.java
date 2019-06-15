@@ -19,7 +19,7 @@ class Map extends JFrame {
     //Main Test
     public static void main(String[] args) {
         Map test = new Map();
-        test.saveMap(new File("-test_save.txt"));
+        System.out.println(test.saveMap(new File("src\\-test_save2.txt")));
     }
 
     //Instance variables
@@ -29,6 +29,7 @@ class Map extends JFrame {
     private boolean isSelecting = false;
     private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
     private boolean[] keys = new boolean[255];
+    private MissionTextArea mta = new MissionTextArea(new File("src\\-missions_test.txt"));
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -245,7 +246,6 @@ class Map extends JFrame {
             add(inv);
 
             //Mission Text Area
-            MissionTextArea mta = new MissionTextArea(new File("./src/-missions_test.txt"));
             int mtaX = 19 * tileSize / 2;
             mta.setBounds(mtaX, HUDY, 7 * tileSize, tileSize);
             add(mta);
@@ -281,7 +281,6 @@ class Map extends JFrame {
         }
 
     }
-
 
     class ActionProcessor implements KeyListener, MouseMotionListener, MouseListener {
 
@@ -462,11 +461,12 @@ class Map extends JFrame {
         }
 
         // Methods
+        public ArrayList<Mission> getMissions() { return missions; }
         public String getCurrentTitle() { return missions.get(currentMission).getTitle(); }
         public String runCurrentMission() { return missions.get(currentMission).getText(); }
         public int getCurrentMission() { return currentMission; }
         public void setCurrentMission(int newMission) { currentMission = newMission; }
-        public boolean isComplete(int missionNum) throws ArrayIndexOutOfBoundsException { return missions.get(missionNum).complete(); }
+        public boolean isComplete(int missionNum) throws ArrayIndexOutOfBoundsException { return missions.get(missionNum).getCompleteness(); }
         public boolean completeCurrentMission(){
             missions.get(currentMission).setCompleteness(true);
             if(currentMission >= missions.size() - 1)               // every mission completed: win condition
@@ -498,7 +498,7 @@ class Map extends JFrame {
             FileWriter fw = new FileWriter(saveFile);
             BufferedWriter bw = new BufferedWriter(fw);
 
-            for (MapComponent[][] i : map) {
+            for (MapComponent[][] i : map) {                        // saving the map
                 for (MapComponent[] j : i) {
                     for (MapComponent k : j) {
                         bw.write(k.getMapComponentID() + " ");
@@ -506,9 +506,24 @@ class Map extends JFrame {
                     bw.newLine();
                     bw.flush();
                 }
-                bw.write(LINE_SEPARATOR);
-                bw.newLine();
+                bw.write(LINE_SEPARATOR + "\n");
             }
+
+            ArrayList<Item> items = p.getInventory();               // saving the inventory
+            for(Item i : items){
+                bw.write(i.getItemID() + " ");
+            }
+            if(items.size() == 0)
+                bw.write(" ");
+            bw.newLine();
+            ArrayList<Mission> mission_arr = mta.getMissions();
+            for(Mission i : mission_arr){
+                if(i.getCompleteness())
+                    bw.write("1 ");
+                else
+                    bw.write("0 ");
+            }
+
             bw.close();
             return true;
         }
@@ -533,7 +548,13 @@ class Map extends JFrame {
                 inputData.add(line);
             }
             fillLayer(ITEM_LAYER, inputData);
-            inputData.clear();
+
+            line = br.readLine();                                   // inventory
+            String[] items_arr = line.split(" ");
+            p.inventory.clear();
+            for(String i : items_arr){
+                p.inventory.add(new Item(Integer.parseInt(i)));
+            }
 
             // Implement inventory, progress
 

@@ -6,6 +6,7 @@ class Mission {
     private boolean isComplete;
     static final String LINE_SEPARATOR = " !!! ";
 
+
     // Constructors
     public Mission (String input) {
         String[] tmp = input.split(LINE_SEPARATOR);
@@ -22,6 +23,10 @@ class Mission {
     // Methods
     public String getText(){ return text; }
     public String getTitle() { return title; }
-    public boolean complete() { return isComplete; }
+    @Override
+    public String toString(){
+        return title + LINE_SEPARATOR + text;
+    }
+    public boolean getCompleteness() { return isComplete; }
     public void setCompleteness(boolean completeness) { isComplete = completeness; }
 }

@@ -13,7 +13,7 @@ class Player {
 
     private int hunger, maxHunger;
     private int health, maxHealth;
-    private ArrayList<Item> inventory;
+    public ArrayList<Item> inventory;
     private int inventoryCap = 5;
     private int selectedIndex;
     private int movementSpeed;
