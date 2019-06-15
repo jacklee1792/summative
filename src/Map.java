@@ -224,6 +224,21 @@ class Map extends JFrame {
         tileSize = (int)(screenSize.getWidth() / 16);
     }
 
+    // Methods
+    public void checkMission(){
+        int currentMission = mta.getCurrentMission();
+
+        if(currentMission == 1){
+
+        }
+        else if(currentMission == 2){
+
+        }
+        else if(currentMission == 3){
+
+        }
+    }
+
     //DrawArea and KeyListener and InventoryBar
     class DrawArea extends JPanel {
 
