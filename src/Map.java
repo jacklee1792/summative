@@ -19,7 +19,7 @@ class Map extends JFrame {
     //Main Test
     public static void main(String[] args) {
         Map test = new Map();
-        System.out.println(test.saveMap(new File("src\\-test_save2.txt")));
+        System.out.println(test.saveMap(new File("./src/-test_save2.txt")));
     }
 
     //Instance variables
@@ -29,7 +29,7 @@ class Map extends JFrame {
     private boolean isSelecting = false;
     private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
     private boolean[] keys = new boolean[255];
-    private MissionTextArea mta = new MissionTextArea(new File("src\\-missions_test.txt"));
+    private MissionTextArea mta = new MissionTextArea(new File("./src/-missions_test.txt"));
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -307,7 +307,7 @@ class Map extends JFrame {
         public void keyPressed(KeyEvent e) {
             char key = e.getKeyChar();
             if(key == 61 || key == 43)
-                saveMap(new File("src\\-test_save.txt"));
+                saveMap(new File("./src/-test_save.txt"));
             try {
                 keys[key] = true;
             } catch (ArrayIndexOutOfBoundsException ex) {}
@@ -464,9 +464,11 @@ class Map extends JFrame {
                 BufferedReader br = new BufferedReader(fr);
 
                 String line = " ";
+                int count = 0;
                 while(!line.equals("")){
                     line = br.readLine();
-                    missions.add(new Mission(line));
+                    missions.add(new Mission(line, count));
+                    count++;
                 }
 
             } catch(Exception ex) {System.out.println("Load file not found!");}

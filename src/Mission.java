@@ -4,12 +4,14 @@ class Mission {
     // Instance variables
     private String title, text;
     private boolean isComplete;
+    private int num;
     static final String LINE_SEPARATOR = " !!! ";
 
 
     // Constructors
-    public Mission (String input) {
+    public Mission (String input, int missionNum) {
         String[] tmp = input.split(LINE_SEPARATOR);
+        num = missionNum;
         try {
             title = tmp[0];
             text = tmp[1];
