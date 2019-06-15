@@ -37,7 +37,7 @@ class MapComponent {
     final static int MONSTER = 11;
     final static int CHEST = 12;
 
-    private int health, maxHealth;
+    private int health, maxHealth, attackDamage, attackRange;
 
     //Constructors
     public MapComponent() {
@@ -47,11 +47,24 @@ class MapComponent {
         MC_ID = MapComponentID;
         this.health = health;
         maxHealth = health;
+        attackDamage = 1;
+        attackRange = 1;
+    }
+
+    public MapComponent (int MapComponentID, int healthy, int damage, int range) {
+        MC_ID = MapComponentID;
+        this.health = healthy;
+        maxHealth = healthy;
+        attackDamage = damage;
+        attackRange = range;
     }
 
     public MapComponent (int MapComponentID) {
         MC_ID = MapComponentID;
         health = 9999;
+        maxHealth = 9999;
+        attackDamage = 1;
+        attackRange = 1;
     }
 
     public MapComponent (MapComponent old) {
@@ -118,6 +131,8 @@ class MapComponent {
     public int getHealth() {return health; }
     public int getMaxHealth() {return maxHealth; }
 
+    public int getAttackDamage() {return attackDamage; }
 
+    public int getAttackRange() {return attackRange; }
 
 }

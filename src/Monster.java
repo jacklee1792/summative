@@ -1,5 +1,6 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.lang.Math;
 
 class Monster extends MapComponent {
 

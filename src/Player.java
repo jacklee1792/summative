@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.util.ArrayList;
+import java.lang.Math;
 
 class Player {
     /**
@@ -45,6 +46,27 @@ class Player {
 
     static BufferedImage[] texture = new BufferedImage[3];
 
+    public void monsterAttack (MapComponent[][][] subMap, Tile playerTile) {
+        int ptRow = playerTile.getRow(), ptColumn = playerTile.getColumn();
+        int damageDealt = 0;
+
+        for(int r = 0; r < subMap[0].length; r++) {
+            for(int c = 0; c < subMap[0][0].length; c++) {
+
+                if(subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER){
+                    if (Math.abs(ptRow - r) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange() && Math.abs(ptColumn - c) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange()) {
+                        damageDealt += (subMap[Map.ITEM_LAYER][r][c].getAttackDamage());
+                    }
+                }
+            }
+        }
+        System.out.println(damageDealt + "damage was dealt to you ");
+        addHealth(-1 *damageDealt);
+    }
+
+
+
+
     public BufferedImage getTexture() {
         return texture[walkState];
     } // current texture
@@ -77,7 +99,7 @@ class Player {
         try {
             if (inventory.get(selectedIndex).getHunger() > 0) {
                 addHunger(inventory.get(selectedIndex).getHunger());
-                health -= inventory.get(selectedIndex).getSelfHarm();
+                addHealth(-1 * (inventory.get(selectedIndex).getSelfHarm()));
                 if (inventory.get(selectedIndex).getUsage() == 1)
                     dropItem();
             }
@@ -174,6 +196,14 @@ class Player {
         return health;
     }
 
+    public void addHealth(int toadd) {
+        health += toadd;
+        if (health < 0)
+            health = 0;
+        if (health > maxHealth)
+            health = maxHealth;
+    }
+
     public int getMaxHealth() {
         return maxHealth;
     }
@@ -188,7 +218,7 @@ class Player {
 
     public void checkHunger(){
         if (hunger <= 0)
-            health -= 1;
+            addHealth(-1);
     }
 
     public double getMovementSpeed() {
