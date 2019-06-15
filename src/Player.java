@@ -20,7 +20,6 @@ class Player {
     private int movementSpeed;
     private int attackDamage;
     private int range;
-    private int stackSize = 6;
     private int walkState;
     private long lastMovement = 0;
 
@@ -61,9 +60,6 @@ class Player {
         }
         addHealth(-1 *damageDealt);
     }
-
-
-
 
     public BufferedImage getTexture() {
         return texture[walkState];
@@ -107,9 +103,13 @@ class Player {
         int firstNullIndex;
 
         if (m.getMapComponentID() == MapComponent.SMALL_TREE && inventoryNotFull()) {
-            firstNullIndex = findFirstNull();
-            inventory.set(firstNullIndex, new Item(Item.STICK));
-            System.out.println("Interaction with small tree detected");
+            int targetIndex = indexOfAvailableStack(Item.STICK);
+            if(targetIndex != -1) {
+                inventory.get(targetIndex).increaseStackSize(1);
+            } else {
+                firstNullIndex = findFirstNull();
+                inventory.set(firstNullIndex, new Item(Item.STICK));
+            }
         } else if (m.getMapComponentID() == MapComponent.SMALL_BUSH && inventoryNotFull()) {
             firstNullIndex = findFirstNull();
             inventory.set(firstNullIndex, new Item(Item.BERRY));
@@ -159,6 +159,10 @@ class Player {
             Implement this
          */
         return 0;
+    }
+
+    public void addItem(Item i) {
+        //TODO Add item with stacking support
     }
 
     public int getWalkState() { return walkState;}
@@ -248,6 +252,15 @@ class Player {
             return true;
         else
             return false;
+    }
+
+    public int indexOfAvailableStack(int I_ID) {
+        int index = -1;
+        for(int i = 0; i < inventory.size(); i++) {
+            Item target = inventory.get(i);
+            if(target.getItemID() == I_ID && target.getStackSize() < target.getStackMax()) return i;
+        }
+        return index;
     }
 
     public int removeFirstNull() { // removes the first occurrence of a NULL Item from inventory

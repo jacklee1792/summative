@@ -24,7 +24,7 @@ class Map extends JFrame {
 
     //Instance variables
     private MapComponent[][][] map, subMap;
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 18, subMapWidth = 32, tileSize;
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
     private Tile subMapTile, playerTile = new Tile((subMapHeight - 1) / 2, (subMapWidth - 1) / 2);
     private Tile selectedTile;
     private boolean isSelecting = false;
@@ -433,6 +433,16 @@ class Map extends JFrame {
                 int x = i * tileSize + y;
                 int size = (int)(24.0 * tileSize / 32);
                 g.drawImage(Item.texture[inventory.get(i).getItemID()], x, y, size, size, null);
+            }
+            //Set up font
+            g.setFont(new Font("Verdana", Font.BOLD, tileSize / 5));
+            g.setColor(Color.BLACK);
+            //Draw item quantities
+            for(int i = 0; i < inventory.size(); i++) {
+                String text = "" + inventory.get(i).getStackSize();
+                int textWidth = g.getFontMetrics().stringWidth(text);
+                boolean stackable = inventory.get(i).getStackSize() > 1;
+                if(stackable) g.drawString(text, (int)(i * tileSize + tileSize * 0.85) - textWidth, (int)(tileSize * 0.85));
             }
         }
 
