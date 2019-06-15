@@ -67,10 +67,6 @@ class Player {
         }
     }
 
-    /*
-    TODO
-    -Better interaction logic -> interacting with both ground layer and item layer within player
-     */
     public void interact(MapComponent m, Tile t) {
 
         try {
@@ -100,15 +96,14 @@ class Player {
 //        else if (m.getMapComponentID() == MapComponent.xxx && inventory.size() < inventoryCap) {
 //            inventory.add(new Item(Item.xxx));
 //            System.out.println("Interaction with xxx object detected");
+        // rip x
 //        }
 
         else if (m.getMapComponentID() == MapComponent.MONSTER) {
             m.addHealth(-1 * attackDamage);
-            if (inventory.get(selectedIndex).getUsage() == 1)
-                dropItem();
+            System.out.println("You attacked that nibber for " + attackDamage);
+            System.out.println("That nibber has " + m.getHealth() + " health left");
         }
-
-
 
 //        for (Item i : inventory) {
 //            System.out.print(i.getItemID());

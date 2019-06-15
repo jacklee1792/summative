@@ -130,6 +130,16 @@ class Map extends JFrame {
         subMap = temp; //temp is destroyed upon exit
     }
 
+    public void setMapFromSubMap() {
+        for(int l = 0; l <= Map.ITEM_LAYER; l++) {
+            for(int r = 0; r < subMapHeight; r++) {
+                for(int c = 0; c < subMapWidth; c++) {
+                    map[l][subMapTile.getRow() + r][subMapTile.getColumn() + c] = new MapComponent(subMap[l][r][c]);
+                }
+            }
+        }
+    }
+
     public void updatePlayer() {
         if(System.currentTimeMillis() - p.getLastMovement() > 1000 / p.getMovementSpeed()) {
             if(keys['w']) {
@@ -150,24 +160,8 @@ class Map extends JFrame {
     }
 
     public void updateMonster() {
-        ArrayList<Tile> monsterList = new ArrayList<>();
-        for(int r = 0; r < subMapHeight; r++) {
-            for(int c = 0; c < subMapWidth; c++) {
-                //Write locations to monster list
-                if(subMap[ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER) {
-                    monsterList.add(new Tile(r + subMapTile.getRow(), c + subMapTile.getColumn()));
-                    map[ITEM_LAYER][r + subMapTile.getRow()][c + subMapTile.getColumn()] = new MapComponent(MapComponent.NULL);
-                    if (subMap[ITEM_LAYER][r][c].isDead())
-                    {subMap[ITEM_LAYER][r][c] = new MapComponent(MapComponent.NULL);
-                        repaint();}
-                }
-            }
-        }
-        ArrayList<Tile> newList = Monster.updateMonster(subMap, subMapTile, playerTile, monsterList);
-        for(Tile t : newList) {
-            map[ITEM_LAYER][t.getRow()][t.getColumn()] = new MapComponent(MapComponent.MONSTER);
-        }
-        setSubMap(subMapTile); //Update the subMap
+        MapComponent[][][] newSubMap = Monster.updateMonster(subMap, playerTile);
+        setMapFromSubMap();
         repaint();
     }
 

@@ -3,50 +3,50 @@ import java.util.ArrayList;
 
 class Monster extends MapComponent {
 
-    static ArrayList<Monster> monsterList = new ArrayList<Monster>();
+    public static MapComponent[][][] updateMonster(MapComponent[][][] subMap, Tile playerTile) {
 
-    private Tile location;
+        int ptRow = playerTile.getRow(), ptColumn = playerTile.getColumn();
 
-    public Monster() {
-        super(MONSTER, 2);
-    }
-
-    public static ArrayList<Tile> updateMonster(MapComponent[][][] subMap, Tile subMapTile, Tile playerTile, ArrayList<Tile> list) {
-            for (int i = 0; i < list.size(); i++) {
-                int row = list.get(i).getRow(), column = list.get(i).getColumn();
-                Tile subMapPosition = new Tile(list.get(i).getRow() - subMapTile.getRow(), list.get(i).getColumn() - subMapTile.getColumn());
-                int smRow = subMapPosition.getRow(), smColumn = subMapPosition.getColumn();
-                int ptRow = playerTile.getRow(), ptColumn = playerTile.getColumn();
-
-                if (subMapPosition.getRow() > playerTile.getRow()) {
-                    if (subMap[Map.ITEM_LAYER][smRow - 1][smColumn].getWalkable() &&
-                            (smRow - 1 != ptRow || smColumn != ptColumn)) list.set(i, new Tile(row - 1, column));
-                }
-                if (subMapPosition.getRow() < playerTile.getRow()) {
-                    if (subMap[Map.ITEM_LAYER][smRow + 1][smColumn].getWalkable() &&
-                            (smRow + 1 != ptRow || smColumn != ptColumn)) list.set(i, new Tile(row + 1, column));
-                }
-                if (subMapPosition.getColumn() > playerTile.getColumn()) {
-                    if (subMap[Map.ITEM_LAYER][smRow][smColumn - 1].getWalkable() &&
-                            (smRow != ptRow || smColumn - 1 != ptColumn)) list.set(i, new Tile(row, column - 1));
-                }
-                if (subMapPosition.getColumn() < playerTile.getColumn() &&
-                        (smRow != ptRow || smColumn + 1 != ptColumn)) {
-                    if (subMap[Map.ITEM_LAYER][smRow][smColumn + 1].getWalkable())
-                        list.set(i, new Tile(row, column + 1));
-                }
-
-                subMap[Map.ITEM_LAYER][list.get(i).getRow() - subMapTile.getRow()][list.get(i).getColumn() - subMapTile.getColumn()] = new MapComponent(MapComponent.MONSTER); //Update comparison subMap
+        ArrayList<Tile> locations = new ArrayList<>();
+        for(int r = 0; r < subMap[0].length; r++) {
+            for(int c = 0; c < subMap[0][0].length; c++) {
+                if(subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER) locations.add(new Tile(r, c));
             }
-        return list;
+        }
+
+        for(Tile t : locations) {
+            int row = t.getRow(), column = t.getColumn();
+            MapComponent currentMonster = new MapComponent(subMap[Map.ITEM_LAYER][row][column]);
+            subMap[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.NULL);
+
+            if(currentMonster.getHealth() <= 0) {
+                //Do nothing to re-spawn it
+            } else if (row > ptRow &&
+                    subMap[Map.ITEM_LAYER][row - 1][column].getWalkable() &&
+                    subMap[Map.GROUND_LAYER][row - 1][column].getWalkable() &&
+                    (row - 1 != ptRow || column != ptColumn)) {
+                subMap[Map.ITEM_LAYER][row - 1][column] = new MapComponent(currentMonster);
+            } else if (row < ptRow &&
+                    subMap[Map.ITEM_LAYER][row + 1][column].getWalkable() &&
+                    subMap[Map.GROUND_LAYER][row + 1][column].getWalkable() &&
+                    (row + 1 != ptRow || column != ptColumn)) {
+                subMap[Map.ITEM_LAYER][row + 1][column] = new MapComponent(currentMonster);
+            } else if (column > ptColumn &&
+                    subMap[Map.ITEM_LAYER][row][column - 1].getWalkable() &&
+                    subMap[Map.GROUND_LAYER][row][column - 1].getWalkable() &&
+                    (column - 1 != ptColumn || row != ptRow)) {
+                subMap[Map.ITEM_LAYER][row][column - 1] = new MapComponent(currentMonster);
+            } else if (column < ptColumn &&
+                    subMap[Map.ITEM_LAYER][row][column + 1].getWalkable() &&
+                    subMap[Map.GROUND_LAYER][row][column + 1].getWalkable() &&
+                    (column + 1 != ptColumn || row != ptRow)) {
+                subMap[Map.ITEM_LAYER][row][column + 1] = new MapComponent(currentMonster);
+            } else subMap[Map.ITEM_LAYER][row][column] = new MapComponent(currentMonster);
+        }
+
+        return subMap;
     }
 
-    public void setLocation(Tile spawnlocus){location = spawnlocus; }
-    public Tile getLocation() {return location;}
-
-    public void chasePlayer() {
-
-    }
 
 //    public boolean isDead() {
 //        if (health <= 0)

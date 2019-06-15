@@ -46,11 +46,18 @@ class MapComponent {
     public MapComponent(int MapComponentID, int health) {
         MC_ID = MapComponentID;
         this.health = health;
+        maxHealth = health;
     }
 
     public MapComponent (int MapComponentID) {
         MC_ID = MapComponentID;
         health = 9999;
+    }
+
+    public MapComponent (MapComponent old) {
+        MC_ID = old.MC_ID;
+        health = old.health;
+        maxHealth = old.maxHealth;
     }
 
     //Methods
@@ -103,17 +110,6 @@ class MapComponent {
     }
     public int getHealth() {return health; }
 
-    public void checkDeath() {
-        if (MC_ID == MONSTER && health <= 0)
-            MC_ID = ROCKS;
-    }
-
-    public boolean isDead() {
-        if (health <= 0)
-            return true;
-        else
-            return false;
-    }
 
 
 }
