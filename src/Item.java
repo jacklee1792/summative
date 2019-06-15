@@ -18,8 +18,8 @@ class Item {
 
     final static int[][] statsSheet = // now a nibber on the floor talking to the athletes
             {
-                    {0, 0, 0, 0, 0}, // NULL
-                    {1, 3, 0, 0, 1}, // STICK
+                    {1, 2, 0, 0, 0}, // NULL
+                    {5, 3, 0, 0, 1}, // STICK
                     {10, 3, 0, 0, 0}, // SWORD
                     {30, 1, 0, 0, 0}, // KNIFE
                     {3, 7, 0, 0, 0}, // SLINGSHOT
@@ -27,9 +27,9 @@ class Item {
                     {20, 5, 0, 0, 1}, // ROCK
                     {0, 8, 0, 0, 0}, // STRING
                     {0, 1, 0, 0, 0}, // FEATHER
-                    {0, 1, 0, 10, 1}, // APPLE
-                    {0, 1, 1, 5, 0}, // BERRY
-                    {0, 1, (int)(Math.random() * 3), 25, 1} // MEAT
+                    {0, 0, 0, 10, 1}, // APPLE
+                    {0, 0, 1, 5, 0}, // BERRY
+                    {0, 0, (int)(Math.random() * 3), 25, 1} // MEAT
             };
 
     final static int NULL = 0;
@@ -46,8 +46,6 @@ class Item {
     final static int BERRY = 10;
     final static int MEAT = 11;
 
-    private int damage;
-    private int range;
 
     public Item(int ItemID) {
         I_ID = ItemID;

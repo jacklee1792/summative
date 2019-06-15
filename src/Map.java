@@ -26,10 +26,10 @@ class Map extends JFrame {
 
     //Instance variables
     private MapComponent[][][] map, subMap;
-    private Tile subMapTile, playerTile = new Tile(4, 7);
+    private int mapHeight = 100, mapWidth = 100, subMapHeight = 18, subMapWidth = 32, tileSize;
+    private Tile subMapTile, playerTile = new Tile((subMapHeight - 1) / 2, (subMapWidth - 1) / 2);
     private Tile selectedTile;
     private boolean isSelecting = false;
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
     private boolean[] keys = new boolean[255];
     private MissionTextArea mta;
 
@@ -165,6 +165,7 @@ class Map extends JFrame {
 
     public void updateMonster() {
         MapComponent[][][] newSubMap = Monster.updateMonster(subMap, playerTile);
+        p.monsterAttack(subMap, playerTile);
         setMapFromSubMap();
         repaint();
     }
@@ -221,7 +222,7 @@ class Map extends JFrame {
 
     public void adaptToScreen() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        tileSize = (int)(screenSize.getWidth() / 16);
+        tileSize = (int)(screenSize.getWidth() / subMapWidth);
     }
 
     public static void winGame(){               // the win condition of the game

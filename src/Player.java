@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.util.ArrayList;
+import java.lang.Math;
 
 class Player {
     /**
@@ -39,9 +40,32 @@ class Player {
         range = 2;
 
         inventory = new ArrayList<>();
+        for (int i = 0; i < inventoryCap; i++)
+            inventory.add(new Item(Item.NULL));
     }
 
     static BufferedImage[] texture = new BufferedImage[3];
+
+    public void monsterAttack (MapComponent[][][] subMap, Tile playerTile) {
+        int ptRow = playerTile.getRow(), ptColumn = playerTile.getColumn();
+        int damageDealt = 0;
+
+        for(int r = 0; r < subMap[0].length; r++) {
+            for(int c = 0; c < subMap[0][0].length; c++) {
+
+                if(subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER){
+                    if (Math.abs(ptRow - r) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange() && Math.abs(ptColumn - c) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange()) {
+                        damageDealt += (subMap[Map.ITEM_LAYER][r][c].getAttackDamage());
+                    }
+                }
+            }
+        }
+        System.out.println(damageDealt + "damage was dealt to you ");
+        addHealth(-1 *damageDealt);
+    }
+
+
+
 
     public BufferedImage getTexture() {
         return texture[walkState];
@@ -75,28 +99,33 @@ class Player {
         try {
             if (inventory.get(selectedIndex).getHunger() > 0) {
                 addHunger(inventory.get(selectedIndex).getHunger());
-                health -= inventory.get(selectedIndex).getSelfHarm();
+                addHealth(-1 * (inventory.get(selectedIndex).getSelfHarm()));
                 if (inventory.get(selectedIndex).getUsage() == 1)
                     dropItem();
             }
         }
         catch (IndexOutOfBoundsException jennifer) {}
 
-        if (m.getMapComponentID() == MapComponent.SMALL_TREE && inventory.size() < inventoryCap) {
+        int firstNullIndex;
 
-            inventory.add(new Item(Item.STICK));
+        if (m.getMapComponentID() == MapComponent.SMALL_TREE && inventoryNotFull()) {
+            firstNullIndex = findFirstNull();
+            inventory.set(firstNullIndex, new Item(Item.STICK));
             System.out.println("Interaction with small tree detected");
-        } else if (m.getMapComponentID() == MapComponent.SMALL_BUSH && inventory.size() < inventoryCap) {
-            inventory.add(new Item(Item.BERRY));
+        } else if (m.getMapComponentID() == MapComponent.SMALL_BUSH && inventoryNotFull()) {
+            firstNullIndex = findFirstNull();
+            inventory.set(firstNullIndex, new Item(Item.BERRY));
             System.out.println("Interaction with small bush detected");
-        } else if (m.getMapComponentID() == MapComponent.ROCKS && inventory.size() < inventoryCap) {
-            inventory.add(new Item(Item.ROCK));
+        } else if (m.getMapComponentID() == MapComponent.ROCKS && inventoryNotFull()) {
+            firstNullIndex = findFirstNull();
+            inventory.set(firstNullIndex, new Item(Item.ROCK));
             System.out.println("Interaction with rocks detected");
-        } else if (m.getMapComponentID() == MapComponent.CHEST && inventory.size() < inventoryCap) {
-            inventory.add(new Item(Item.BOWANDARROW));
+        } else if (m.getMapComponentID() == MapComponent.CHEST && inventoryNotFull()) {
+            firstNullIndex = findFirstNull();
+            inventory.set(firstNullIndex, new Item(Item.BOWANDARROW));
             System.out.println("Interaction with chest detected");
         }
-//        else if (m.getMapComponentID() == MapComponent.xxx && inventory.size() < inventoryCap) {
+//        else if (m.getMapComponentID() == MapComponent.xxx && inventoryNotFull()) {
 //            inventory.add(new Item(Item.xxx));
 //            System.out.println("Interaction with xxx object detected");
         // rip x
@@ -106,6 +135,9 @@ class Player {
             m.addHealth(-1 * attackDamage);
             System.out.println("You attacked that nibber for " + attackDamage);
             System.out.println("That nibber has " + m.getHealth() + " health left");
+
+            if (inventory.get(selectedIndex).getUsage() == 1)
+                dropItem();
         }
 
 //        for (Item i : inventory) {
@@ -164,6 +196,14 @@ class Player {
         return health;
     }
 
+    public void addHealth(int toadd) {
+        health += toadd;
+        if (health < 0)
+            health = 0;
+        if (health > maxHealth)
+            health = maxHealth;
+    }
+
     public int getMaxHealth() {
         return maxHealth;
     }
@@ -178,7 +218,7 @@ class Player {
 
     public void checkHunger(){
         if (hunger <= 0)
-            health -= 1;
+            addHealth(-1);
     }
 
     public double getMovementSpeed() {
@@ -192,9 +232,44 @@ class Player {
 
     public void dropItem(){
         inventory.remove(selectedIndex);
+        inventory.add(new Item(Item.NULL));
     }
 
+    public int getNumEmpty() { // finds how many slots are NULL
+        int numNull = 0;
 
+        for (int i = 0; i < inventoryCap; i++) {
+            if (inventory.get(i).getItemID() == 0)
+                numNull++;
+        }
+        return numNull;
+    }
+
+    public boolean inventoryNotFull() {
+        if (getNumEmpty() > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public int removeFirstNull() { // removes the first occurrence of a NULL Item from inventory
+        for (int i = 0; i < inventoryCap; i++){
+            if (inventory.get(i).getItemID() == 0) {
+                inventory.remove(i);
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int findFirstNull() {
+        for (int i = 0; i < inventoryCap; i++){
+            if (inventory.get(i).getItemID() == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
 
 
