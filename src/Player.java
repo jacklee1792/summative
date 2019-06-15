@@ -71,7 +71,7 @@ class Player {
     TODO
     -Better interaction logic -> interacting with both ground layer and item layer within player
      */
-    public void interact(MapComponent m, Tile t) {
+    public boolean interact(MapComponent m, Tile t, int missionNumber) {
 
         try {
             if (inventory.get(selectedIndex).getHunger() > 0) {
@@ -122,15 +122,23 @@ class Player {
 
         addHunger(-1);
         checkHunger();
+
+        // Mission checking
+        return checkMission(m, missionNumber);
     }
-    public int interact(MapComponent m, int currentMission) {
-        return checkMission(m, currentMission);
-    }
-    private int checkMission(MapComponent m, int missionNumber){
-        /* TODO
-            Implement this
-         */
-        return 0;
+
+    private boolean checkMission(MapComponent m, int missionNumber){
+        if(missionNumber == 0)          // introduction
+            return true;
+        else if(missionNumber == 1){                // M1: searching plane
+            if(m.getMapComponentID() == 8)
+                return true;
+        }
+        else if (missionNumber == 2){               // M2:
+
+        }
+
+        return false;
     }
 
     public int getWalkState() { return walkState;}

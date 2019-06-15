@@ -8,3 +8,4 @@ MISSION 6 !!! You just need to find the three pieces of the radio. Find the ante
 MISSION 7 !!! Find the transmitter. You need this to call for help.
 MISSION 8 !!! You're almost there. I need you to find the circuit board.
 MISSION 9 !!! There's some bad news. You can't call for help until you clear all the monsters. Prepare for the final battle.
+CONCLUSION !!! Congratulations! You vanquished all the monsters. Now, the rescue crews are on their way...

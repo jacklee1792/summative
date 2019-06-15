@@ -10,7 +10,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,7 +31,7 @@ class Map extends JFrame {
     private boolean isSelecting = false;
     private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
     private boolean[] keys = new boolean[255];
-    private MissionTextArea mta = new MissionTextArea(new File("./src/-missions_test.txt"));
+    private MissionTextArea mta;
 
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
@@ -69,7 +71,8 @@ class Map extends JFrame {
         //subMap
         setSubMap(subMapTile);
 
-
+        // Mission Text Area
+        mta = new MissionTextArea();
 
         //Player
         p = new Player();
@@ -117,6 +120,7 @@ class Map extends JFrame {
         pack();
     }
 
+    // Methods
     public void setSubMap(Tile t) throws ArrayIndexOutOfBoundsException {
         MapComponent[][][] temp = new MapComponent[2][subMapHeight][subMapWidth]; //we need a temp because we don't want to change subMap if this throws an exception
         //Copy map to subMap
@@ -226,19 +230,8 @@ class Map extends JFrame {
         tileSize = (int)(screenSize.getWidth() / 16);
     }
 
-    // Methods
-    public void checkMission(){
-        int currentMission = mta.getCurrentMission();
+    public static void winGame(){               // the win condition of the game
 
-        if(currentMission == 1){
-
-        }
-        else if(currentMission == 2){
-
-        }
-        else if(currentMission == 3){
-
-        }
     }
 
     //DrawArea and KeyListener and InventoryBar
@@ -334,10 +327,10 @@ class Map extends JFrame {
             selectedTile = new Tile(e.getY() / tileSize, e.getX() / tileSize);
             int dX = Math.abs(selectedTile.getColumn() - playerTile.getColumn());
             int dY = Math.abs(selectedTile.getRow() - playerTile.getRow());
-            if(dX <= p.getRange() && dY <= p.getRange()) {
+            if(dX <= p.getRange() && dY <= p.getRange())
                 isSelecting = true;
-            }
-            else isSelecting = false;
+            else
+                isSelecting = false;
             repaint();
         }
 
@@ -349,7 +342,11 @@ class Map extends JFrame {
         @Override
         public void mousePressed(MouseEvent e) {
             if(isSelecting) {
-                p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile);
+                if(p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile, mta.getCurrentMission())){
+                    if(mta.completeCurrentMission())
+                        Map.winGame();
+                }
+
                 repaint();
             }
 
@@ -449,7 +446,8 @@ class Map extends JFrame {
 
     class MissionTextArea extends JPanel {
         // Instance variables
-        private ArrayList<Mission> missions;
+        private ArrayList<String> missions;
+        private ArrayList<Boolean> completeness;
         private int currentMission;
         private BufferedImage textBox;
 
@@ -459,37 +457,41 @@ class Map extends JFrame {
         final Color titleColour = Color.black, textColour = Color.black;
 
         // Constructor
-        public MissionTextArea(File loadFile) {
+        public MissionTextArea() {
             missions = new ArrayList<>();
-            try {
-                FileReader fr = new FileReader(loadFile);
-                BufferedReader br = new BufferedReader(fr);
+            currentMission = 0;
+            String line = " ";
 
-                String line = " ";
-                int count = 0;
-                while(!line.equals("")){
-                    line = br.readLine();
-                    missions.add(new Mission(line, count));
-                    count++;
-                }
-
-            } catch(Exception ex) {System.out.println("Load file not found!");}
+            missions.add("INTRODUCTION !!! Hi. I am the Wise Rock. You just woke up from a plane crash\n killing all but you.");
+            missions.add("MISSION 1 !!! First things first. I want you to go and search the plane for a\n survival kit.");
+            missions.add("MISSION 2 !!! Good. Now, I want you to find a water source and fill up\n your canteen.");
+            missions.add("MISSION 3 !!! That should last you a few days. Now, you need to find some food.\n Venture throughout the forest...");
+            missions.add("MISSION 4 !!! You're not bad. Now, you need to find some string. I can help\n you make a slingshot.");
+            missions.add("MISSION 5 !!! You're almost set. How about finding some feathers, for a bow\n and arrow?");
+            missions.add("MISSION 6 !!! You just need to find the three pieces of the radio. Find\n the antenna.");
+            missions.add("MISSION 7 !!! Find the transmitter. You need this to call for help.");
+            missions.add("MISSION 8 !!! You're almost there. I need you to find the circuit board.");
+            missions.add("MISSION 9 !!! There's some bad news. You can't call for help until you clear\n all the monsters. Prepare for the final battle.");
+            missions.add("CONCLUSION !!! Congratulations! You vanquished all the monsters. Now, the\n rescue crews are on their way...");
 
             try {
                 textBox = ImageIO.read(new File("./images/hud/_HUD2.png"));
             } catch (IOException ex) {System.out.println("_HUD2.png not found!");}
 
+            // Setting the completeness
+            completeness = new ArrayList<>(missions.size());
+            for(int i = 0; i < completeness.size(); i++) {
+                completeness.set(i, false);
+            }
         }
 
         // Methods
-        public ArrayList<Mission> getMissions() { return missions; }
-        public String getCurrentTitle() { return missions.get(currentMission).getTitle(); }
-        public String runCurrentMission() { return missions.get(currentMission).getText(); }
+        public ArrayList<String> getMissions() { return missions; }
         public int getCurrentMission() { return currentMission; }
         public void setCurrentMission(int newMission) { currentMission = newMission; }
-        public boolean isComplete(int missionNum) throws ArrayIndexOutOfBoundsException { return missions.get(missionNum).getCompleteness(); }
+        public ArrayList<Boolean> getCompleteness() { return completeness; }
         public boolean completeCurrentMission(){
-            missions.get(currentMission).setCompleteness(true);
+            completeness.set(currentMission, true);
             if(currentMission >= missions.size() - 1)               // every mission completed: win condition
                 return true;
             currentMission++;
@@ -499,13 +501,18 @@ class Map extends JFrame {
         // Graphical methods
         @Override
         public void paintComponent(Graphics g){
-            g.drawImage(textBox, 0, 0, 6 * tileSize, tileSize, null);
-            g.setColor(titleColour);
-            g.setFont(titleFont);
-            g.drawString(missions.get(currentMission).getTitle(), titleX, titleY);
-            g.setColor(textColour);
-            g.setFont(textFont);
-            g.drawString(missions.get(currentMission).getText(), textX, textY);
+            try {
+                String[] tmp = missions.get(currentMission).split(LINE_SEPARATOR);
+
+                g.drawImage(textBox, 0, 0, 6 * tileSize, tileSize, null);
+                g.setColor(titleColour);
+                g.setFont(titleFont);
+                g.drawString(tmp[0], titleX, titleY);
+                g.setColor(textColour);
+                g.setFont(textFont);
+                g.drawString(tmp[1], textX, textY);
+            }
+            catch(ArrayIndexOutOfBoundsException e) {}
         }
     }
 
@@ -537,9 +544,9 @@ class Map extends JFrame {
             if(items.size() == 0)
                 bw.write(" ");
             bw.newLine();
-            ArrayList<Mission> mission_arr = mta.getMissions();
-            for(Mission i : mission_arr){
-                if(i.getCompleteness())
+            ArrayList<Boolean> mission_arr = mta.getCompleteness();
+            for(boolean i : mission_arr){
+                if(i)
                     bw.write("1 ");
                 else
                     bw.write("0 ");
