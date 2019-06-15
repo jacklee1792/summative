@@ -161,8 +161,8 @@ class Map extends JFrame {
 
     public void updateMonster() {
         MapComponent[][][] newSubMap = Monster.updateMonster(subMap, playerTile);
-        p.monsterAttack(subMap, playerTile);
         setMapFromSubMap();
+        p.monsterAttack(subMap, playerTile);
         repaint();
     }
 
