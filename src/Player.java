@@ -51,9 +51,12 @@ class Player {
         return selectedIndex;
     }
 
-    public void setSelectedIndex(int index) {
+    public void updateSelectedIndex(int index) {
         selectedIndex = index;
-
+        try {
+            attackDamage = inventory.get(selectedIndex).getDamage();
+            range = inventory.get(selectedIndex).getRange();
+        } catch (ArrayIndexOutOfBoundsException ex) {}
     }
 
     public ArrayList<Item> getInventory() {
@@ -67,11 +70,7 @@ class Player {
         }
     }
 
-    /*
-    TODO
-    -Better interaction logic -> interacting with both ground layer and item layer within player
-     */
-    public boolean interact(MapComponent m, Tile t, int missionNumber) {
+    public void interact(MapComponent m, Tile t) {
 
         try {
             if (inventory.get(selectedIndex).getHunger() > 0) {
@@ -100,45 +99,36 @@ class Player {
 //        else if (m.getMapComponentID() == MapComponent.xxx && inventory.size() < inventoryCap) {
 //            inventory.add(new Item(Item.xxx));
 //            System.out.println("Interaction with xxx object detected");
+        // rip x
 //        }
 
         else if (m.getMapComponentID() == MapComponent.MONSTER) {
             m.addHealth(-1 * attackDamage);
-            if (inventory.get(selectedIndex).getUsage() == 1)
-                dropItem();
+            System.out.println("You attacked that nibber for " + attackDamage);
+            System.out.println("That nibber has " + m.getHealth() + " health left");
         }
-
-
 
 //        for (Item i : inventory) {
 //            System.out.print(i.getItemID());
 //        }
 //        System.out.println();
+
         try {
             attackDamage = inventory.get(selectedIndex).getDamage();
             range = inventory.get(selectedIndex).getRange();
-        }
-        catch (IndexOutOfBoundsException how) {}
+        } catch (ArrayIndexOutOfBoundsException ex) {}
 
         addHunger(-1);
         checkHunger();
-
-        // Mission checking
-        return checkMission(m, missionNumber);
     }
-
-    private boolean checkMission(MapComponent m, int missionNumber){
-        if(missionNumber == 0)          // introduction
-            return true;
-        else if(missionNumber == 1){                // M1: searching plane
-            if(m.getMapComponentID() == 8)
-                return true;
-        }
-        else if (missionNumber == 2){               // M2:
-
-        }
-
-        return false;
+    public int interact(MapComponent m, int currentMission) {
+        return checkMission(m, currentMission);
+    }
+    private int checkMission(MapComponent m, int missionNumber){
+        /* TODO
+            Implement this
+         */
+        return 0;
     }
 
     public int getWalkState() { return walkState;}

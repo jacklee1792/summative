@@ -134,6 +134,16 @@ class Map extends JFrame {
         subMap = temp; //temp is destroyed upon exit
     }
 
+    public void setMapFromSubMap() {
+        for(int l = 0; l <= Map.ITEM_LAYER; l++) {
+            for(int r = 0; r < subMapHeight; r++) {
+                for(int c = 0; c < subMapWidth; c++) {
+                    map[l][subMapTile.getRow() + r][subMapTile.getColumn() + c] = new MapComponent(subMap[l][r][c]);
+                }
+            }
+        }
+    }
+
     public void updatePlayer() {
         if(System.currentTimeMillis() - p.getLastMovement() > 1000 / p.getMovementSpeed()) {
             if(keys['w']) {
@@ -154,24 +164,8 @@ class Map extends JFrame {
     }
 
     public void updateMonster() {
-        ArrayList<Tile> monsterList = new ArrayList<>();
-        for(int r = 0; r < subMapHeight; r++) {
-            for(int c = 0; c < subMapWidth; c++) {
-                //Write locations to monster list
-                if(subMap[ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER) {
-                    monsterList.add(new Tile(r + subMapTile.getRow(), c + subMapTile.getColumn()));
-                    map[ITEM_LAYER][r + subMapTile.getRow()][c + subMapTile.getColumn()] = new MapComponent(MapComponent.NULL);
-                    if (subMap[ITEM_LAYER][r][c].isDead())
-                    {subMap[ITEM_LAYER][r][c] = new MapComponent(MapComponent.NULL);
-                        repaint();}
-                }
-            }
-        }
-        ArrayList<Tile> newList = Monster.updateMonster(subMap, subMapTile, playerTile, monsterList);
-        for(Tile t : newList) {
-            map[ITEM_LAYER][t.getRow()][t.getColumn()] = new MapComponent(MapComponent.MONSTER);
-        }
-        setSubMap(subMapTile); //Update the subMap
+        MapComponent[][][] newSubMap = Monster.updateMonster(subMap, playerTile);
+        setMapFromSubMap();
         repaint();
     }
 
@@ -234,6 +228,17 @@ class Map extends JFrame {
 
     }
 
+    public void updateSelected(int mouseX, int mouseY) {
+        selectedTile = new Tile(mouseY / tileSize, mouseX / tileSize);
+        int dX = Math.abs(selectedTile.getColumn() - playerTile.getColumn());
+        int dY = Math.abs(selectedTile.getRow() - playerTile.getRow());
+        if(dX <= p.getRange() && dY <= p.getRange()) {
+            isSelecting = true;
+        }
+        else isSelecting = false;
+        repaint();
+    }
+
     //DrawArea and KeyListener and InventoryBar
     class DrawArea extends JPanel {
 
@@ -272,6 +277,13 @@ class Map extends JFrame {
                         int itemID = item.getMapComponentID();
                         BufferedImage itemTexture = MapComponent.texture[itemID];
                         g.drawImage(itemTexture, x, y, tileSize * (int)item.getComponentSize().getWidth(), tileSize * (int)item.getComponentSize().getHeight(), null);
+                        //Health bar for entity
+                        if(item.isEntity()) {
+                            g.setColor(Color.RED);
+                            g.fillRect(x, y - tileSize / 10, tileSize, tileSize / 10);
+                            g.setColor(Color.GREEN);
+                            g.fillRect(x, y - tileSize / 10, (int)(1.0 * tileSize * item.getHealth() / item.getMaxHealth()), tileSize / 10);
+                        }
                         x += tileSize; //advance to next item
                     }
                     x = 0;
@@ -306,7 +318,10 @@ class Map extends JFrame {
             try {
                 keys[key] = true;
             } catch (ArrayIndexOutOfBoundsException ex) {}
-
+            if(key >= '1' && key <= '5') {
+                p.updateSelectedIndex(key - '1');
+                updateSelected((int) MouseInfo.getPointerInfo().getLocation().getX(), (int) MouseInfo.getPointerInfo().getLocation().getY());
+            }
         }
 
         @Override
@@ -324,14 +339,7 @@ class Map extends JFrame {
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            selectedTile = new Tile(e.getY() / tileSize, e.getX() / tileSize);
-            int dX = Math.abs(selectedTile.getColumn() - playerTile.getColumn());
-            int dY = Math.abs(selectedTile.getRow() - playerTile.getRow());
-            if(dX <= p.getRange() && dY <= p.getRange())
-                isSelecting = true;
-            else
-                isSelecting = false;
-            repaint();
+            updateSelected(e.getX(), e.getY());
         }
 
         @Override
@@ -341,15 +349,11 @@ class Map extends JFrame {
 
         @Override
         public void mousePressed(MouseEvent e) {
+            updateSelected(e.getX(), e.getY());
             if(isSelecting) {
-                if(p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile, mta.getCurrentMission())){
-                    if(mta.completeCurrentMission())
-                        Map.winGame();
-                }
-
+                p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile);
                 repaint();
             }
-
         }
 
         @Override
@@ -410,14 +414,16 @@ class Map extends JFrame {
             //Draw inventory bar
             g.drawImage(invBar,0, 0, invWidth, invHeight, null);
             //Red rectangle around selected index
-            g.setColor(Color.RED);
-            g.drawRect(p.getSelectedIndex() * tileSize, 0, tileSize, tileSize);
+            Graphics2D g2 = (Graphics2D) g;
+            g.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(4));
+            g2.drawRect(p.getSelectedIndex() * tileSize, 0, tileSize, tileSize);
             //Draw item icons
             ArrayList<Item> inventory = p.getInventory();
             for(int i = 0; i < inventory.size(); i++) {
-                int x = (int)((i * invWidth / 5) + (0.1 * invWidth / 5));
-                int y = 2;
-                int size = (int)(0.8 * tileSize);
+                int y = (int)(4.0 * tileSize / 32);
+                int x = i * tileSize + y;
+                int size = (int)(24.0 * tileSize / 32);
                 g.drawImage(Item.texture[inventory.get(i).getItemID()], x, y, size, size, null);
             }
         }
@@ -426,7 +432,7 @@ class Map extends JFrame {
         @Override
         public void mousePressed(MouseEvent e) {
             int mouseX = e.getX();
-            p.setSelectedIndex(mouseX / tileSize);
+            p.updateSelectedIndex(mouseX / tileSize);
             repaint();
         }
 
