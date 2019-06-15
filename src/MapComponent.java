@@ -51,10 +51,10 @@ class MapComponent {
         attackRange = 1;
     }
 
-    public MapComponent (int MapComponentID, int healthy, int damage, int range) {
+    public MapComponent (int MapComponentID, int health, int damage, int range) {
         MC_ID = MapComponentID;
-        this.health = healthy;
-        maxHealth = healthy;
+        this.health = health;
+        maxHealth = health;
         attackDamage = damage;
         attackRange = range;
     }
@@ -71,6 +71,8 @@ class MapComponent {
         MC_ID = old.MC_ID;
         health = old.health;
         maxHealth = old.maxHealth;
+        attackDamage = old.attackDamage;
+        attackRange = old.attackRange;
     }
 
     //Methods

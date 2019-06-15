@@ -30,9 +30,9 @@ class Player {
 
     public Player() {
         name = "ppman";
-        health = 6; // for number of hearts
-        maxHealth = 6;
-        hunger = 99;
+        health = 100; // for number of hearts
+        maxHealth = 100;
+        hunger = 100;
         maxHunger = 100;
         walkState = 0;
         movementSpeed = 5;
@@ -52,7 +52,6 @@ class Player {
 
         for(int r = 0; r < subMap[0].length; r++) {
             for(int c = 0; c < subMap[0][0].length; c++) {
-
                 if(subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER){
                     if (Math.abs(ptRow - r) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange() && Math.abs(ptColumn - c) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange()) {
                         damageDealt += (subMap[Map.ITEM_LAYER][r][c].getAttackDamage());
@@ -60,7 +59,6 @@ class Player {
                 }
             }
         }
-        System.out.println(damageDealt + "damage was dealt to you ");
         addHealth(-1 *damageDealt);
     }
 
