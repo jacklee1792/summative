@@ -82,6 +82,7 @@ class MapComponent {
         else if (MC_ID == FILLED_NULL) b = false;
         else if (MC_ID == WISE_ROCK) b = false;
         else if (MC_ID == MONSTER) b = false;
+        else if (MC_ID == CHEST) b = false;
         return b;
     }
 
