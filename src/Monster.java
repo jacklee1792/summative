@@ -1,17 +1,17 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-class Monster extends Entity
-{
+class Monster extends MapComponent {
 
     static ArrayList<Monster> monsterList = new ArrayList<Monster>();
 
     private Tile location;
 
     public Monster() {
+        super(MONSTER, 2);
     }
 
     public static ArrayList<Tile> updateMonster(MapComponent[][][] subMap, Tile subMapTile, Tile playerTile, ArrayList<Tile> list) {
-        //if (isDead()) {
             for (int i = 0; i < list.size(); i++) {
                 int row = list.get(i).getRow(), column = list.get(i).getColumn();
                 Tile subMapPosition = new Tile(list.get(i).getRow() - subMapTile.getRow(), list.get(i).getColumn() - subMapTile.getColumn());
@@ -38,7 +38,6 @@ class Monster extends Entity
 
                 subMap[Map.ITEM_LAYER][list.get(i).getRow() - subMapTile.getRow()][list.get(i).getColumn() - subMapTile.getColumn()] = new MapComponent(MapComponent.MONSTER); //Update comparison subMap
             }
-        //}
         return list;
     }
 

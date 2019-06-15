@@ -5,15 +5,20 @@ import java.io.IOException;
 import java.nio.Buffer;
 import java.util.ArrayList;
 
-class Player extends Entity {
+class Player {
     /**
      * INSTANCE VARIABLES
      **/
     private String name;
-    private double hungerFactor;
+
+    private int hunger, maxHunger;
+    private int health, maxHealth;
     private ArrayList<Item> inventory;
     private int inventoryCap = 5;
     private int selectedIndex;
+    private int movementSpeed;
+    private int attackDamage;
+    private int range;
     private int stackSize = 6;
     private int walkState;
     private long lastMovement = 0;
@@ -26,8 +31,8 @@ class Player extends Entity {
         name = "ppman";
         health = 6; // for number of hearts
         maxHealth = 6;
-        hungerFactor = 100;
-        orientation = NORTH;
+        hunger = 99;
+        maxHunger = 100;
         walkState = 0;
         movementSpeed = 5;
         attackDamage = 5;
@@ -80,10 +85,7 @@ class Player extends Entity {
         }
 
         else if (m.getMapComponentID() == MapComponent.MONSTER) {
-            damageOther(m);
-            System.out.println("Attacked for " + getAttackDamage());
-            System.out.println("that nibber has " + m.getHealth() + " health left");
-
+            m.addHealth(-1 * attackDamage);
         }
 
 //        for (Item i : inventory) {
@@ -125,6 +127,31 @@ class Player extends Entity {
     public long getLastMovement() {
         return lastMovement;
     }
+
+    public int getHunger() {
+        return hunger;
+    }
+
+    public int getMaxHunger() {
+        return maxHunger;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public double getMovementSpeed() {
+        return movementSpeed;
+    }
+
+    public int getRange() {
+        return range;
+    }
+
 
     public void dropItem(){
         inventory.remove(selectedIndex);

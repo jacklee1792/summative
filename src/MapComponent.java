@@ -37,16 +37,20 @@ class MapComponent {
     final static int MONSTER = 11;
     final static int SWORD_OBJECT = 12;
 
-    int health = 6236;
+    private int health;
 
     //Constructors
     public MapComponent() {
+
+    }
+    public MapComponent(int MapComponentID, int health) {
+        MC_ID = MapComponentID;
+        this.health = health;
     }
 
     public MapComponent (int MapComponentID) {
         MC_ID = MapComponentID;
-        if (MC_ID == MONSTER)
-            health = 2;
+        health = 9999;
     }
 
     //Methods
@@ -92,8 +96,8 @@ class MapComponent {
         return d;
     }
 
-    public void addHealth(int toadd) {
-        health += toadd;
+    public void addHealth(int toAdd) {
+        health += toAdd;
     }
     public int getHealth() {return health; }
 

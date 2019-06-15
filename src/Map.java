@@ -188,29 +188,24 @@ class Map extends JFrame {
     }
 
     public void walk(int direction) {
-        p.setOrientation(direction);
         Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new subMap is valid
 
         if (direction == NORTH) {
-            p.setOrientation(NORTH);
             if(!collision(playerTile, NORTH)) {
                 temp.setRow(subMapTile.getRow() - 1); //move up by one
                 p.walkAnimation();
             }
         } else if (direction == WEST) {
-            p.setOrientation(WEST);
             if(!collision(playerTile, WEST)) {
                 temp.setColumn(subMapTile.getColumn() - 1); //move left by one
                 p.walkAnimation();
             }
         } else if (direction == SOUTH) {
-            p.setOrientation(SOUTH);
             if(!collision(playerTile, SOUTH)) {
                 temp.setRow(subMapTile.getRow() + 1); //move down by one
                 p.walkAnimation();
             }
         } else if (direction == EAST) {
-            p.setOrientation(EAST);
             if (!collision(playerTile, EAST)) {
                 temp.setColumn(subMapTile.getColumn() + 1); //move left by one
                 p.walkAnimation();
@@ -235,20 +230,24 @@ class Map extends JFrame {
             setPreferredSize(new Dimension(width, height));
             setLayout(null); //Required for setBounds
 
+            int HUDY = (subMapHeight * tileSize) - ( 3 * tileSize / 2);
+
+            //Vitals Bar
+            VitalsBar vb = new VitalsBar();
+            int vbX = tileSize / 2;
+            vb.setBounds(vbX, HUDY, 3 * tileSize, tileSize);
+            add(vb);
+
             //Inventory bar
             InventoryBar inv = new InventoryBar();
-            int invX = tileSize / 2;
-            int invY = subMapHeight * tileSize - (3 * invX);
-            inv.setBounds(invX, invY, 5 * tileSize, tileSize);
+            int invX = 8 * tileSize / 2;
+            inv.setBounds(invX, HUDY, 5 * tileSize, tileSize);
             add(inv);
 
             //Mission Text Area
-            File directory = new File("./");
-            System.out.println(directory.getAbsolutePath());
             MissionTextArea mta = new MissionTextArea(new File("./src/-missions_test.txt"));
-            int mtaX = 15 * tileSize / 2;
-            int mtaY = subMapHeight * tileSize - (3 * invX);
-            mta.setBounds(mtaX, mtaY, 8 * tileSize, tileSize);
+            int mtaX = 19 * tileSize / 2;
+            mta.setBounds(mtaX, HUDY, 7 * tileSize, tileSize);
             add(mta);
 
         }
@@ -301,7 +300,9 @@ class Map extends JFrame {
 
         @Override
         public void keyReleased(KeyEvent e) {
-            keys[e.getKeyChar()] = false;
+            try {
+                keys[e.getKeyChar()] = false;
+            } catch (ArrayIndexOutOfBoundsException ex) {}
             p.setWalkState(Player.STILL);
             repaint();
         }
@@ -352,13 +353,37 @@ class Map extends JFrame {
         }
     }
 
+    class VitalsBar extends JPanel {
+        BufferedImage texture;
+
+        public VitalsBar() {
+            try {
+                texture = ImageIO.read(new File("./src/_HUD3.png"));
+            } catch (IOException ex) {}
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            g.drawImage(texture, 0, 0, 3 * tileSize, tileSize, null);
+            int barX = (int)((16.5 / 32) * tileSize);
+            int healthBarY = (int)((5.5 / 32) * tileSize);
+            int hungerBarY = (int)((18.5 / 32) * tileSize);
+            int barHeight = (int)((8.75 / 32) * tileSize);
+            int healthWidth = (int)((1.0 * p.getHealth() / p.getMaxHealth()) * ((75.0 / 96) * 3 * tileSize));
+            int hungerWidth = (int)((1.0 * p.getHunger() / p.getMaxHunger()) * ((75.0 / 96) * 3 * tileSize));
+            g.setColor(new Color(31, 133, 36));
+            g.fillRect(barX, healthBarY, healthWidth, barHeight);
+            g.fillRect(barX, hungerBarY, hungerWidth, barHeight);
+        }
+    }
+
     class InventoryBar extends JPanel implements MouseListener {
         private int invHeight, invWidth;
         BufferedImage invBar;
 
         public InventoryBar() {
             invWidth = 5 * tileSize;
-            invHeight = 1 * tileSize;
+            invHeight = tileSize;
             try {
                 invBar = ImageIO.read(new File("./src/_HUD1.png"));
             } catch (IOException ex) {}
@@ -431,7 +456,7 @@ class Map extends JFrame {
             } catch(Exception ex) {System.out.println("Load file not found!");}
 
             try {
-                textBox = ImageIO.read(new File("./src/_HUD2.png"));            // make texture for this
+                textBox = ImageIO.read(new File("./src/_HUD2.png"));
             } catch (IOException ex) {System.out.println("_HUD2.png not found!");}
 
         }
@@ -453,7 +478,7 @@ class Map extends JFrame {
         // Graphical methods
         @Override
         public void paintComponent(Graphics g){
-            g.drawImage(textBox, 0, 0, 8 * tileSize, tileSize, null);
+            g.drawImage(textBox, 0, 0, 6 * tileSize, tileSize, null);
             g.setColor(titleColour);
             g.setFont(titleFont);
             g.drawString(missions.get(currentMission).getTitle(), titleX, titleY);
