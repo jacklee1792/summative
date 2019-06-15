@@ -273,6 +273,13 @@ class Map extends JFrame {
                         int itemID = item.getMapComponentID();
                         BufferedImage itemTexture = MapComponent.texture[itemID];
                         g.drawImage(itemTexture, x, y, tileSize * (int)item.getComponentSize().getWidth(), tileSize * (int)item.getComponentSize().getHeight(), null);
+                        //Health bar for entity
+                        if(item.isEntity()) {
+                            g.setColor(Color.RED);
+                            g.fillRect(x, y - tileSize / 10, tileSize, tileSize / 10);
+                            g.setColor(Color.GREEN);
+                            g.fillRect(x, y - tileSize / 10, (int)(1.0 * tileSize * item.getHealth() / item.getMaxHealth()), tileSize / 10);
+                        }
                         x += tileSize; //advance to next item
                     }
                     x = 0;
@@ -407,14 +414,16 @@ class Map extends JFrame {
             //Draw inventory bar
             g.drawImage(invBar,0, 0, invWidth, invHeight, null);
             //Red rectangle around selected index
-            g.setColor(Color.RED);
-            g.drawRect(p.getSelectedIndex() * tileSize, 0, tileSize, tileSize);
+            Graphics2D g2 = (Graphics2D) g;
+            g.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(4));
+            g2.drawRect(p.getSelectedIndex() * tileSize, 0, tileSize, tileSize);
             //Draw item icons
             ArrayList<Item> inventory = p.getInventory();
             for(int i = 0; i < inventory.size(); i++) {
-                int x = (int)((i * invWidth / 5) + (0.1 * invWidth / 5));
-                int y = 2;
-                int size = (int)(0.8 * tileSize);
+                int y = (int)(4.0 * tileSize / 32);
+                int x = i * tileSize + y;
+                int size = (int)(24.0 * tileSize / 32);
                 g.drawImage(Item.texture[inventory.get(i).getItemID()], x, y, size, size, null);
             }
         }
@@ -423,7 +432,7 @@ class Map extends JFrame {
         @Override
         public void mousePressed(MouseEvent e) {
             int mouseX = e.getX();
-            p.setSelectedIndex(mouseX / tileSize);
+            p.updateSelectedIndex(mouseX / tileSize);
             repaint();
         }
 

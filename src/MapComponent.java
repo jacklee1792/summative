@@ -103,12 +103,19 @@ class MapComponent {
         return d;
     }
 
+    public boolean isEntity() {
+        boolean b = false;
+        if(MC_ID == MONSTER) b = true;
+        return b;
+    }
+
     public void addHealth(int toAdd) {
         health += toAdd;
         if (health > maxHealth)
             health = maxHealth;
     }
     public int getHealth() {return health; }
+    public int getMaxHealth() {return maxHealth; }
 
 
 

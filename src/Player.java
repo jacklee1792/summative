@@ -51,9 +51,12 @@ class Player {
         return selectedIndex;
     }
 
-    public void setSelectedIndex(int index) {
+    public void updateSelectedIndex(int index) {
         selectedIndex = index;
-
+        try {
+            attackDamage = inventory.get(selectedIndex).getDamage();
+            range = inventory.get(selectedIndex).getRange();
+        } catch (ArrayIndexOutOfBoundsException ex) {}
     }
 
     public ArrayList<Item> getInventory() {
@@ -109,11 +112,11 @@ class Player {
 //            System.out.print(i.getItemID());
 //        }
 //        System.out.println();
+
         try {
             attackDamage = inventory.get(selectedIndex).getDamage();
             range = inventory.get(selectedIndex).getRange();
-        }
-        catch (IndexOutOfBoundsException how) {}
+        } catch (ArrayIndexOutOfBoundsException ex) {}
 
         addHunger(-1);
         checkHunger();
