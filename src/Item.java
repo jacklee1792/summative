@@ -31,7 +31,7 @@ class Item {
                     {0, 8, 0, 0, 0, 10}, // STRING
                     {0, 1, 0, 0, 0, 10}, // FEATHER
                     {0, 0, 0, 10, 1, 10}, // APPLE
-                    {0, 0, 1, 5, 0, 10}, // BERRY
+                    {0, 1, 1, 5, 0, 10}, // BERRY
                     {0, 0, (int)(Math.random() * 3), 25, 1, 1} // MEAT
             };
 
@@ -49,10 +49,14 @@ class Item {
     final static int BERRY = 10;
     final static int MEAT = 11;
 
-
     public Item(int ItemID) {
         I_ID = ItemID;
         stackSize = 1;
+    }
+
+    public Item(Item old) {
+        I_ID = old.I_ID;
+        stackSize = old.stackSize;
     }
 
     public int getItemID() {

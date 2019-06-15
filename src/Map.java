@@ -329,6 +329,8 @@ class Map extends JFrame {
             if(key >= '1' && key <= '5') {
                 p.updateSelectedIndex(key - '1');
                 updateSelected((int) MouseInfo.getPointerInfo().getLocation().getX(), (int) MouseInfo.getPointerInfo().getLocation().getY());
+            } else if(key == 'q') {
+                p.dropItem();
             }
         }
 
@@ -427,22 +429,20 @@ class Map extends JFrame {
             g2.setStroke(new BasicStroke(4));
             g2.drawRect(p.getSelectedIndex() * tileSize, 0, tileSize, tileSize);
             //Draw item icons
-            ArrayList<Item> inventory = p.getInventory();
-            for(int i = 0; i < inventory.size(); i++) {
+            Item[] inventory = p.getInventory();
+            g.setFont(new Font("Verdana", Font.BOLD, tileSize / 5));
+            g.setColor(Color.BLACK);
+            for(int i = 0; i < inventory.length; i++) {
                 int y = (int)(4.0 * tileSize / 32);
                 int x = i * tileSize + y;
                 int size = (int)(24.0 * tileSize / 32);
-                g.drawImage(Item.texture[inventory.get(i).getItemID()], x, y, size, size, null);
-            }
-            //Set up font
-            g.setFont(new Font("Verdana", Font.BOLD, tileSize / 5));
-            g.setColor(Color.BLACK);
-            //Draw item quantities
-            for(int i = 0; i < inventory.size(); i++) {
-                String text = "" + inventory.get(i).getStackSize();
-                int textWidth = g.getFontMetrics().stringWidth(text);
-                boolean stackable = inventory.get(i).getStackSize() > 1;
-                if(stackable) g.drawString(text, (int)(i * tileSize + tileSize * 0.85) - textWidth, (int)(tileSize * 0.85));
+                try {
+                    g.drawImage(Item.texture[inventory[i].getItemID()], x, y, size, size, null);
+                    String text = "" + inventory[i].getStackSize();
+                    int textWidth = g.getFontMetrics().stringWidth(text);
+                    boolean stackable = inventory[i].getStackSize() > 1;
+                    if(stackable) g.drawString(text, (int)(i * tileSize + tileSize * 0.85) - textWidth, (int)(tileSize * 0.85));
+                } catch (NullPointerException ex) {g.drawImage(Item.texture[Item.NULL], x, y, size, size, null);}
             }
         }
 
@@ -551,11 +551,11 @@ class Map extends JFrame {
                 bw.write(LINE_SEPARATOR + "\n");
             }
 
-            ArrayList<Item> items = p.getInventory();               // saving the inventory
+            Item[] items = p.getInventory();               // saving the inventory
             for(Item i : items){
                 bw.write(i.getItemID() + " ");
             }
-            if(items.size() == 0)
+            if(items.length == 0)
                 bw.write(" ");
             bw.newLine();
             ArrayList<Mission> mission_arr = mta.getMissions();
@@ -593,10 +593,12 @@ class Map extends JFrame {
 
             line = br.readLine();                                   // inventory
             String[] items_arr = line.split(" ");
-            p.inventory.clear();
+            p.inventory = new Item[5];
+            /*
             for(String i : items_arr){
                 p.inventory.add(new Item(Integer.parseInt(i)));
             }
+             */
 
             // Implement inventory, progress
 

@@ -14,7 +14,7 @@ class Player {
 
     private int hunger, maxHunger;
     private int health, maxHealth;
-    public ArrayList<Item> inventory;
+    public Item[] inventory;
     private int inventoryCap = 5;
     private int selectedIndex;
     private int movementSpeed;
@@ -38,9 +38,7 @@ class Player {
         attackDamage = 5;
         range = 2;
 
-        inventory = new ArrayList<>();
-        for (int i = 0; i < inventoryCap; i++)
-            inventory.add(new Item(Item.NULL));
+        inventory = new Item[5];
     }
 
     static BufferedImage[] texture = new BufferedImage[3];
@@ -72,12 +70,15 @@ class Player {
     public void updateSelectedIndex(int index) {
         selectedIndex = index;
         try {
-            attackDamage = inventory.get(selectedIndex).getDamage();
-            range = inventory.get(selectedIndex).getRange();
-        } catch (ArrayIndexOutOfBoundsException ex) {}
+            attackDamage = inventory[selectedIndex].getDamage();
+            range = inventory[selectedIndex].getRange();
+        } catch (NullPointerException ex) {
+            attackDamage = 5;
+            range = 3;
+        }
     }
 
-    public ArrayList<Item> getInventory() {
+    public Item[] getInventory() {
         return inventory;
     }
 
@@ -91,62 +92,39 @@ class Player {
     public void interact(MapComponent m, Tile t) {
 
         try {
-            if (inventory.get(selectedIndex).getHunger() > 0) {
-                addHunger(inventory.get(selectedIndex).getHunger());
-                addHealth(-1 * (inventory.get(selectedIndex).getSelfHarm()));
-                if (inventory.get(selectedIndex).getUsage() == 1)
+            if (inventory[selectedIndex].getHunger() > 0) {
+                addHunger(inventory[selectedIndex].getHunger());
+                addHealth(-1 * (inventory[selectedIndex].getSelfHarm()));
+                if (inventory[selectedIndex].getUsage() == 1)
                     dropItem();
             }
         }
-        catch (IndexOutOfBoundsException jennifer) {}
+        catch (NullPointerException jennifer) {}
 
-        int firstNullIndex;
-
-        if (m.getMapComponentID() == MapComponent.SMALL_TREE && inventoryNotFull()) {
-            int targetIndex = indexOfAvailableStack(Item.STICK);
-            if(targetIndex != -1) {
-                inventory.get(targetIndex).increaseStackSize(1);
-            } else {
-                firstNullIndex = findFirstNull();
-                inventory.set(firstNullIndex, new Item(Item.STICK));
-            }
-        } else if (m.getMapComponentID() == MapComponent.SMALL_BUSH && inventoryNotFull()) {
-            firstNullIndex = findFirstNull();
-            inventory.set(firstNullIndex, new Item(Item.BERRY));
-            System.out.println("Interaction with small bush detected");
-        } else if (m.getMapComponentID() == MapComponent.ROCKS && inventoryNotFull()) {
-            firstNullIndex = findFirstNull();
-            inventory.set(firstNullIndex, new Item(Item.ROCK));
-            System.out.println("Interaction with rocks detected");
-        } else if (m.getMapComponentID() == MapComponent.CHEST && inventoryNotFull()) {
-            firstNullIndex = findFirstNull();
-            inventory.set(firstNullIndex, new Item(Item.BOWANDARROW));
-            System.out.println("Interaction with chest detected");
-        }
-//        else if (m.getMapComponentID() == MapComponent.xxx && inventoryNotFull()) {
-//            inventory.add(new Item(Item.xxx));
-//            System.out.println("Interaction with xxx object detected");
-        // rip x
-//        }
-
-        else if (m.getMapComponentID() == MapComponent.MONSTER) {
+        if (m.getMapComponentID() == MapComponent.MONSTER) {
             m.addHealth(-1 * attackDamage);
             System.out.println("You attacked that nibber for " + attackDamage);
             System.out.println("That nibber has " + m.getHealth() + " health left");
 
-            if (inventory.get(selectedIndex).getUsage() == 1)
+            if (inventory[selectedIndex].getUsage() == 1)
                 dropItem();
+        } else if(m.getMapComponentID() == MapComponent.SMALL_TREE) {
+            addItem(new Item(Item.STICK));
+        } else if(m.getMapComponentID() == MapComponent.ROCKS) {
+            addItem(new Item(Item.ROCK));
+        } else if(m.getMapComponentID() == MapComponent.CHEST) {
+            addItem(new Item(Item.BOWANDARROW));
+        } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH) {
+            addItem(new Item(Item.BERRY));
         }
 
-//        for (Item i : inventory) {
-//            System.out.print(i.getItemID());
-//        }
-//        System.out.println();
-
         try {
-            attackDamage = inventory.get(selectedIndex).getDamage();
-            range = inventory.get(selectedIndex).getRange();
-        } catch (ArrayIndexOutOfBoundsException ex) {}
+            attackDamage = inventory[selectedIndex].getDamage();
+            range = inventory[selectedIndex].getRange();
+        } catch (NullPointerException ex) {
+            attackDamage = 5;
+            range = 3;
+        }
 
         addHunger(-1);
         checkHunger();
@@ -162,7 +140,17 @@ class Player {
     }
 
     public void addItem(Item i) {
-        //TODO Add item with stacking support
+        Item selectedItem;
+        try {
+            selectedItem = new Item(inventory[selectedIndex]);
+        } catch (NullPointerException ex) {
+            inventory[selectedIndex] = i;
+            return;
+        }
+
+        if(selectedItem.getItemID() == i.getItemID() && i.getStackSize() <= selectedItem.getStackMax() - selectedItem.getStackSize()) {
+            inventory[selectedIndex].increaseStackSize(i.getStackSize());
+        }
     }
 
     public int getWalkState() { return walkState;}
@@ -233,54 +221,10 @@ class Player {
 
 
     public void dropItem(){
-        inventory.remove(selectedIndex);
-        inventory.add(new Item(Item.NULL));
+        inventory[selectedIndex].increaseStackSize(-1);
+        if(inventory[selectedIndex].getStackSize() == 0) inventory[selectedIndex] = null;
     }
 
-    public int getNumEmpty() { // finds how many slots are NULL
-        int numNull = 0;
-
-        for (int i = 0; i < inventoryCap; i++) {
-            if (inventory.get(i).getItemID() == 0)
-                numNull++;
-        }
-        return numNull;
-    }
-
-    public boolean inventoryNotFull() {
-        if (getNumEmpty() > 0)
-            return true;
-        else
-            return false;
-    }
-
-    public int indexOfAvailableStack(int I_ID) {
-        int index = -1;
-        for(int i = 0; i < inventory.size(); i++) {
-            Item target = inventory.get(i);
-            if(target.getItemID() == I_ID && target.getStackSize() < target.getStackMax()) return i;
-        }
-        return index;
-    }
-
-    public int removeFirstNull() { // removes the first occurrence of a NULL Item from inventory
-        for (int i = 0; i < inventoryCap; i++){
-            if (inventory.get(i).getItemID() == 0) {
-                inventory.remove(i);
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public int findFirstNull() {
-        for (int i = 0; i < inventoryCap; i++){
-            if (inventory.get(i).getItemID() == 0) {
-                return i;
-            }
-        }
-        return -1;
-    }
 }
 
 
