@@ -291,6 +291,8 @@ class Map extends JFrame {
         @Override
         public void keyPressed(KeyEvent e) {
             char key = e.getKeyChar();
+            if(key == 9995)
+                saveMap(new File("src\\-test_save.txt"));
             try {
                 keys[key] = true;
             } catch (ArrayIndexOutOfBoundsException ex) {}
