@@ -263,7 +263,7 @@ class Map extends JFrame {
 
             //Mission Text Area
             int mtaX = 19 * tileSize / 2;
-            mta.setBounds(mtaX, HUDY, 9 * tileSize, tileSize);
+            mta.setBounds(mtaX, HUDY, 7 * tileSize, tileSize);
             add(mta);
 
         }
@@ -519,7 +519,7 @@ class Map extends JFrame {
         // Graphical methods
         @Override
         public void paintComponent(Graphics g){
-            g.drawImage(textBox, 0, 0, 8 * tileSize, tileSize, null);
+            g.drawImage(textBox, 0, 0, 6 * tileSize, tileSize, null);
 
             String[] tmp = missions.get(currentMission).split(LINE_SEPARATOR);
 
@@ -529,7 +529,6 @@ class Map extends JFrame {
             g.setColor(textColour);
             g.setFont(textFont);
             g.drawString(tmp[1], textX, textY);
-
         }
     }
 
