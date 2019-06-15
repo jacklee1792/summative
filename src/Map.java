@@ -291,7 +291,7 @@ class Map extends JFrame {
         @Override
         public void keyPressed(KeyEvent e) {
             char key = e.getKeyChar();
-            if(key == 9995)
+            if(key == 61 || key == 43)
                 saveMap(new File("src\\-test_save.txt"));
             try {
                 keys[key] = true;
