@@ -235,6 +235,17 @@ class Map extends JFrame {
         }
     }
 
+    public void updateSelected(int mouseX, int mouseY) {
+        selectedTile = new Tile(mouseY / tileSize, mouseX / tileSize);
+        int dX = Math.abs(selectedTile.getColumn() - playerTile.getColumn());
+        int dY = Math.abs(selectedTile.getRow() - playerTile.getRow());
+        if(dX <= p.getRange() && dY <= p.getRange()) {
+            isSelecting = true;
+        }
+        else isSelecting = false;
+        repaint();
+    }
+
     //DrawArea and KeyListener and InventoryBar
     class DrawArea extends JPanel {
 
@@ -314,7 +325,10 @@ class Map extends JFrame {
             try {
                 keys[key] = true;
             } catch (ArrayIndexOutOfBoundsException ex) {}
-
+            if(key >= '1' && key <= '5') {
+                p.updateSelectedIndex(key - '1');
+                updateSelected((int) MouseInfo.getPointerInfo().getLocation().getX(), (int) MouseInfo.getPointerInfo().getLocation().getY());
+            }
         }
 
         @Override
@@ -332,14 +346,7 @@ class Map extends JFrame {
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            selectedTile = new Tile(e.getY() / tileSize, e.getX() / tileSize);
-            int dX = Math.abs(selectedTile.getColumn() - playerTile.getColumn());
-            int dY = Math.abs(selectedTile.getRow() - playerTile.getRow());
-            if(dX <= p.getRange() && dY <= p.getRange()) {
-                isSelecting = true;
-            }
-            else isSelecting = false;
-            repaint();
+            updateSelected(e.getX(), e.getY());
         }
 
         @Override
@@ -349,11 +356,11 @@ class Map extends JFrame {
 
         @Override
         public void mousePressed(MouseEvent e) {
+            updateSelected(e.getX(), e.getY());
             if(isSelecting) {
                 p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile);
                 repaint();
             }
-
         }
 
         @Override
