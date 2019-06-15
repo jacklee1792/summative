@@ -1,5 +1,6 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 
 class Monster extends MapComponent {
 
@@ -16,32 +17,51 @@ class Monster extends MapComponent {
 
         for(Tile t : locations) {
             int row = t.getRow(), column = t.getColumn();
-            MapComponent currentMonster = new MapComponent(subMap[Map.ITEM_LAYER][row][column]);
+            MapComponent currentMonster = subMap[Map.ITEM_LAYER][row][column];
             subMap[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.NULL);
+            int[] walkPriority = {0, 0, 0, 0}; //0 = cannot walk, 1 = can walk, 2 = can walk towards player
+            try {
+                if (subMap[Map.ITEM_LAYER][row - 1][column].getWalkable() && subMap[Map.GROUND_LAYER][row - 1][column].getWalkable() && (row - 1 != ptRow || column != ptColumn))
+                    walkPriority[Map.NORTH] = 1;
+            } catch (Exception ex) {}
+            try {
+                if (subMap[Map.ITEM_LAYER][row + 1][column].getWalkable() && subMap[Map.GROUND_LAYER][row + 1][column].getWalkable() && (row + 1 != ptRow || column != ptColumn))
+                    walkPriority[Map.SOUTH] = 1;
+            } catch (Exception ex) {}
+            try {
+                if (subMap[Map.ITEM_LAYER][row][column - 1].getWalkable() && subMap[Map.GROUND_LAYER][row][column - 1].getWalkable() && (column - 1 != ptColumn || row != ptRow))
+                    walkPriority[Map.WEST] = 1;
+            } catch (Exception ex) {}
+            try {
+                if (subMap[Map.ITEM_LAYER][row][column + 1].getWalkable() && subMap[Map.GROUND_LAYER][row][column + 1].getWalkable() && (column + 1 != ptColumn || row != ptRow))
+                    walkPriority[Map.EAST] = 1;
+            } catch (Exception ex) {}
+            if(row > ptRow) walkPriority[Map.NORTH] *= 2;
+            if(row < ptRow) walkPriority[Map.SOUTH] *= 2;
+            if(column > ptColumn) walkPriority[Map.WEST] *= 2;
+            if(column < ptColumn) walkPriority[Map.EAST] *= 2;
 
-            if(currentMonster.getHealth() <= 0) {
-                //Do nothing to re-spawn it
-            } else if (row > ptRow &&
-                    subMap[Map.ITEM_LAYER][row - 1][column].getWalkable() &&
-                    subMap[Map.GROUND_LAYER][row - 1][column].getWalkable() &&
-                    (row - 1 != ptRow || column != ptColumn)) {
-                subMap[Map.ITEM_LAYER][row - 1][column] = new MapComponent(currentMonster);
-            } else if (row < ptRow &&
-                    subMap[Map.ITEM_LAYER][row + 1][column].getWalkable() &&
-                    subMap[Map.GROUND_LAYER][row + 1][column].getWalkable() &&
-                    (row + 1 != ptRow || column != ptColumn)) {
-                subMap[Map.ITEM_LAYER][row + 1][column] = new MapComponent(currentMonster);
-            } else if (column > ptColumn &&
-                    subMap[Map.ITEM_LAYER][row][column - 1].getWalkable() &&
-                    subMap[Map.GROUND_LAYER][row][column - 1].getWalkable() &&
-                    (column - 1 != ptColumn || row != ptRow)) {
-                subMap[Map.ITEM_LAYER][row][column - 1] = new MapComponent(currentMonster);
-            } else if (column < ptColumn &&
-                    subMap[Map.ITEM_LAYER][row][column + 1].getWalkable() &&
-                    subMap[Map.GROUND_LAYER][row][column + 1].getWalkable() &&
-                    (column + 1 != ptColumn || row != ptRow)) {
-                subMap[Map.ITEM_LAYER][row][column + 1] = new MapComponent(currentMonster);
-            } else subMap[Map.ITEM_LAYER][row][column] = new MapComponent(currentMonster);
+            int highestPriority = Integer.MIN_VALUE;
+            for(int val : walkPriority) {
+                if(val > highestPriority) highestPriority = val;
+            }
+
+            ArrayList<Integer> toChoose = new ArrayList<>();
+            for(int i = 0; i < walkPriority.length; i++) {
+                if(walkPriority[i] == highestPriority) toChoose.add(i);
+            }
+
+            Random r = new Random();
+            int choice = toChoose.get(r.nextInt(toChoose.size()));
+
+            if(currentMonster.getHealth() > 0) {
+                if (highestPriority == 0) subMap[Map.ITEM_LAYER][row][column] = currentMonster; //Put it back where it was
+                else if (choice == Map.NORTH) subMap[Map.ITEM_LAYER][row - 1][column] = currentMonster;
+                else if (choice == Map.SOUTH) subMap[Map.ITEM_LAYER][row + 1][column] = currentMonster;
+                else if (choice == Map.WEST) subMap[Map.ITEM_LAYER][row][column - 1] = currentMonster;
+                else if (choice == Map.EAST) subMap[Map.ITEM_LAYER][row][column + 1] = currentMonster;
+            }
+
         }
 
         return subMap;
