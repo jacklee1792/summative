@@ -89,7 +89,9 @@ class Player {
         }
     }
 
-    public void interact(MapComponent m, Tile t) {
+    public boolean interact(MapComponent m, Tile t, int currentMission) {
+        // Checking mission completion
+        boolean missionComplete = checkMission(currentMission, m);
 
         try {
             if (inventory[selectedIndex].getHunger() > 0) {
@@ -128,15 +130,54 @@ class Player {
 
         addHunger(-1);
         checkHunger();
+
+        return missionComplete;
     }
-    public int interact(MapComponent m, int currentMission) {
-        return checkMission(m, currentMission);
-    }
-    private int checkMission(MapComponent m, int missionNumber){
-        /* TODO
-            Implement this
-         */
-        return 0;
+
+    private boolean checkMission(int currentMission, MapComponent m){
+        if(currentMission == 0){
+            return true;
+        }
+        else if(currentMission == 1){
+            if(m.getMapComponentID() == MapComponent.PLANE)
+                return true;
+        }
+        else if(currentMission == 2){
+            if(m.getMapComponentID() == MapComponent.WATER)
+                return true;
+            return true;
+        }
+        else if(currentMission == 3){
+            if(m.getMapComponentID() == MapComponent.SMALL_BUSH)
+                return true;
+        }
+        else if(currentMission == 4){
+            /*
+            TODO
+            - make MCID for string, feathers
+             */
+        }
+        else if(currentMission == 5){
+
+        }
+        else if(currentMission == 6){
+
+        }
+        else if(currentMission == 7){
+
+        }
+        else if(currentMission == 8){
+
+        }
+        else if(currentMission == 9){           // winning
+            try {
+                Thread.sleep(500);
+            }
+            catch(InterruptedException e) {}
+            Map.winGame();
+            return true;
+        }
+        return false;
     }
 
     public void addItem(Item i) {
@@ -198,8 +239,8 @@ class Player {
         return maxHealth;
     }
 
-    public void addHunger(int toadd) {
-        hunger += toadd;
+    public void addHunger(int toAdd) {
+        hunger += toAdd;
         if (hunger > maxHunger)
             hunger = maxHunger;
         if (hunger < 0)
