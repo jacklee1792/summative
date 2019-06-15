@@ -376,7 +376,7 @@ class Map extends JFrame {
 
         public VitalsBar() {
             try {
-                texture = ImageIO.read(new File("./src/_HUD3.png"));
+                texture = ImageIO.read(new File("./images/hud/_HUD3.png"));
             } catch (IOException ex) {}
         }
 
@@ -403,7 +403,7 @@ class Map extends JFrame {
             invWidth = 5 * tileSize;
             invHeight = tileSize;
             try {
-                invBar = ImageIO.read(new File("./src/_HUD1.png"));
+                invBar = ImageIO.read(new File("./images/hud/_HUD1.png"));
             } catch (IOException ex) {}
             addMouseListener(this);
         }
@@ -476,7 +476,7 @@ class Map extends JFrame {
             } catch(Exception ex) {System.out.println("Load file not found!");}
 
             try {
-                textBox = ImageIO.read(new File("./src/_HUD2.png"));
+                textBox = ImageIO.read(new File("./images/hud/_HUD2.png"));
             } catch (IOException ex) {System.out.println("_HUD2.png not found!");}
 
         }

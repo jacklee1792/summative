@@ -56,7 +56,7 @@ class MapComponent {
     //Methods
     public static void importTextures() throws IOException { //import textures
         for(int i = 0; i < numOfComponents; i++) {
-            texture[i] = ImageIO.read(new File("./src/_TEX" + i + ".png"));
+            texture[i] = ImageIO.read(new File("./images/textures/_TEX" + i + ".png"));
         }
     }
 

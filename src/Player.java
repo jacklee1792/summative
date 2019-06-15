@@ -63,7 +63,7 @@ class Player {
     public static void importTextures() throws IOException { //import textures
         texture = new BufferedImage[3];
         for (int i = 1; i <= 3; i++) {
-            texture[i - 1] = ImageIO.read(new File("./src/_PLYR" + i + ".png"));
+            texture[i - 1] = ImageIO.read(new File("./images/player/_PLYR" + i + ".png"));
         }
     }
 

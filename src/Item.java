@@ -1,4 +1,5 @@
 import javax.imageio.ImageIO;
+import java.io.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.Math;
@@ -62,7 +63,7 @@ class Item {
     //Methods
     public static void importTextures() throws IOException { //import textures
         for(int i = 0; i < numItems; i++) {
-            texture[i] = ImageIO.read(MapComponent.class.getResourceAsStream("_ITM" + i + ".png"));
+            texture[i] = ImageIO.read(new File("./images/items/_ITM" + i + ".png"));
         }
     }
 
