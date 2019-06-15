@@ -263,7 +263,7 @@ class Map extends JFrame {
 
             //Mission Text Area
             int mtaX = 19 * tileSize / 2;
-            mta.setBounds(mtaX, HUDY, 7 * tileSize, tileSize);
+            mta.setBounds(mtaX, HUDY, 9 * tileSize, tileSize);
             add(mta);
 
         }
@@ -352,7 +352,10 @@ class Map extends JFrame {
         public void mousePressed(MouseEvent e) {
             updateSelected(e.getX(), e.getY());
             if(isSelecting) {
-                p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile);
+                boolean missionCompletion = p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile, mta.getCurrentMission());
+                if(missionCompletion){
+                    mta.completeCurrentMission();
+                }
                 repaint();
             }
         }
@@ -454,51 +457,49 @@ class Map extends JFrame {
     class MissionTextArea extends JPanel {
         // Instance variables
         private ArrayList<String> missions;
-        private ArrayList<Boolean> completeness;
         private int currentMission;
         private BufferedImage textBox;
 
         // Constants
-        final int titleX = tileSize, titleY = (int)(tileSize / 3.3), textX = tileSize / 6, textY = (int)(tileSize / 2.1);
-        final Font titleFont = new Font("Comic Sans MS", Font.BOLD, 20), textFont = new Font("Comic Sans MS", Font.BOLD, 16);
-        final Color titleColour = Color.black, textColour = Color.black;
+        final int titleX = tileSize;
+        final int titleY = (int)(tileSize / 3.1);
+        final int textX = (int)(tileSize / 5.5);
+        final int textY = (int)(tileSize / 1.7);
+        final int text2Y = textY + (int)(tileSize / 4.2);
+
+        final Font titleFont = new Font("Comic Sans MS", Font.BOLD, (int)(tileSize / 4.5));
+        final Font textFont = new Font("Comic Sans MS", Font.PLAIN, (int)(tileSize / 5.1));
+        final Color titleColour = Color.black;
+        final Color textColour = Color.black;
+        //final int[] cutoffIndices = {60, 59, 57, 60, 57, 56, 53, -1, -1, 57, 56};
 
         // Constructor
         public MissionTextArea() {
             missions = new ArrayList<>();
             currentMission = 0;
-            String line = " ";
 
-            missions.add("INTRODUCTION !!! Hi. I am the Wise Rock. You just woke up from a plane crash\n killing all but you.");
-            missions.add("MISSION 1 !!! First things first. I want you to go and search the plane for a\n survival kit.");
-            missions.add("MISSION 2 !!! Good. Now, I want you to find a water source and fill up\n your canteen.");
-            missions.add("MISSION 3 !!! That should last you a few days. Now, you need to find some food.\n Venture throughout the forest...");
-            missions.add("MISSION 4 !!! You're not bad. Now, you need to find some string. I can help\n you make a slingshot.");
-            missions.add("MISSION 5 !!! You're almost set. How about finding some feathers, for a bow\n and arrow?");
-            missions.add("MISSION 6 !!! You just need to find the three pieces of the radio. Find\n the antenna.");
+            missions.add("INTRODUCTION !!! Hi. I am the Wise Rock. You just woke up from a plane crash  killing all but you.");
+            missions.add("MISSION 1 !!! First things first. I want you to go and search the plane for a survival kit.");
+            missions.add("MISSION 2 !!! Good. Now, I want you to find a water source and fill up your canteen.");
+            missions.add("MISSION 3 !!! That should last you a few days. Now, you need to find some food. Venture throughout the forest...");
+            missions.add("MISSION 4 !!! You're not bad. Now, you need to find some string. I can help you make a slingshot.");
+            missions.add("MISSION 5 !!! You're almost set. How about finding some feathers, for a bow and arrow?");
+            missions.add("MISSION 6 !!! You just need to find the three pieces of the radio. Find the antenna.");
             missions.add("MISSION 7 !!! Find the transmitter. You need this to call for help.");
             missions.add("MISSION 8 !!! You're almost there. I need you to find the circuit board.");
-            missions.add("MISSION 9 !!! There's some bad news. You can't call for help until you clear\n all the monsters. Prepare for the final battle.");
-            missions.add("CONCLUSION !!! Congratulations! You vanquished all the monsters. Now, the\n rescue crews are on their way...");
+            missions.add("MISSION 9 !!! There's some bad news. You can't call for help until you clear all the monsters. Prepare for the final battle.");
+            missions.add("CONCLUSION !!! Congratulations! You vanquished all the monsters. Now, the rescue crews are on their way...");
 
             try {
                 textBox = ImageIO.read(new File("./images/hud/_HUD2.png"));
             } catch (IOException ex) {System.out.println("_HUD2.png not found!");}
-
-            // Setting the completeness
-            completeness = new ArrayList<>(missions.size());
-            for(int i = 0; i < completeness.size(); i++) {
-                completeness.set(i, false);
-            }
         }
 
         // Methods
         public ArrayList<String> getMissions() { return missions; }
         public int getCurrentMission() { return currentMission; }
         public void setCurrentMission(int newMission) { currentMission = newMission; }
-        public ArrayList<Boolean> getCompleteness() { return completeness; }
         public boolean completeCurrentMission(){
-            completeness.set(currentMission, true);
             if(currentMission >= missions.size() - 1)               // every mission completed: win condition
                 return true;
             currentMission++;
@@ -508,18 +509,17 @@ class Map extends JFrame {
         // Graphical methods
         @Override
         public void paintComponent(Graphics g){
-            try {
-                String[] tmp = missions.get(currentMission).split(LINE_SEPARATOR);
+            g.drawImage(textBox, 0, 0, 8 * tileSize, tileSize, null);
 
-                g.drawImage(textBox, 0, 0, 6 * tileSize, tileSize, null);
-                g.setColor(titleColour);
-                g.setFont(titleFont);
-                g.drawString(tmp[0], titleX, titleY);
-                g.setColor(textColour);
-                g.setFont(textFont);
-                g.drawString(tmp[1], textX, textY);
-            }
-            catch(ArrayIndexOutOfBoundsException e) {}
+            String[] tmp = missions.get(currentMission).split(LINE_SEPARATOR);
+
+            g.setColor(titleColour);
+            g.setFont(titleFont);
+            g.drawString(tmp[0], titleX, titleY);
+            g.setColor(textColour);
+            g.setFont(textFont);
+            g.drawString(tmp[1], textX, textY);
+
         }
     }
 
@@ -551,13 +551,8 @@ class Map extends JFrame {
             if(items.size() == 0)
                 bw.write(" ");
             bw.newLine();
-            ArrayList<Boolean> mission_arr = mta.getCompleteness();
-            for(boolean i : mission_arr){
-                if(i)
-                    bw.write("1 ");
-                else
-                    bw.write("0 ");
-            }
+
+            bw.write(mta.getCurrentMission());                      // mission progress
 
             bw.close();
             return true;
@@ -591,7 +586,13 @@ class Map extends JFrame {
                 p.inventory.add(new Item(Integer.parseInt(i)));
             }
 
-            // Implement inventory, progress
+            line = br.readLine();
+            try {
+                mta.setCurrentMission(Integer.parseInt(line));
+            }
+            catch(Exception e){
+                mta.setCurrentMission(0);
+            }
 
             return true;
         }
