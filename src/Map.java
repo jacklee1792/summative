@@ -78,7 +78,7 @@ class Map extends JFrame {
         map = new MapComponent[2][mapHeight][mapWidth];
 
         //Generate map, player tile, subMap tile
-        MapGenerator m = new MapGenerator(212169);
+        MapGenerator m = new MapGenerator(2121);
         m.generate(mapHeight, mapWidth);
         map = m.getMap();
         Tile spawnTile = m.getSpawnTile();
@@ -521,8 +521,8 @@ class Map extends JFrame {
         final int textY = (int)(tileSize / 1.7);
         final int text2Y = textY + (int)(tileSize / 4.2);
 
-        final Font titleFont = new Font("Comic Sans MS", Font.BOLD, (int)(tileSize / 4.5));
-        final Font textFont = new Font("Comic Sans MS", Font.PLAIN, (int)(tileSize / 5.1));
+        final Font titleFont = new Font("Verdana", Font.BOLD, (int)(tileSize / 4.5));
+        final Font textFont = new Font("Verdana", Font.PLAIN, (int)(tileSize / 5.1));
         final Color titleColour = Color.black;
         final Color textColour = Color.black;
         //final int[] cutoffIndices = {60, 59, 57, 60, 57, 56, 53, -1, -1, 57, 56};
