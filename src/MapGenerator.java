@@ -34,7 +34,10 @@ public class MapGenerator { //I'll add getters and setters on map later
         //Initial lake point generation
         for (int r = 0; r < h; r++) {
             for (int c = 0; c < w; c++) {
-                if (chance(0.001)) map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER); //randomly spawning water
+                if (chance(0.001)) {
+                    map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER); //randomly spawning water
+                    map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.WATER);
+                }
             }
         }
 
@@ -48,7 +51,10 @@ public class MapGenerator { //I'll add getters and setters on map later
                 for (int c = 0; c < w; c++) {
                     {
                         int touching = countTouching(map, Map.GROUND_LAYER, r, c, MapComponent.WATER);
-                        if (chance(touching / 10.0)) temp[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER);
+                        if (chance(touching / 10.0)){
+                            temp[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER);
+                            temp[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.WATER);
+                        }
                     }
                 }
             }
@@ -66,11 +72,13 @@ public class MapGenerator { //I'll add getters and setters on map later
                             countTouching(map, Map.GROUND_LAYER, r, c, MapComponent.GRASS) >= 3 &&
                             chance(0.2)) {
                         temp[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.GRASS);
+                        temp[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.NULL);
                     }
                     else if(map[Map.GROUND_LAYER][r][c].getMapComponentID() == MapComponent.GRASS &&
                             countTouching(map, Map.GROUND_LAYER, r, c, MapComponent.WATER) >= 3 &&
                             chance(0.8)) {
                         temp[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.WATER);
+                        temp[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.WATER);
                     }
                 }
             }
@@ -118,7 +126,6 @@ public class MapGenerator { //I'll add getters and setters on map later
                 }
             }
         }
-        //map[Map.ITEM_LAYER][spawnTile.getRow()][spawnTile.getColumn()] = new MapComponent(MapComponent.FILLED_NULL); //Player tile not passable
 
         //Plane
         for(int r = spawnTile.getRow() + 1; r < spawnTile.getRow() + 2; r++) { //4 by 2 region of plane
@@ -179,10 +186,9 @@ public class MapGenerator { //I'll add getters and setters on map later
         }
     }
 
-
     private boolean chance(double probability) {
         if(rand.nextInt(10000) < probability * 10000) return true; //Limited accuracy but it works for this purpose
-        else return false;
+        return false;
     }
 
     //maybe we can use this later???

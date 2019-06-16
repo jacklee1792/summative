@@ -18,7 +18,7 @@ class MapComponent {
 
     //Static variables and their properties
 
-    static int numOfComponents = 16; //Number of currently implemented components
+    static int numOfComponents = 18; //Number of currently implemented components
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
@@ -39,6 +39,12 @@ class MapComponent {
     final static int RABBIT = 13;
     final static int BIRD = 14;
     final static int CAMPFIRE = 15;
+    final static int STRING = 16;
+    final static int DEAD_RABBIT = 17;
+    final static int FEATHER = 18;                      // dead bird
+    final static int ANTENNA = 19;
+    final static int TRANSMITTER = 20;
+    final static int CIRCUIT_BOARD = 21;
 
     private int health, maxHealth, attackDamage, attackRange;
 

@@ -22,6 +22,8 @@ class Player {
     private int range;
     private int walkState;
     private long lastMovement = 0;
+    private boolean rad1 = false, rad2 = false, rad3 = false;       // to track radio parts
+    private int monstersKilled = 0, rabbitsKilled = 0, birdsKilled = 0;     // tracking moster killing stats
 
     final static int STILL = 0;
     final static int WALK_L = 1;
@@ -110,6 +112,15 @@ class Player {
         if (m.getMapComponentID() == MapComponent.MONSTER ||
                 m.getMapComponentID() == MapComponent.RABBIT ||
                 m.getMapComponentID() == MapComponent.BIRD) {
+
+            if(m.getHealth() <= attackDamage){
+                if(m.getMapComponentID() == MapComponent.MONSTER)
+                    monstersKilled++;
+                else if(m.getMapComponentID() == MapComponent.RABBIT)
+                    rabbitsKilled++;
+                else if(m.getMapComponentID() == MapComponent.BIRD)
+                    birdsKilled++;
+            }
             m.addHealth(-1 * attackDamage);
             System.out.println("You attacked that nibber for " + attackDamage);
             System.out.println("That nibber has " + m.getHealth() + " health left");
@@ -141,7 +152,7 @@ class Player {
     }
 
     private boolean checkMission(int currentMission, MapComponent m){
-        if(currentMission == 0){
+        if(currentMission == 0 || currentMission == 5 || currentMission == 11){
             return true;
         }
         else if(currentMission == 1){
@@ -155,31 +166,62 @@ class Player {
         else if(currentMission == 3){
             if(m.getMapComponentID() == MapComponent.WATER)
                 return true;
-            return true;
         }
         else if(currentMission == 4){
             if(m.getMapComponentID() == MapComponent.SMALL_BUSH)
                 return true;
         }
-        else if(currentMission == 5){
-            /*
-            TODO
-            - make MCID for string, feathers
-             */
-        }
         else if(currentMission == 6){
-
+            if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.BERRY){
+                inventory[selectedIndex] = new Item(Item.COOKED_FRUIT);
+                return true;
+            }
         }
         else if(currentMission == 7){
-
+            if(m.getMapComponentID() == MapComponent.STRING)
+                return true;
         }
         else if(currentMission == 8){
-
+            if(m.getMapComponentID() == MapComponent.SMALL_TREE){
+                /*
+                TODO
+                - impmlement transforming this to slingshot (if we even want to do this)
+                 */
+            }
         }
         else if(currentMission == 9){
-
+            if(m.getMapComponentID() == MapComponent.DEAD_RABBIT)
+                return true;
         }
-        else if(currentMission == 10){           // winning
+        else if(currentMission == 10){
+            if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.MEAT){
+                inventory[selectedIndex] = new Item(Item.COOKED_MEAT);
+                return true;
+            }
+        }
+        else if(currentMission == 12){
+            if(m.getMapComponentID() == MapComponent.ANTENNA){
+                rad1 = true;
+                return true;
+            }
+        }
+        else if(currentMission == 13){
+            if(m.getMapComponentID() == MapComponent.TRANSMITTER){
+                rad2 = true;
+                return true;
+            }
+        }
+        else if(currentMission == 14){
+            if(m.getMapComponentID() == MapComponent.CIRCUIT_BOARD){
+                rad3 = true;
+                return true;
+            }
+        }
+        else if(currentMission == 15){
+            if(monstersKilled >= 10)
+                return true;
+        }
+        else if(currentMission == 16){           // winning
             try {
                 Thread.sleep(500);
             }
