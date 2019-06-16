@@ -56,11 +56,15 @@ class Player {
 
         for(int r = 0; r < subMap[0].length; r++) {
             for(int c = 0; c < subMap[0][0].length; c++) {
-                if(subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER){
+                if(subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER || subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER){
                     if (Math.abs(ptRow - r) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange() && Math.abs(ptColumn - c) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange()) {
                         damageDealt += (subMap[Map.ITEM_LAYER][r][c].getAttackDamage());
                     }
                 }
+
+                if (subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER)
+                    subMap[Map.ITEM_LAYER][r][c].addHealth(5); // regenerates 1 health per tick
+
                 else if (subMap[Map.ITEM_LAYER][r][c].getMapComponentID()== MapComponent.CAMPFIRE) {
                     if (r == ptRow && c == ptColumn)
                         addHealth(-1 * FIREDAMAGE);
@@ -112,6 +116,8 @@ class Player {
                         inventory[selectedIndex] = new Item(Item.COOKED_FRUIT);
                     else if (inventory[selectedIndex].getItemID() == Item.MEAT)
                         inventory[selectedIndex] = new Item(Item.COOKED_MEAT);
+                    else if (inventory[selectedIndex].getItemID() == Item.COOKED_FISH)
+                        inventory[selectedIndex] = new Item(Item.COOKED_FISH);
                 }
             }
         }
@@ -119,10 +125,11 @@ class Player {
 
         if (m.getMapComponentID() == MapComponent.MONSTER ||
                 m.getMapComponentID() == MapComponent.RABBIT ||
-                m.getMapComponentID() == MapComponent.BIRD) {
+                m.getMapComponentID() == MapComponent.BIRD ||
+                m.getMapComponentID() == MapComponent.BOSS_MONSTER) {
 
             if(m.getHealth() <= attackDamage){
-                if(m.getMapComponentID() == MapComponent.MONSTER)
+                if(m.getMapComponentID() == MapComponent.MONSTER || m.getMapComponentID() == MapComponent.BOSS_MONSTER)
                     monstersKilled++;
                 else if(m.getMapComponentID() == MapComponent.RABBIT)
                     rabbitsKilled++;
@@ -186,6 +193,18 @@ class Player {
             catch (NullPointerException neck) {}
         }
 
+        else if (m.getMapComponentID() == MapComponent.WATER) {
+            try {
+                if (inventory[selectedIndex].getItemID() == Item.FISHING_ROD) {
+                    int randy = (int)(Math.random() * 100);
+                    if (randy < 10) // 10% chance
+                        addItem(new Item(Item.FISH));
+                    addHunger(-4); // reduces hunger by 5 in total
+                }
+            }
+            catch (NullPointerException wes) {}
+        }
+
         else if (m.getMapComponentID() == MapComponent.ANTENNA)
             rad1 = true;
         else if (m.getMapComponentID() == MapComponent.TRANSMITTER)
@@ -194,6 +213,29 @@ class Player {
             rad3 = true;
 
         else if (m.getMapComponentID() == MapComponent.WISE_ROCK) {
+
+            boolean hasBowAndArrow = false;
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.BOWANDARROW)
+                        hasBowAndArrow = true;
+                }
+                catch (NullPointerException ex) {}
+            }
+            if (!hasBowAndArrow) //  only crafts campfire if you don't already have one
+                craftBowAndArrow();
+
+            boolean hasFishingRod = false;
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.FISHING_ROD)
+                        hasFishingRod = true;
+                }
+                catch (NullPointerException ex) {}
+            }
+            if (!hasFishingRod) //  only crafts campfire if you don't already have one
+                craftFishingRod();
+
             boolean hasSlingshot = false;
             for (int i = 0; i < inventoryCap; i++) { // checks if you have it
                 try {
@@ -215,6 +257,7 @@ class Player {
             }
             if (!hasCampfire) //  only crafts campfire if you don't already have one
                 craftCampfire();
+
         }
 
         try {
@@ -512,6 +555,190 @@ class Player {
             }
 
             inventory[selectedIndex] = new Item(Item.FIRE);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean craftBowAndArrow() {
+        int numSticks = 0;
+        int numString = 0;
+        int numFeathers = 0;
+
+        for (int i = 0; i < inventoryCap; i++) {
+            try {
+                if (inventory[i].getItemID() == Item.STICK)
+                    numSticks += inventory[i].getStackSize();
+                if (inventory[i].getItemID() == Item.STRING)
+                    numString += inventory[i].getStackSize();
+                if (inventory[i].getItemID() == Item.FEATHER)
+                    numFeathers += inventory[i].getStackSize();
+            }
+            catch (NullPointerException ex) {}
+        }
+
+        if (numSticks >= 2 && numString >= 1 && numFeathers >= 3) {
+            // to remove three sticks
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STICK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STICK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STICK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            // to remove one string
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STRING) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+
+            // to remove three feathers
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.FEATHER) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.FEATHER) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.FEATHER) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            inventory[selectedIndex] = new Item(Item.BOWANDARROW);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean craftFishingRod() {
+        int numSticks = 0;
+        int numString = 0;
+        int numMeat = 0;
+
+        for (int i = 0; i < inventoryCap; i++) {
+            try {
+                if (inventory[i].getItemID() == Item.STICK)
+                    numSticks += inventory[i].getStackSize();
+                if (inventory[i].getItemID() == Item.STRING)
+                    numString += inventory[i].getStackSize();
+                if (inventory[i].getItemID() == Item.MEAT)
+                    numMeat += inventory[i].getStackSize();
+            }
+            catch (NullPointerException ex) {}
+        }
+
+        if (numSticks >= 4 && numString >= 2 && numMeat >= 1) {
+            // to remove four sticks
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STICK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STICK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STICK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STICK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+
+            // to remove two string
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STRING) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STRING) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+
+            // to remove one meat
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.MEAT) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+
+            inventory[selectedIndex] = new Item(Item.FISHING_ROD);
             return true;
         }
         return false;

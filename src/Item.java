@@ -9,7 +9,7 @@ class Item {
     private int stackSize;
 
     // UPDATE THIS WHENEVER YOU ADD A NEW ITEM
-    final static int numItems = 15;
+    final static int numItems = 18;
 
     final static int DAMAGE_LAYER = 0;
     final static int RANGE_LAYER = 1;
@@ -21,20 +21,23 @@ class Item {
     final static int[][] statsSheet = // now a nibber on the floor talking to the athletes
             {
                     {1, 2, 0, 0, 0, 1}, // NULL
-                    {5, 3, 0, 0, 1, 10}, // STICK
-                    {10, 3, 0, 0, 0, 1}, // SWORD
-                    {30, 1, 0, 0, 0, 1}, // KNIFE
-                    {10, 7, 0, 0, 0, 1}, // SLINGSHOT
+                    {10, 3, 0, 0, 1, 10}, // STICK
+                    {1000, 3, 0, 0, 0, 1}, // SWORD
+                    {34, 1, 0, 0, 0, 1}, // KNIFE
+                    {18, 7, 0, 0, 0, 1}, // SLINGSHOT
                     {40, 6, 0, 0, 0, 1}, // BOW_AND_ARROW
                     {20, 5, 0, 0, 1, 10}, // ROCK
-                    {0, 8, 0, 0, 0, 10}, // STRING
+                    {0, 2, 0, 0, 0, 10}, // STRING
                     {0, 1, 0, 0, 0, 10}, // FEATHER
                     {0, 0, 0, 10, 1, 10}, // APPLE
                     {0, 1, 5, 5, 1, 10}, // BERRY
                     {0, 1, 10, 25, 1, 10}, // MEAT
                     {0, 0, 0, 15, 1, 1}, // COOKED_FRUIT
                     {0, 0, 0, 40, 1, 1}, // COOKED_MEAT
-                    {0, 2, 0, 0, 1, 1} // FIRE
+                    {0, 2, 0, 0, 1, 1}, // FIRE
+                    {1, 8, 0, 0, 0, 1}, // FISHING_ROD
+                    {0, 1, 5, 20, 1, 10}, // FISH
+                    {0, 0, 0, 30, 1, 1} // COOKED_FISH
             };
 
     final static int NULL = 0;
@@ -54,6 +57,10 @@ class Item {
     final static int COOKED_MEAT = 13;
 
     final static int FIRE = 14;
+
+    final static int FISHING_ROD = 15;
+    final static int FISH = 16;
+    final static int COOKED_FISH = 17;
 
     public Item(int ItemID) {
         I_ID = ItemID;

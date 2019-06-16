@@ -18,7 +18,7 @@ class MapComponent {
 
     //Static variables and their properties
 
-    static int numOfComponents = 22; //Number of currently implemented components
+    static int numOfComponents = 23; //Number of currently implemented components
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
@@ -45,6 +45,7 @@ class MapComponent {
     final static int ANTENNA = 19;
     final static int TRANSMITTER = 20;
     final static int CIRCUIT_BOARD = 21;
+    final static int BOSS_MONSTER = 22;
 
     private int health, maxHealth, attackDamage, attackRange;
 
@@ -116,6 +117,7 @@ class MapComponent {
         else if (MC_ID == ANTENNA) b = false;
         else if (MC_ID == TRANSMITTER) b = false;
         else if (MC_ID == CIRCUIT_BOARD) b = false;
+        else if (MC_ID == BOSS_MONSTER) b = false;
         return b;
     }
 
@@ -143,12 +145,13 @@ class MapComponent {
         else if (MC_ID == ANTENNA) {d = new Dimension(1, 1); }
         else if (MC_ID == TRANSMITTER) {d = new Dimension(1, 1); }
         else if (MC_ID == CIRCUIT_BOARD) {d = new Dimension(1, 1); }
+        else if (MC_ID == BOSS_MONSTER) {d = new Dimension(1, 1); }
         return d;
     }
 
     public boolean isEntity() {
         boolean b = false;
-        if(MC_ID == MONSTER || MC_ID == RABBIT || MC_ID == BIRD) b = true;
+        if(MC_ID == MONSTER || MC_ID == RABBIT || MC_ID == BIRD || MC_ID == BOSS_MONSTER) b = true;
         return b;
     }
 
@@ -167,5 +170,12 @@ class MapComponent {
     public void turnNull() {MC_ID = NULL; }
 
     public void turnCampfire() {MC_ID = CAMPFIRE; }
+
+    public boolean isFire() {
+        if (MC_ID == CAMPFIRE)
+            return true;
+        else
+            return false;
+    }
 
 }

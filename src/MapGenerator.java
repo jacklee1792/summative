@@ -162,6 +162,15 @@ public class MapGenerator { //I'll add getters and setters on map later
             }
         }
 
+        // Boss Monster
+        boolean bossSpawned = false; // so that only one spawns
+
+//a
+
+        if (!bossSpawned)
+            map[Map.ITEM_LAYER][8][8] = new MapComponent(MapComponent.BOSS_MONSTER, 200, 14, 2);
+
+
         // Rabbits
         for(int r = 0; r < height; r++) {
             for(int c = 0; c < width; c++) {
@@ -243,12 +252,12 @@ public class MapGenerator { //I'll add getters and setters on map later
         boolean placedTransmitter = false;
         boolean placedCircuitBoard = false;
 
-        int antennaR = (int) (Math.random() * (height - 10) + 4);
-        int antennaC = (int) (Math.random() * (height - 10) + 4);
-        int transmitterR = (int) (Math.random() * (height - 10) + 4);
-        int transmitterC = (int) (Math.random() * (height - 10) + 4);
-        int circuitboardR = (int) (Math.random() * (height - 10) + 4);
-        int circuitboardC = (int) (Math.random() * (height - 10) + 4);
+        int antennaR = (int) (Math.random() * (height - 20) + 4);
+        int antennaC = (int) (Math.random() * (width - 20) + 4);
+        int transmitterR = (int) (Math.random() * (height - 20) + 4);
+        int transmitterC = (int) (Math.random() * (width - 20) + 4);
+        int circuitboardR = (int) (Math.random() * (height - 20) + 4);
+        int circuitboardC = (int) (Math.random() * (width - 20) + 4);
 
         // antenna
         if (map[Map.GROUND_LAYER][antennaR][width - antennaC].getWalkable() && //Spawn on walkable land
@@ -296,6 +305,7 @@ public class MapGenerator { //I'll add getters and setters on map later
                 }
             }
         }
+
 
     }
 
