@@ -30,7 +30,9 @@ class Map extends JFrame {
     private Tile subMapTile, playerTile = new Tile((subMapHeight - 1) / 2, (subMapWidth - 1) / 2);
     private Tile selectedTile;
     private boolean isSelecting = false;
+    private boolean dead = false;
     private boolean[] keys = new boolean[255];
+    private DrawArea mapArea;
     private MissionTextArea mta;
 
     private char MOVE_UP = 'w';
@@ -55,6 +57,7 @@ class Map extends JFrame {
 
     final static int WASD = 0;
     final static int ARROW_KEYS = 1;
+    public static char DROP_KEY = 'q';
 
     static Player p;
 
@@ -125,7 +128,7 @@ class Map extends JFrame {
         } catch(IOException e) { System.out.println("Image import error!"); }
 
         //DrawArea
-        DrawArea mapArea = new DrawArea(subMapWidth * tileSize, subMapHeight * tileSize);
+        mapArea = new DrawArea(subMapWidth * tileSize, subMapHeight * tileSize);
         add(mapArea, BorderLayout.CENTER);
 
         //KeyListener
@@ -134,7 +137,6 @@ class Map extends JFrame {
         addMouseListener(new ActionProcessor());
         // addKeyListener(new AttackListener());
 
-        //Pack
         pack();
     }
 
@@ -149,6 +151,7 @@ class Map extends JFrame {
             subMapWidth = 16;
         }
     }
+
     public void setMovementKeys(int bind){
         if(bind == WASD){
             MOVE_UP = 'w';
@@ -190,15 +193,15 @@ class Map extends JFrame {
 
     public void updatePlayer() {
         if(System.currentTimeMillis() - p.getLastMovement() > 1000 / p.getMovementSpeed()) {
-            if(keys['w']) {
+            if(keys[MOVE_UP]) {
                 walk(NORTH);
-            } else if (keys['a']) {
+            } else if (keys[MOVE_LEFT]) {
                 walk(WEST);
-            } else if (keys['s']) {
+            } else if (keys[MOVE_DOWN]) {
                 walk(SOUTH);
-            } else if (keys['d']) {
+            } else if (keys[MOVE_RIGHT]) {
                 walk(EAST);
-            } else if (keys['t']) {
+            } else if (keys[DROP_KEY]) {
                 p.dropItem();
             }
             p.setLastMovement(System.currentTimeMillis());
@@ -269,8 +272,12 @@ class Map extends JFrame {
         tileSize = (int)(screenSize.getWidth() / subMapWidth);
     }
 
+    // Win and lose conditions
     public static void winGame(){               // the win condition of the game
         System.out.println("what a bro moment. ");
+    }
+    public static void loseGame(){
+
     }
 
     public void updateSelected(int mouseX, int mouseY) {
@@ -366,7 +373,7 @@ class Map extends JFrame {
             if(key >= '1' && key <= '5') {
                 p.updateSelectedIndex(key - '1');
                 updateSelected((int) MouseInfo.getPointerInfo().getLocation().getX(), (int) MouseInfo.getPointerInfo().getLocation().getY());
-            } else if(key == 'q') {
+            } else if(key == DROP_KEY) {
                 p.dropItem();
             }
         }
@@ -684,6 +691,7 @@ class Map extends JFrame {
             return false;
         }
     }
+
     private void fillLayer(int layer, ArrayList<String> data){      // helper method
         mapHeight = data.size();
         int row = 0, col = 0;
