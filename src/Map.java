@@ -33,6 +33,8 @@ class Map extends JFrame {
     private boolean[] keys = new boolean[255];
     private MissionTextArea mta;
 
+    public static int totalMonsters = 0;
+
     final static int GROUND_LAYER = 0;
     final static int ITEM_LAYER = 1;
 
@@ -89,7 +91,7 @@ class Map extends JFrame {
 
             }
         };
-        monsterTimer.schedule(monsterTick, 0, 300); //Every 300 ms
+        monsterTimer.schedule(monsterTick, 0, 500); //Every 500 ms
         Timer playerTimer = new Timer();
         TimerTask playerTick = new TimerTask(){
             @Override
@@ -226,7 +228,7 @@ class Map extends JFrame {
     }
 
     public static void winGame(){               // the win condition of the game
-
+        System.out.println("what a bro moment. ");
     }
 
     public void updateSelected(int mouseX, int mouseY) {
@@ -522,7 +524,7 @@ class Map extends JFrame {
             return false;
         }
         private int splitIndex(String str){
-            int index = 55;
+            int index = 52; // I CHANGED THIS TO MAKE IT NOT ERROR BUT NOW IT DOESN'T SHOW THE TEXT FOR THE RADIO MISSIONS
             while(index < str.length()){
                 if(str.charAt(index) == ' ')
                     return index;

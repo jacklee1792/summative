@@ -23,7 +23,7 @@ class Player {
     private int walkState;
     private long lastMovement = 0;
     private boolean rad1 = false, rad2 = false, rad3 = false;       // to track radio parts
-    private int monstersKilled = 0, rabbitsKilled = 0, birdsKilled = 0;     // tracking moster killing stats
+    public static int monstersKilled = 0, rabbitsKilled = 0, birdsKilled = 0;     // tracking monster killing stats
 
     final static int STILL = 0;
     final static int WALK_L = 1;
@@ -40,7 +40,7 @@ class Player {
         attackDamage = 5;
         range = 2;
 
-        inventory = new Item[5];
+        inventory = new Item[inventoryCap];
     }
 
     static BufferedImage[] texture = new BufferedImage[3];
@@ -135,6 +135,63 @@ class Player {
             addItem(new Item(Item.BOWANDARROW));
         } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH) {
             addItem(new Item(Item.BERRY));
+        } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
+            for (int i = 0; i < inventoryCap; i++) {
+                if (inventory[i] == null) {
+                    selectedIndex = i;
+                    addItem(new Item(Item.MEAT));
+                    m.turnNull();
+                    break;
+                }
+            }
+        }
+
+        else if(m.getMapComponentID() == MapComponent.DEAD_BIRD) {
+
+
+            for (int i = 0; i < inventoryCap; i++) {
+                if (inventory[i] == null) {
+                    selectedIndex = i;
+                    addItem(new Item(Item.FEATHER));
+                    m.turnNull();
+                    break;
+                }
+            }
+
+        }
+
+        else if(m.getMapComponentID() == MapComponent.STRING_GROUNDED) {
+
+
+            for (int i = 0; i < inventoryCap; i++) {
+                if (inventory[i] == null) {
+                    selectedIndex = i;
+                    addItem(new Item(Item.STRING));
+                    m.turnNull();
+                    break;
+                }
+            }
+
+        }
+
+        else if (m.getMapComponentID() == MapComponent.ANTENNA)
+            rad1 = true;
+        else if (m.getMapComponentID() == MapComponent.TRANSMITTER)
+            rad2 = true;
+        else if (m.getMapComponentID() == MapComponent.CIRCUIT_BOARD)
+            rad3 = true;
+
+        else if (m.getMapComponentID() == MapComponent.WISE_ROCK) {
+            boolean hasSlingshot = false;
+            for (int i = 0; i < inventoryCap; i++) { // checks if you have it
+                try {
+                    if (inventory[i].getItemID() == Item.SLINGSHOT)
+                        hasSlingshot = true;
+                }
+                catch (NullPointerException ex) {}
+            }
+            if (!hasSlingshot) // only crafts if you don't have it
+                craftSlingshot();
         }
 
         try {
@@ -178,15 +235,14 @@ class Player {
             }
         }
         else if(currentMission == 7){
-            if(m.getMapComponentID() == MapComponent.STRING)
+            if(m.getMapComponentID() == MapComponent.STRING_GROUNDED)
                 return true;
         }
         else if(currentMission == 8){
-            if(m.getMapComponentID() == MapComponent.SMALL_TREE){
-                /*
-                TODO
-                - impmlement transforming this to slingshot (if we even want to do this)
-                 */
+            if(m.getMapComponentID() == MapComponent.WISE_ROCK){
+                boolean slingshotCrafted = craftSlingshot();
+                if (slingshotCrafted)
+                    return true;
             }
         }
         else if(currentMission == 9){
@@ -218,7 +274,7 @@ class Player {
             }
         }
         else if(currentMission == 15){
-            if(monstersKilled >= 10)
+            if(Map.totalMonsters - monstersKilled <= 5) // provides some leeway
                 return true;
         }
         else if(currentMission == 16){           // winning
@@ -245,6 +301,29 @@ class Player {
             inventory[selectedIndex].increaseStackSize(i.getStackSize());
         }
     }
+
+//    public void addItem(Item i) {
+//        Item selectedItem;
+//        int tempindex = selectedIndex;
+//
+//        try {
+//            selectedItem = new Item(inventory[selectedIndex]);
+//        } catch (NullPointerException ex) {
+//            inventory[selectedIndex] = i;
+//            return;
+//        }
+//
+//        for (int k = 0; k < inventoryCap; k++) {
+//            if (inventory[k].getItemID() == i.getItemID() && i.getStackSize() <= selectedItem.getStackMax() - selectedItem.getStackSize())
+//                tempindex = k;
+//        }
+//
+//        if(selectedItem.getItemID() == i.getItemID() && i.getStackSize() <= selectedItem.getStackMax() - selectedItem.getStackSize()) {
+//            inventory[tempindex].increaseStackSize(i.getStackSize());
+//        }
+//    }
+
+
 
     public int getWalkState() { return walkState;}
 
@@ -312,6 +391,56 @@ class Player {
         return range;
     }
 
+    public boolean craftSlingshot() {
+        int numSticks = 0;
+        int numString = 0;
+        boolean crafted = false;
+
+        for (int i = 0; i < inventoryCap; i++) {
+            try {
+                if (inventory[i].getItemID() == Item.STICK)
+                    numSticks += inventory[i].getStackSize();
+                if (inventory[i].getItemID() == Item.STRING)
+                    numString += inventory[i].getStackSize();
+            }
+            catch (NullPointerException ex) {}
+        }
+
+        if (numSticks >= 2 && numString >= 1) {
+            // to remove two sticks
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STICK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STICK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            // to remove one string
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.STRING) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            inventory[selectedIndex] = new Item(Item.SLINGSHOT);
+            crafted = true;
+        }
+        return crafted;
+    }
 
     public void dropItem(){
         inventory[selectedIndex].increaseStackSize(-1);

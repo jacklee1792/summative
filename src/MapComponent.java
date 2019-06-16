@@ -18,7 +18,7 @@ class MapComponent {
 
     //Static variables and their properties
 
-    static int numOfComponents = 18; //Number of currently implemented components
+    static int numOfComponents = 22; //Number of currently implemented components
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
@@ -39,9 +39,9 @@ class MapComponent {
     final static int RABBIT = 13;
     final static int BIRD = 14;
     final static int CAMPFIRE = 15;
-    final static int STRING = 16;
+    final static int STRING_GROUNDED = 16;
     final static int DEAD_RABBIT = 17;
-    final static int FEATHER = 18;                      // dead bird
+    final static int DEAD_BIRD = 18;                      // dead bird
     final static int ANTENNA = 19;
     final static int TRANSMITTER = 20;
     final static int CIRCUIT_BOARD = 21;
@@ -110,6 +110,12 @@ class MapComponent {
         else if (MC_ID == RABBIT) b = false;
         else if (MC_ID == BIRD) b = false;
         else if (MC_ID == CAMPFIRE) b = false;
+        else if (MC_ID == STRING_GROUNDED) b = false;
+        else if (MC_ID == DEAD_RABBIT) b = true;
+        else if (MC_ID == DEAD_BIRD) b = true;
+        else if (MC_ID == ANTENNA) b = false;
+        else if (MC_ID == TRANSMITTER) b = false;
+        else if (MC_ID == CIRCUIT_BOARD) b = false;
         return b;
     }
 
@@ -131,6 +137,12 @@ class MapComponent {
         else if(MC_ID == RABBIT) { d = new Dimension(1, 1); }
         else if(MC_ID == BIRD) {d = new Dimension(1, 1); }
         else if (MC_ID == CAMPFIRE) {d = new Dimension(1, 1); }
+        else if (MC_ID == STRING_GROUNDED) {d = new Dimension(1, 1); }
+        else if (MC_ID == DEAD_RABBIT) {d = new Dimension(1, 1); }
+        else if (MC_ID == DEAD_BIRD) {d = new Dimension(1, 1); }
+        else if (MC_ID == ANTENNA) {d = new Dimension(1, 1); }
+        else if (MC_ID == TRANSMITTER) {d = new Dimension(1, 1); }
+        else if (MC_ID == CIRCUIT_BOARD) {d = new Dimension(1, 1); }
         return d;
     }
 
@@ -151,5 +163,7 @@ class MapComponent {
     public int getAttackDamage() {return attackDamage; }
 
     public int getAttackRange() {return attackRange; }
+
+    public void turnNull() {MC_ID = NULL; }
 
 }
