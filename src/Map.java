@@ -33,6 +33,11 @@ class Map extends JFrame {
     private boolean[] keys = new boolean[255];
     private MissionTextArea mta;
 
+    private char MOVE_UP = 'w';
+    private char MOVE_LEFT = 'a';
+    private char MOVE_DOWN = 's';
+    private char MOVE_RIGHT = 'd';
+
     public static int totalMonsters = 0;
 
     final static int GROUND_LAYER = 0;
@@ -42,7 +47,14 @@ class Map extends JFrame {
     final static int WEST = 1;
     final static int SOUTH = 2;
     final static int EAST = 3;
+
     final static String LINE_SEPARATOR = " !!! ";
+
+    final static int ASPECT_16_9 = 0;
+    final static int ASPECT_4_3 = 1;
+
+    final static int WASD = 0;
+    final static int ARROW_KEYS = 1;
 
     static Player p;
 
@@ -57,6 +69,10 @@ class Map extends JFrame {
         setUndecorated(true);
         setVisible(true);
         adaptToScreen(); //Set tile size based on screen resolution
+
+        // Setting up options
+        setAspectRatio(ASPECT_16_9);
+        setMovementKeys(WASD);
 
         //Map
         map = new MapComponent[2][mapHeight][mapWidth];
@@ -120,6 +136,32 @@ class Map extends JFrame {
 
         //Pack
         pack();
+    }
+
+    // Methods for options
+    public void setAspectRatio(int ratio){
+        if(ratio == ASPECT_16_9){
+            subMapHeight = 9;
+            subMapWidth = 16;
+        }
+        else if(ratio == ASPECT_4_3){
+            subMapHeight = 12;
+            subMapWidth = 16;
+        }
+    }
+    public void setMovementKeys(int bind){
+        if(bind == WASD){
+            MOVE_UP = 'w';
+            MOVE_LEFT = 'a';
+            MOVE_DOWN = 's';
+            MOVE_RIGHT = 'd';
+        }
+        else if(bind == ARROW_KEYS){
+            MOVE_UP = 38;
+            MOVE_LEFT = 37;
+            MOVE_DOWN = 40;
+            MOVE_RIGHT = 39;
+        }
     }
 
     // Methods
@@ -496,9 +538,11 @@ class Map extends JFrame {
             missions.add("MISSION 2 !!! Good. Now, I want you to find a water source and fill up your canteen.");
             missions.add("MISSION 3 !!! That should last you a few days. Now, you need to find some food. Wander around, see if you can find some berries.");
             missions.add("  !!! Great. You can eat them by pressing the tile of your character. Or, you can cook them.");
-            missions.add("MISSION 4 !!! Let's try throwing those berries into the campfire. What do you think will happen?");
+            missions.add("  !!! Make sure you select a new inventory slot by either using your mouse or 1 through 5 before picking something else up.");
+            missions.add("MISSION 4 !!! Let's try throwing those berries into the campfire. Select the berries and and find the fire.");
+            missions.add("  !!! Nice. Now you have cooked berries. As you might have found out, not everything is safe to eat raw.");
             missions.add("MISSION 5 !!! You're not bad. Now, I want you to find some string. I can help you make a slingshot.");
-            missions.add("MISSION 6 !!! You're almost set. How about collecting some twigs? I think you'll need it to make that slingshot.");
+            missions.add("MISSION 6 !!! You're almost set. How about collecting some twigs? Bring me 2 sticks piles and I'll help you craft a slingshot.");
             missions.add("MISSION 7 !!! Cool. Now let's go out and adventure. Kill a rabbit and get its meat.");
             missions.add("MISSION 8 !!! Nice work. I hope you know not to eat raw food, so head on back to the campfire to cook up that meat.");
             missions.add("  !!! I think you're getting the hang of survival. Now, let's try to get out of here");
@@ -541,15 +585,16 @@ class Map extends JFrame {
             String[] tmp = missions.get(currentMission).split(LINE_SEPARATOR);
             int split = splitIndex(tmp[1]);
             String first = tmp[1].substring(0, split);
+
+            g.setColor(titleColour);
+            g.setFont(titleFont);
+            g.drawString(tmp[0], titleX, titleY);
+            g.setColor(textColour);
+            g.setFont(textFont);
+            g.drawString(first, textX, textY);
+
             try {
                 String second = tmp[1].substring(split + 1);
-
-                g.setColor(titleColour);
-                g.setFont(titleFont);
-                g.drawString(tmp[0], titleX, titleY);
-                g.setColor(textColour);
-                g.setFont(textFont);
-                g.drawString(first, textX, textY);
                 g.drawString(second, textX, text2Y);
             }
             catch(IndexOutOfBoundsException e) {}

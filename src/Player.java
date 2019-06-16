@@ -41,6 +41,9 @@ class Player {
         range = 2;
 
         inventory = new Item[inventoryCap];
+//        for(int i = 0; i < inventoryCap; i++){          // initializing the inventory
+//            inventory[i] = new Item(Item.NULL);
+//        }
     }
 
     static BufferedImage[] texture = new BufferedImage[3];
@@ -88,8 +91,7 @@ class Player {
     }
 
     public boolean interact(MapComponent m, Tile t, Tile playerTile, int currentMission) {
-        // Checking mission completion
-        boolean missionComplete = checkMission(currentMission, m);
+        boolean missionComplete = checkMission(currentMission, m);          // checking mission completeness
 
         try {
             if (inventory[selectedIndex].getHunger() > 0) {
@@ -147,8 +149,6 @@ class Player {
         }
 
         else if(m.getMapComponentID() == MapComponent.DEAD_BIRD) {
-
-
             for (int i = 0; i < inventoryCap; i++) {
                 if (inventory[i] == null) {
                     selectedIndex = i;
@@ -161,8 +161,6 @@ class Player {
         }
 
         else if(m.getMapComponentID() == MapComponent.STRING_GROUNDED) {
-
-
             for (int i = 0; i < inventoryCap; i++) {
                 if (inventory[i] == null) {
                     selectedIndex = i;
@@ -173,7 +171,6 @@ class Player {
             }
 
         }
-
         else if (m.getMapComponentID() == MapComponent.ANTENNA)
             rad1 = true;
         else if (m.getMapComponentID() == MapComponent.TRANSMITTER)
@@ -209,75 +206,68 @@ class Player {
     }
 
     private boolean checkMission(int currentMission, MapComponent m){
-        if(currentMission == 0 || currentMission == 5 || currentMission == 11){
+        if(currentMission == 0 || currentMission == 5 || currentMission == 6 || currentMission == 8 || currentMission == 13){
             return true;
         }
         else if(currentMission == 1){
-            if(m.getMapComponentID() == MapComponent.WISE_ROCK)
-                return true;
+            return m.getMapComponentID() == MapComponent.WISE_ROCK;
         }
         else if(currentMission == 2){
-            if(m.getMapComponentID() == MapComponent.PLANE)
-                return true;
+            return m.getMapComponentID() == MapComponent.PLANE;
         }
         else if(currentMission == 3){
-            if(m.getMapComponentID() == MapComponent.WATER)
-                return true;
+            return m.getMapComponentID() == MapComponent.WATER;
         }
         else if(currentMission == 4){
-            if(m.getMapComponentID() == MapComponent.SMALL_BUSH)
-                return true;
+            return m.getMapComponentID() == MapComponent.SMALL_BUSH;
         }
-        else if(currentMission == 6){
+        else if(currentMission == 7){
             if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.BERRY){
                 inventory[selectedIndex] = new Item(Item.COOKED_FRUIT);
                 return true;
             }
         }
-        else if(currentMission == 7){
-            if(m.getMapComponentID() == MapComponent.STRING_GROUNDED)
-                return true;
-        }
-        else if(currentMission == 8){
-            if(m.getMapComponentID() == MapComponent.WISE_ROCK){
-                boolean slingshotCrafted = craftSlingshot();
-                if (slingshotCrafted)
-                    return true;
-            }
-        }
         else if(currentMission == 9){
-            if(m.getMapComponentID() == MapComponent.DEAD_RABBIT)
-                return true;
+            return m.getMapComponentID() == MapComponent.STRING_GROUNDED;
         }
         else if(currentMission == 10){
+            if(m.getMapComponentID() == MapComponent.WISE_ROCK){
+                boolean slingshotCrafted = craftSlingshot();
+                return slingshotCrafted;
+            }
+        }
+        else if(currentMission == 11){
+            return m.getMapComponentID() == MapComponent.DEAD_RABBIT;
+        }
+        else if(currentMission == 12){
             if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.MEAT){
                 inventory[selectedIndex] = new Item(Item.COOKED_MEAT);
                 return true;
             }
         }
-        else if(currentMission == 12){
+        else if(currentMission == 14){
             if(m.getMapComponentID() == MapComponent.ANTENNA){
                 rad1 = true;
                 return true;
             }
         }
-        else if(currentMission == 13){
+        else if(currentMission == 15){
             if(m.getMapComponentID() == MapComponent.TRANSMITTER){
                 rad2 = true;
                 return true;
             }
         }
-        else if(currentMission == 14){
+        else if(currentMission == 16){
             if(m.getMapComponentID() == MapComponent.CIRCUIT_BOARD){
                 rad3 = true;
                 return true;
             }
         }
-        else if(currentMission == 15){
+        else if(currentMission == 17){
             if(Map.totalMonsters - monstersKilled <= 5) // provides some leeway
                 return true;
         }
-        else if(currentMission == 16){           // winning
+        else if(currentMission == 18){           // winning
             try {
                 Thread.sleep(500);
             }
@@ -358,8 +348,8 @@ class Player {
         return health;
     }
 
-    public void addHealth(int toadd) {
-        health += toadd;
+    public void addHealth(int toAdd) {
+        health += toAdd;
         if (health < 0)
             health = 0;
         if (health > maxHealth)
