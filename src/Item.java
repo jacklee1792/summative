@@ -9,7 +9,7 @@ class Item {
     private int stackSize;
 
     // UPDATE THIS WHENEVER YOU ADD A NEW ITEM
-    final static int numItems = 14;
+    final static int numItems = 15;
 
     final static int DAMAGE_LAYER = 0;
     final static int RANGE_LAYER = 1;
@@ -30,10 +30,11 @@ class Item {
                     {0, 8, 0, 0, 0, 10}, // STRING
                     {0, 1, 0, 0, 0, 10}, // FEATHER
                     {0, 0, 0, 10, 1, 10}, // APPLE
-                    {0, 1, 5, 5, 0, 10}, // BERRY
+                    {0, 1, 5, 5, 1, 10}, // BERRY
                     {0, 1, 10, 25, 1, 10}, // MEAT
                     {0, 0, 0, 15, 1, 1}, // COOKED_FRUIT
-                    {0, 0, 0, 40, 1, 1} // COOKED_MEAT
+                    {0, 0, 0, 40, 1, 1}, // COOKED_MEAT
+                    {0, 0, 0, 0, 1, 1} // FIRE
             };
 
     final static int NULL = 0;
@@ -51,6 +52,8 @@ class Item {
     final static int MEAT = 11;
     final static int COOKED_FRUIT = 12;
     final static int COOKED_MEAT = 13;
+
+    final static int FIRE = 14;
 
     public Item(int ItemID) {
         I_ID = ItemID;

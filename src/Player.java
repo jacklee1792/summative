@@ -171,6 +171,12 @@ class Player {
             }
 
         }
+
+        else if (m.getWalkable() && inventory[selectedIndex].getItemID() == Item.FIRE) {
+            m.turnCampfire();
+            dropItem();
+        }
+
         else if (m.getMapComponentID() == MapComponent.ANTENNA)
             rad1 = true;
         else if (m.getMapComponentID() == MapComponent.TRANSMITTER)
@@ -189,6 +195,17 @@ class Player {
             }
             if (!hasSlingshot) // only crafts if you don't have it
                 craftSlingshot();
+
+            boolean hasCampfire = false;
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.FIRE)
+                        hasCampfire = true;
+                }
+                catch (NullPointerException ex) {}
+            }
+            if (!hasCampfire) //  only crafts campfire if you don't already have one
+                craftCampfire();
         }
 
         try {
@@ -427,6 +444,61 @@ class Player {
                 catch (NullPointerException ex) {}
             }
             inventory[selectedIndex] = new Item(Item.SLINGSHOT);
+            crafted = true;
+        }
+        return crafted;
+    }
+
+    public boolean craftCampfire() {
+        int numSticks = 0;
+        int numRocks = 0;
+        boolean crafted = false;
+
+        for (int i = 0; i < inventoryCap; i++) {
+            try {
+                if (inventory[i].getItemID() == Item.STICK)
+                    numSticks += inventory[i].getStackSize();
+                if (inventory[i].getItemID() == Item.ROCK)
+                    numRocks += inventory[i].getStackSize();
+            }
+            catch (NullPointerException ex) {}
+        }
+
+        if (numSticks >= 10 && numRocks >= 2) {
+            // to remove ten sticks
+
+            for (int k = 0; k < 10; k++) { // removes ten of them
+                for (int j = 0; j < inventoryCap; j++) {
+                    try {
+                        if (inventory[j].getItemID() == Item.STICK) {
+                            selectedIndex = j;
+                            dropItem();
+                        }
+                    } catch (NullPointerException ex) {
+                    }
+                }
+            }
+            // to remove two rocks
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.ROCK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int j = 0; j < inventoryCap; j++) {
+                try {
+                    if (inventory[j].getItemID() == Item.ROCK) {
+                        selectedIndex = j;
+                        dropItem();
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+
+            inventory[selectedIndex] = new Item(Item.FIRE);
             crafted = true;
         }
         return crafted;

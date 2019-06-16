@@ -166,4 +166,6 @@ class MapComponent {
 
     public void turnNull() {MC_ID = NULL; }
 
+    public void turnCampfire() {MC_ID = CAMPFIRE; }
+
 }
