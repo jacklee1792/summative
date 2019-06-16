@@ -157,7 +157,6 @@ class Player {
                     break;
                 }
             }
-
         }
 
         else if(m.getMapComponentID() == MapComponent.STRING_GROUNDED) {
@@ -169,7 +168,6 @@ class Player {
                     break;
                 }
             }
-
         }
 
         else if (m.getWalkable() && inventory[selectedIndex].getItemID() == Item.FIRE) {
@@ -223,7 +221,7 @@ class Player {
     }
 
     private boolean checkMission(int currentMission, MapComponent m){
-        if(currentMission == 0 || currentMission == 5 || currentMission == 6 || currentMission == 8 || currentMission == 13){
+        if(currentMission == 0 || currentMission == 5 || currentMission == 6 || currentMission == 9 || currentMission == 14){
             return true;
         }
         else if(currentMission == 1){
@@ -239,52 +237,58 @@ class Player {
             return m.getMapComponentID() == MapComponent.SMALL_BUSH;
         }
         else if(currentMission == 7){
+            if(m.getMapComponentID() == MapComponent.WISE_ROCK){
+                boolean campFireMade = craftCampfire();
+                addItem(new Item(Item.FIRE));
+                return campFireMade;
+            }
+        }
+        else if(currentMission == 8){
             if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.BERRY){
                 inventory[selectedIndex] = new Item(Item.COOKED_FRUIT);
                 return true;
             }
         }
-        else if(currentMission == 9){
+        else if(currentMission == 10){
             return m.getMapComponentID() == MapComponent.STRING_GROUNDED;
         }
-        else if(currentMission == 10){
+        else if(currentMission == 11){
             if(m.getMapComponentID() == MapComponent.WISE_ROCK){
                 boolean slingshotCrafted = craftSlingshot();
                 return slingshotCrafted;
             }
         }
-        else if(currentMission == 11){
+        else if(currentMission == 12){
             return m.getMapComponentID() == MapComponent.DEAD_RABBIT;
         }
-        else if(currentMission == 12){
+        else if(currentMission == 13){
             if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.MEAT){
                 inventory[selectedIndex] = new Item(Item.COOKED_MEAT);
                 return true;
             }
         }
-        else if(currentMission == 14){
+        else if(currentMission == 15){
             if(m.getMapComponentID() == MapComponent.ANTENNA){
                 rad1 = true;
                 return true;
             }
         }
-        else if(currentMission == 15){
+        else if(currentMission == 16){
             if(m.getMapComponentID() == MapComponent.TRANSMITTER){
                 rad2 = true;
                 return true;
             }
         }
-        else if(currentMission == 16){
+        else if(currentMission == 17){
             if(m.getMapComponentID() == MapComponent.CIRCUIT_BOARD){
                 rad3 = true;
                 return true;
             }
         }
-        else if(currentMission == 17){
-            if(Map.totalMonsters - monstersKilled <= 5) // provides some leeway
-                return true;
+        else if(currentMission == 18){
+            return monstersKilled >= 5;
         }
-        else if(currentMission == 18){           // winning
+        else if(currentMission == 19){           // winning
             try {
                 Thread.sleep(500);
             }
@@ -398,10 +402,9 @@ class Player {
         return range;
     }
 
-    public boolean craftSlingshot() {
+    private boolean craftSlingshot() {
         int numSticks = 0;
         int numString = 0;
-        boolean crafted = false;
 
         for (int i = 0; i < inventoryCap; i++) {
             try {
@@ -444,15 +447,14 @@ class Player {
                 catch (NullPointerException ex) {}
             }
             inventory[selectedIndex] = new Item(Item.SLINGSHOT);
-            crafted = true;
+            return true;
         }
-        return crafted;
+        return false;
     }
 
-    public boolean craftCampfire() {
+    private boolean craftCampfire() {
         int numSticks = 0;
         int numRocks = 0;
-        boolean crafted = false;
 
         for (int i = 0; i < inventoryCap; i++) {
             try {
@@ -499,9 +501,9 @@ class Player {
             }
 
             inventory[selectedIndex] = new Item(Item.FIRE);
-            crafted = true;
+            return true;
         }
-        return crafted;
+        return false;
     }
 
     public void dropItem(){

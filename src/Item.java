@@ -24,8 +24,8 @@ class Item {
                     {5, 3, 0, 0, 1, 10}, // STICK
                     {10, 3, 0, 0, 0, 1}, // SWORD
                     {30, 1, 0, 0, 0, 1}, // KNIFE
-                    {3, 7, 0, 0, 0, 1}, // SLINGSHOT
-                    {200, 6, 0, 0, 0, 1}, // BOW_AND_ARROW
+                    {70, 7, 0, 0, 0, 1}, // SLINGSHOT
+                    {40, 6, 0, 0, 0, 1}, // BOW_AND_ARROW
                     {20, 5, 0, 0, 1, 10}, // ROCK
                     {0, 8, 0, 0, 0, 10}, // STRING
                     {0, 1, 0, 0, 0, 10}, // FEATHER
@@ -34,7 +34,7 @@ class Item {
                     {0, 1, 10, 25, 1, 10}, // MEAT
                     {0, 0, 0, 15, 1, 1}, // COOKED_FRUIT
                     {0, 0, 0, 40, 1, 1}, // COOKED_MEAT
-                    {0, 0, 0, 0, 1, 1} // FIRE
+                    {0, 2, 0, 0, 1, 1} // FIRE
             };
 
     final static int NULL = 0;
