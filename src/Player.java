@@ -85,16 +85,24 @@ class Player {
         }
     }
 
-    public boolean interact(MapComponent m, Tile t, int currentMission) {
+    public boolean interact(MapComponent m, Tile t, Tile playerTile, int currentMission) {
         // Checking mission completion
         boolean missionComplete = checkMission(currentMission, m);
 
         try {
             if (inventory[selectedIndex].getHunger() > 0) {
-                addHunger(inventory[selectedIndex].getHunger());
-                addHealth(-1 * (inventory[selectedIndex].getSelfHarm()));
-                if (inventory[selectedIndex].getUsage() == 1)
-                    dropItem();
+                if (t.getColumn() == playerTile.getColumn() && t.getRow() == playerTile.getRow()) {
+                    addHunger(inventory[selectedIndex].getHunger());
+                    addHealth(-1 * (inventory[selectedIndex].getSelfHarm()));
+                    if (inventory[selectedIndex].getUsage() == 1)
+                        dropItem();
+                }
+                else if (m.getMapComponentID() == MapComponent.CAMPFIRE){
+                    if (inventory[selectedIndex].getItemID() == Item.BERRY)
+                        inventory[selectedIndex] = new Item(Item.COOKED_FRUIT);
+                    else if (inventory[selectedIndex].getItemID() == Item.MEAT)
+                        inventory[selectedIndex] = new Item(Item.COOKED_MEAT);
+                }
             }
         }
         catch (NullPointerException jennifer) {}

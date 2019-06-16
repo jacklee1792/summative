@@ -18,7 +18,7 @@ class MapComponent {
 
     //Static variables and their properties
 
-    static int numOfComponents = 15; //Number of currently implemented components
+    static int numOfComponents = 16; //Number of currently implemented components
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
@@ -38,6 +38,7 @@ class MapComponent {
     final static int CHEST = 12;
     final static int RABBIT = 13;
     final static int BIRD = 14;
+    final static int CAMPFIRE = 15;
 
     private int health, maxHealth, attackDamage, attackRange;
 
@@ -81,8 +82,6 @@ class MapComponent {
     public static void importTextures() throws IOException { //import textures
         for(int i = 0; i < numOfComponents; i++) {
             texture[i] = ImageIO.read(new File("./images/textures/_TEX" + i + ".png"));
-            if (i == 13)
-                System.out.println("vagene");
         }
     }
 
@@ -102,6 +101,9 @@ class MapComponent {
         else if (MC_ID == WISE_ROCK) b = false;
         else if (MC_ID == MONSTER) b = false;
         else if (MC_ID == CHEST) b = false;
+        else if (MC_ID == RABBIT) b = false;
+        else if (MC_ID == BIRD) b = false;
+        else if (MC_ID == CAMPFIRE) b = false;
         return b;
     }
 
@@ -122,6 +124,7 @@ class MapComponent {
         else if(MC_ID == CHEST) { d = new Dimension(1, 1); }
         else if(MC_ID == RABBIT) { d = new Dimension(1, 1); }
         else if(MC_ID == BIRD) {d = new Dimension(1, 1); }
+        else if (MC_ID == CAMPFIRE) {d = new Dimension(1, 1); }
         return d;
     }
 
