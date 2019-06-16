@@ -103,7 +103,9 @@ class Player {
         }
         catch (NullPointerException jennifer) {}
 
-        if (m.getMapComponentID() == MapComponent.MONSTER) {
+        if (m.getMapComponentID() == MapComponent.MONSTER ||
+                m.getMapComponentID() == MapComponent.RABBIT ||
+                m.getMapComponentID() == MapComponent.BIRD) {
             m.addHealth(-1 * attackDamage);
             System.out.println("You attacked that nibber for " + attackDamage);
             System.out.println("That nibber has " + m.getHealth() + " health left");

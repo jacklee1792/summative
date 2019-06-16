@@ -18,7 +18,7 @@ class MapComponent {
 
     //Static variables and their properties
 
-    static int numOfComponents = 13; //Number of currently implemented components
+    static int numOfComponents = 15; //Number of currently implemented components
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
@@ -36,6 +36,8 @@ class MapComponent {
     final static int WISE_ROCK = 10;
     final static int MONSTER = 11;
     final static int CHEST = 12;
+    final static int RABBIT = 13;
+    final static int BIRD = 14;
 
     private int health, maxHealth, attackDamage, attackRange;
 
@@ -79,6 +81,8 @@ class MapComponent {
     public static void importTextures() throws IOException { //import textures
         for(int i = 0; i < numOfComponents; i++) {
             texture[i] = ImageIO.read(new File("./images/textures/_TEX" + i + ".png"));
+            if (i == 13)
+                System.out.println("vagene");
         }
     }
 
@@ -116,12 +120,14 @@ class MapComponent {
         else if(MC_ID == WISE_ROCK) { d = new Dimension(1, 1); }
         else if(MC_ID == MONSTER) { d = new Dimension(1, 1); }
         else if(MC_ID == CHEST) { d = new Dimension(1, 1); }
+        else if(MC_ID == RABBIT) { d = new Dimension(1, 1); }
+        else if(MC_ID == BIRD) {d = new Dimension(1, 1); }
         return d;
     }
 
     public boolean isEntity() {
         boolean b = false;
-        if(MC_ID == MONSTER) b = true;
+        if(MC_ID == MONSTER || MC_ID == RABBIT || MC_ID == BIRD) b = true;
         return b;
     }
 
