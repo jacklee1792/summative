@@ -109,7 +109,7 @@ class MapComponent {
         else if (MC_ID == CHEST) b = false;
         else if (MC_ID == RABBIT) b = false;
         else if (MC_ID == BIRD) b = false;
-        else if (MC_ID == CAMPFIRE) b = false;
+        else if (MC_ID == CAMPFIRE) b = true;
         else if (MC_ID == STRING_GROUNDED) b = false;
         else if (MC_ID == DEAD_RABBIT) b = true;
         else if (MC_ID == DEAD_BIRD) b = true;
