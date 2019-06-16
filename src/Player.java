@@ -78,10 +78,6 @@ class Player {
         }
     }
 
-    public Item[] getInventory() {
-        return inventory;
-    }
-
     public static void importTextures() throws IOException { //import textures
         texture = new BufferedImage[3];
         for (int i = 1; i <= 3; i++) {
@@ -141,26 +137,27 @@ class Player {
             return true;
         }
         else if(currentMission == 1){
-            if(m.getMapComponentID() == MapComponent.PLANE)
+            if(m.getMapComponentID() == MapComponent.WISE_ROCK)
                 return true;
         }
         else if(currentMission == 2){
+            if(m.getMapComponentID() == MapComponent.PLANE)
+                return true;
+        }
+        else if(currentMission == 3){
             if(m.getMapComponentID() == MapComponent.WATER)
                 return true;
             return true;
         }
-        else if(currentMission == 3){
+        else if(currentMission == 4){
             if(m.getMapComponentID() == MapComponent.SMALL_BUSH)
                 return true;
         }
-        else if(currentMission == 4){
+        else if(currentMission == 5){
             /*
             TODO
             - make MCID for string, feathers
              */
-        }
-        else if(currentMission == 5){
-
         }
         else if(currentMission == 6){
 
@@ -171,7 +168,10 @@ class Player {
         else if(currentMission == 8){
 
         }
-        else if(currentMission == 9){           // winning
+        else if(currentMission == 9){
+
+        }
+        else if(currentMission == 10){           // winning
             try {
                 Thread.sleep(500);
             }

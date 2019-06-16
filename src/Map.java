@@ -19,7 +19,7 @@ import java.util.TimerTask;
 class Map extends JFrame {
 
     //Main Test
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NullPointerException {
         Map test = new Map();
         System.out.println(test.saveMap(new File("./src/-test_save2.txt")));
     }
@@ -425,7 +425,7 @@ class Map extends JFrame {
             g2.setStroke(new BasicStroke(4));
             g2.drawRect(p.getSelectedIndex() * tileSize, 0, tileSize, tileSize);
             //Draw item icons
-            Item[] inventory = p.getInventory();
+            Item[] inventory = p.inventory;
             g.setFont(new Font("Verdana", Font.BOLD, tileSize / 5));
             g.setColor(Color.BLACK);
             for(int i = 0; i < inventory.length; i++) {
@@ -488,8 +488,9 @@ class Map extends JFrame {
             missions = new ArrayList<>();
             currentMission = 0;
 
-            missions.add("INTRODUCTION !!! Hi. I am the Wise Rock. You just woke up from a plane crash  killing all but you.");
-            missions.add("MISSION 1 !!! First things first. I want you to go and search the plane for a survival kit.");
+            missions.add("INTRODUCTION !!! Hi. I am the Wise Rock. You just woke up from a plane crash killing all but you. Click on the map to continue.");
+            missions.add("INTRODUCTION !!! Let me show you around. First, find me and click on me so we can go talk. Hint: I'm below you.");
+            missions.add("MISSION 1 !!! First things first. I want you to go and search the plane for a survival kit. It is near the nose.");
             missions.add("MISSION 2 !!! Good. Now, I want you to find a water source and fill up your canteen.");
             missions.add("MISSION 3 !!! That should last you a few days. Now, you need to find some food. Venture throughout the forest...");
             missions.add("MISSION 4 !!! You're not bad. Now, you need to find some string. I can help you make a slingshot.");
@@ -515,6 +516,15 @@ class Map extends JFrame {
             currentMission++;
             return false;
         }
+        private int splitIndex(String str){
+            int index = 55;
+            while(index < str.length()){
+                if(str.charAt(index) == ' ')
+                    return index;
+                index++;
+            }
+            return index;
+        }
 
         // Graphical methods
         @Override
@@ -522,13 +532,20 @@ class Map extends JFrame {
             g.drawImage(textBox, 0, 0, 6 * tileSize, tileSize, null);
 
             String[] tmp = missions.get(currentMission).split(LINE_SEPARATOR);
+            int split = splitIndex(tmp[1]);
+            String first = tmp[1].substring(0, split);
+            try {
+                String second = tmp[1].substring(split + 1);
 
-            g.setColor(titleColour);
-            g.setFont(titleFont);
-            g.drawString(tmp[0], titleX, titleY);
-            g.setColor(textColour);
-            g.setFont(textFont);
-            g.drawString(tmp[1], textX, textY);
+                g.setColor(titleColour);
+                g.setFont(titleFont);
+                g.drawString(tmp[0], titleX, titleY);
+                g.setColor(textColour);
+                g.setFont(textFont);
+                g.drawString(first, textX, textY);
+                g.drawString(second, textX, text2Y);
+            }
+            catch(IndexOutOfBoundsException e) {}
         }
     }
 
@@ -553,11 +570,13 @@ class Map extends JFrame {
                 bw.write(LINE_SEPARATOR + "\n");
             }
 
-            Item[] items = p.getInventory();               // saving the inventory
-            for(Item i : items){
-                bw.write(i.getItemID() + " ");
+            for(Item i : p.inventory){                          // saving the inventory
+                try {
+                    bw.write(i.getItemID() + " ");
+                }
+                catch(NullPointerException e) {}
             }
-            if(items.length == 0)
+            if(p.inventory.length == 0)
                 bw.write(" ");
             bw.newLine();
 
@@ -571,6 +590,7 @@ class Map extends JFrame {
         }
         // Implement saving inventory, progress, etc.
     }
+
     public boolean loadMap(File loadFile){
         ArrayList<String> inputData = new ArrayList<>();
         String line = " ";
