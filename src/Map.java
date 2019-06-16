@@ -354,7 +354,7 @@ class Map extends JFrame {
         public void mousePressed(MouseEvent e) {
             updateSelected(e.getX(), e.getY());
             if(isSelecting) {
-                boolean missionCompletion = p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile, mta.getCurrentMission());
+                boolean missionCompletion = p.interact(subMap[ITEM_LAYER][selectedTile.getRow()][selectedTile.getColumn()] , selectedTile, playerTile, mta.getCurrentMission());
                 if(missionCompletion){
                     mta.completeCurrentMission();
                 }

@@ -135,7 +135,8 @@ public class MapGenerator { //I'll add getters and setters on map later
             if(map[Map.GROUND_LAYER][row][column].getMapComponentID() != MapComponent.WATER && //if ground not water and what is above it empty
                     map[Map.ITEM_LAYER][row][column].getMapComponentID() == MapComponent.NULL) {
                 map[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.WISE_ROCK);
-                map[Map.ITEM_LAYER][row-1][column-1] = new MapComponent(MapComponent.CHEST); // add sword object
+                map[Map.ITEM_LAYER][row-1][column-1] = new MapComponent(MapComponent.CHEST); // add chest object
+                map[Map.ITEM_LAYER][row-2][column-2] = new MapComponent(MapComponent.CAMPFIRE); // add chest object
                 System.out.println(row + " " + column);
                 break; //exit the loop
             }
