@@ -187,32 +187,96 @@ public class MapGenerator { //I'll add getters and setters on map later
         }
 
         // Radio parts
+//        boolean placedAntenna = false;
+//        boolean placedTransmitter = false;
+//        boolean placedCircuitBoard = false;
+//        for(int r = 4; r < height - 4; r++) { // so it doesn't spawn somewhere unreachable
+//            for(int c = 4; c < width - 4; c++) {
+//                boolean notAllPlaced = !(placedAntenna && placedTransmitter && placedCircuitBoard);
+//                while (notAllPlaced) {
+//
+//                    if (chance(0.01) && // 1/1000 chance of spawning
+//                            map[Map.GROUND_LAYER][height - r][c].getWalkable() && //Spawn on walkable land
+//                            map[Map.ITEM_LAYER][height - r][c].getWalkable() && //Do not spawn inside an item
+//                            (Math.abs((height - r) - spawnTile.getRow()) > 20 || Math.abs(c - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
+//
+//                        if (!placedAntenna) {
+//                            map[Map.ITEM_LAYER][height - r][c] = new MapComponent(MapComponent.ANTENNA, 30, 0, 0);
+//                            placedAntenna = true;
+//                            System.out.println("antenna: " + (height - r) + ", " + c);
+//                        }
+//
+//                    }
+//                    if (chance(0.01) && // 1/1000 chance of spawning
+//                            map[Map.GROUND_LAYER][r][c].getWalkable() && //Spawn on walkable land
+//                            map[Map.ITEM_LAYER][r][c].getWalkable() && //Do not spawn inside an item
+//                            (Math.abs(r - spawnTile.getRow()) > 20 || Math.abs(c - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
+//
+//                        if (!placedAntenna) {
+//                            map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.TRANSMITTER, 30, 0, 0);
+//                            placedAntenna = true;
+//                            System.out.println("transmitter: " + r + ", " + c);
+//                        }
+//
+//                    }
+//                    if (chance(0.01) && // 1/1000 chance of spawning
+//                            map[Map.GROUND_LAYER][r][width - c].getWalkable() && //Spawn on walkable land
+//                            map[Map.ITEM_LAYER][r][width - c].getWalkable() && //Do not spawn inside an item
+//                            (Math.abs(r - spawnTile.getRow()) > 20 || Math.abs((height - c) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
+//
+//                        if (!placedAntenna) {
+//                            map[Map.ITEM_LAYER][r][width - c] = new MapComponent(MapComponent.CIRCUIT_BOARD, 30, 0, 0);
+//                            placedAntenna = true;
+//                            System.out.println("circuit board: " + r + ", " + (width - c));
+//                        }
+//
+//                    }
+//                    notAllPlaced = !(placedAntenna && placedTransmitter && placedCircuitBoard);
+//                }
+//            }
+//        }
+//
+//
+
+
         boolean placedAntenna = false;
         boolean placedTransmitter = false;
         boolean placedCircuitBoard = false;
-        for(int r = 0; r < height; r++) {
-            for(int c = 0; c < width; c++) {
 
-                if(chance(0.0000) && // 1/333 chance of spawning
-                        map[Map.GROUND_LAYER][r][c].getWalkable() && //Spawn on walkable land
-                        map[Map.ITEM_LAYER][r][c].getWalkable() && //Do not spawn inside an item
-                        (Math.abs(r - spawnTile.getRow()) > 20 || Math.abs(c - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
+        int antennaR = (int) (Math.random() * (height - 10) + 4);
+        int antennaC = (int) (Math.random() * (height - 10) + 4);
+        int transmitterR = (int) (Math.random() * (height - 10) + 4);
+        int transmitterC = (int) (Math.random() * (height - 10) + 4);
+        int circuitboardR = (int) (Math.random() * (height - 10) + 4);
+        int circuitboardC = (int) (Math.random() * (height - 10) + 4);
 
-                    if (!placedAntenna) {
-                        map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.ANTENNA, 30, 0, 0);
-                        placedAntenna = true;
-                    }
-                    if (!placedTransmitter) {
-                        map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.TRANSMITTER, 30, 0, 0);
-                        placedTransmitter = true;
-                    }
-                    if (!placedCircuitBoard) {
-                        map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.CIRCUIT_BOARD, 30, 0, 0);
-                        placedCircuitBoard = true;
-                    }
-                }
-            }
+        // antenna
+        if (map[Map.GROUND_LAYER][antennaR][width - antennaC].getWalkable() && //Spawn on walkable land
+                map[Map.ITEM_LAYER][antennaR][width - antennaC].getWalkable() && //Do not spawn inside an item
+                (Math.abs(antennaR - spawnTile.getRow()) > 20 || Math.abs((height - antennaC) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
+            map[Map.ITEM_LAYER][height - antennaR][antennaC] = new MapComponent(MapComponent.ANTENNA, 30, 0, 0);
+            placedAntenna = true;
+            System.out.println("antenna: " + (height - antennaR) + ", " + antennaC);
         }
+
+        // transmitter
+        if (map[Map.GROUND_LAYER][transmitterR][width - transmitterC].getWalkable() && //Spawn on walkable land
+                map[Map.ITEM_LAYER][transmitterR][width - transmitterC].getWalkable() && //Do not spawn inside an item
+                (Math.abs(transmitterR - spawnTile.getRow()) > 20 || Math.abs((height - transmitterC) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
+            map[Map.ITEM_LAYER][height - transmitterR][transmitterC] = new MapComponent(MapComponent.TRANSMITTER, 30, 0, 0);
+            placedTransmitter = true;
+            System.out.println("transmitter: " + (height - transmitterR) + ", " + transmitterC);
+        }
+
+        // circuit board
+        if (map[Map.GROUND_LAYER][circuitboardR][width - circuitboardC].getWalkable() && //Spawn on walkable land
+                map[Map.ITEM_LAYER][circuitboardR][width - circuitboardC].getWalkable() && //Do not spawn inside an item
+                (Math.abs(circuitboardR - spawnTile.getRow()) > 20 || Math.abs((height - circuitboardC) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
+            map[Map.ITEM_LAYER][height - circuitboardR][circuitboardC] = new MapComponent(MapComponent.CIRCUIT_BOARD, 30, 0, 0);
+            placedCircuitBoard = true;
+            System.out.println("circuit board: " + (height - circuitboardR) + ", " + circuitboardC);
+        }
+
         // just in case the above thing didn't work
         if (!placedAntenna)
             map[Map.ITEM_LAYER][spawnTile.getRow() - 10][spawnTile.getColumn() - 10] = new MapComponent(MapComponent.ANTENNA, 30, 0, 0);
@@ -221,11 +285,10 @@ public class MapGenerator { //I'll add getters and setters on map later
         if (!placedCircuitBoard)
             map[Map.ITEM_LAYER][spawnTile.getRow() - 12][spawnTile.getColumn() - 12] = new MapComponent(MapComponent.CIRCUIT_BOARD, 30, 0, 0);
 
-
         // String
         for(int r = 0; r < height; r++) {
             for(int c = 0; c < width; c++) {
-                if(chance(0.01) && // 1/100 chance of spawning
+                if(chance(0.001) && // 1/100 chance of spawning
                         map[Map.GROUND_LAYER][r][c].getWalkable() && //Spawn on walkable land
                         map[Map.ITEM_LAYER][r][c].getWalkable() && //Do not spawn inside an item
                         (Math.abs(r - spawnTile.getRow()) > 20 || Math.abs(c - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away

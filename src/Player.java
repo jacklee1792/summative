@@ -25,6 +25,8 @@ class Player {
     private boolean rad1 = false, rad2 = false, rad3 = false;       // to track radio parts
     public static int monstersKilled = 0, rabbitsKilled = 0, birdsKilled = 0;     // tracking monster killing stats
 
+    final static int FIREDAMAGE = 10;
+
     final static int STILL = 0;
     final static int WALK_L = 1;
     final static int WALK_R = 2;
@@ -58,6 +60,10 @@ class Player {
                     if (Math.abs(ptRow - r) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange() && Math.abs(ptColumn - c) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange()) {
                         damageDealt += (subMap[Map.ITEM_LAYER][r][c].getAttackDamage());
                     }
+                }
+                else if (subMap[Map.ITEM_LAYER][r][c].getMapComponentID()== MapComponent.CAMPFIRE) {
+                    if (r == ptRow && c == ptColumn)
+                        addHealth(-1 * FIREDAMAGE);
                 }
             }
         }
@@ -134,7 +140,7 @@ class Player {
         } else if(m.getMapComponentID() == MapComponent.ROCKS) {
             addItem(new Item(Item.ROCK));
         } else if(m.getMapComponentID() == MapComponent.CHEST) {
-            addItem(new Item(Item.BOWANDARROW));
+            addItem(new Item(Item.KNIFE)); // CHANGE THIS TO A KNIFE
         } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH) {
             addItem(new Item(Item.BERRY));
         } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
@@ -170,9 +176,14 @@ class Player {
             }
         }
 
-        else if (m.getWalkable() && inventory[selectedIndex].getItemID() == Item.FIRE) {
-            m.turnCampfire();
-            dropItem();
+        else if (m.getWalkable()) {
+            try {
+                if (inventory[selectedIndex].getItemID() == Item.FIRE) {
+                    m.turnCampfire();
+                    dropItem();
+                }
+            }
+            catch (NullPointerException neck) {}
         }
 
         else if (m.getMapComponentID() == MapComponent.ANTENNA)
