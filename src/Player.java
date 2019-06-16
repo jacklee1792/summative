@@ -142,14 +142,18 @@ class Player {
 
             if (inventory[selectedIndex].getUsage() == 1)
                 dropItem();
-        } else if(m.getMapComponentID() == MapComponent.SMALL_TREE) {
+        } else if(m.getMapComponentID() == MapComponent.SMALL_TREE && !m.isExpended()) {
             addItem(new Item(Item.STICK));
-        } else if(m.getMapComponentID() == MapComponent.ROCKS) {
+            m.expend();
+        } else if(m.getMapComponentID() == MapComponent.ROCKS && !m.isExpended()) {
             addItem(new Item(Item.ROCK));
-        } else if(m.getMapComponentID() == MapComponent.CHEST) {
+            m.expend();
+        } else if(m.getMapComponentID() == MapComponent.CHEST && !m.isExpended()) {
             addItem(new Item(Item.KNIFE)); // CHANGE THIS TO A KNIFE
-        } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH) {
+            m.expend();
+        } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH && !m.isExpended()) {
             addItem(new Item(Item.BERRY));
+            m.expend();
         } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
             for (int i = 0; i < inventoryCap; i++) {
                 if (inventory[i] == null) {
@@ -205,15 +209,20 @@ class Player {
             catch (NullPointerException wes) {}
         }
 
-        else if (m.getMapComponentID() == MapComponent.ANTENNA)
+        else if (m.getMapComponentID() == MapComponent.ANTENNA) {
             rad1 = true;
-        else if (m.getMapComponentID() == MapComponent.TRANSMITTER)
+            m.turnNull();
+        }
+        else if (m.getMapComponentID() == MapComponent.TRANSMITTER) {
             rad2 = true;
-        else if (m.getMapComponentID() == MapComponent.CIRCUIT_BOARD)
+            m.turnNull();
+        }
+        else if (m.getMapComponentID() == MapComponent.CIRCUIT_BOARD) {
             rad3 = true;
+            m.turnNull();
+        }
 
-        else if (m.getMapComponentID() == MapComponent.WISE_ROCK) {
-
+        else if (m.getMapComponentID() == MapComponent.WISE_ROCK) {         // crafting
             boolean hasBowAndArrow = false;
             for (int j = 0; j < inventoryCap; j++) {
                 try {
@@ -259,6 +268,16 @@ class Player {
                 craftCampfire();
 
         }
+        else if(m.getMapComponentID() == MapComponent.CAMPFIRE){
+            if(inventory[selectedIndex].getItemID() == Item.MEAT){
+                int meatCount = inventory[selectedIndex].getStackSize();
+                inventory[selectedIndex] = new Item(Item.COOKED_MEAT, meatCount);
+            }
+            else if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.BERRY){
+                int berryCount = inventory[selectedIndex].getStackSize();
+                inventory[selectedIndex] = new Item(Item.COOKED_FRUIT, berryCount);
+            }
+        }
 
         try {
             attackDamage = inventory[selectedIndex].getDamage();
@@ -298,10 +317,7 @@ class Player {
             }
         }
         else if(currentMission == 8){
-            if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.BERRY){
-                inventory[selectedIndex] = new Item(Item.COOKED_FRUIT);
-                return true;
-            }
+            return m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.BERRY;
         }
         else if(currentMission == 10){
             return m.getMapComponentID() == MapComponent.STRING_GROUNDED;
@@ -316,10 +332,7 @@ class Player {
             return m.getMapComponentID() == MapComponent.DEAD_RABBIT;
         }
         else if(currentMission == 13){
-            if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.MEAT){
-                inventory[selectedIndex] = new Item(Item.COOKED_MEAT);
-                return true;
-            }
+            return m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.MEAT;
         }
         else if(currentMission == 15){
             if(m.getMapComponentID() == MapComponent.ANTENNA){

@@ -1,4 +1,5 @@
 import javax.imageio.ImageIO;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.*;
 import java.awt.image.BufferedImage;
 import java.lang.Math;
@@ -7,6 +8,7 @@ class Item {
 
     private int I_ID;
     private int stackSize;
+    private boolean expended = false;
 
     // UPDATE THIS WHENEVER YOU ADD A NEW ITEM
     final static int numItems = 18;
@@ -62,9 +64,15 @@ class Item {
     final static int FISH = 16;
     final static int COOKED_FISH = 17;
 
+    // Constructors
     public Item(int ItemID) {
         I_ID = ItemID;
         stackSize = 1;
+    }
+    public Item(int ItemID, int stack){
+        I_ID = ItemID;
+        stackSize = 0;
+        increaseStackSize(stack);
     }
 
     public Item(Item old) {
@@ -102,4 +110,6 @@ class Item {
     public void increaseStackSize(int size) { stackSize += size;}
 
     public int getStackMax() {return statsSheet[I_ID][STACK_MAX_LAYER];}
+
+
 }

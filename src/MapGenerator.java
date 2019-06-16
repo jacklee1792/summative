@@ -135,15 +135,20 @@ public class MapGenerator { //I'll add getters and setters on map later
         }
         map[Map.ITEM_LAYER][spawnTile.getRow() + 1][spawnTile.getColumn()] = new MapComponent(MapComponent.PLANE); //top left corner of plane
 
-        //Rock
+        // Miscellaneous
         while(true) {
             int row = spawnTile.getRow() + rand.nextInt(11) - 5; // up to 5 away
             int column = spawnTile.getColumn() + rand.nextInt(11) - 5;
             if(map[Map.GROUND_LAYER][row][column].getMapComponentID() != MapComponent.WATER && //if ground not water and what is above it empty
                     map[Map.ITEM_LAYER][row][column].getMapComponentID() == MapComponent.NULL) {
                 map[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.WISE_ROCK);
-                map[Map.ITEM_LAYER][row-1][column-1] = new MapComponent(MapComponent.CHEST); // add chest object
-                map[Map.ITEM_LAYER][row-2][column-2] = new MapComponent(MapComponent.CAMPFIRE); // add chest object
+
+                int chestR = row + (int)(Math.random() * 4 - 3);
+                int chestC = column + (int)(Math.random() * 4 - 3);
+
+                if(map[Map.ITEM_LAYER][chestR][chestC].getMapComponentID() != MapComponent.WISE_ROCK)
+                    map[Map.ITEM_LAYER][chestR][chestC] = new MapComponent(MapComponent.CHEST); // add chest object
+                //map[Map.ITEM_LAYER][row-2][column-2] = new MapComponent(MapComponent.CAMPFIRE); // add chest object
                 System.out.println(row + " " + column);
                 break; //exit the loop
             }

@@ -547,7 +547,7 @@ class Map extends JFrame {
             missions.add("  !!! Great. You can eat them by pressing the tile of your character. Or, you can cook them.");
             missions.add("  !!! Make sure you select a new inventory slot by either using your mouse or 1 through 5 before picking something else up.");
             missions.add("MISSION 4 !!! Let's go make a campfire. Collect 2 rocks and 10 twigs and bring them back to me.");
-            missions.add("MISSION 5 !!! Let's try throwing those berries into the campfire. Select the berries and and find the fire.");
+            missions.add("MISSION 5 !!! Let's try throwing those berries into the campfire. Choose a place where you want to set up your fire.");
             missions.add("  !!! Nice. Now you have cooked berries. As you might have found out, not everything is safe to eat raw.");
             missions.add("MISSION 6 !!! You're not bad. Now, I want you to find some string. I can help you make a slingshot.");
             missions.add("MISSION 7 !!! You're almost set. How about collecting some twigs? Bring me 2 sticks piles and I'll help you craft a slingshot.");
