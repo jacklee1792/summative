@@ -29,6 +29,7 @@ class Main extends JFrame implements KeyListener {
         // Window settings
         setLayout(null);
         setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Island Invasion");
         setLocationRelativeTo(null);
         setSize(frameWidth, frameHeight);
@@ -40,7 +41,7 @@ class Main extends JFrame implements KeyListener {
         op.setVisible(false);
     }
 
-    // Mehtods
+    // Methods
     private void options(){
 
     }
@@ -105,7 +106,13 @@ class Main extends JFrame implements KeyListener {
             options = new EnhancedButton(50, 70, 50, 50, "OPTIONS");
             try {
                 background = ImageIO.read(new File("./images/menu/_BKG0.png"));
-            } catch(IOException e) { }
+            } catch(IOException e) { System.out.println("Background not loaded"); }
+
+            // Adding components
+            add(playGame);
+            add(options);
+            playGame.setBounds(playGame.getX(), playGame.getY(), playGame.getWidth(), playGame.getHeight());
+            options.setBounds(options.getX(), options.getY(), options.getWidth(), options.getHeight());
         }
 
         // Graphical methods
@@ -113,11 +120,6 @@ class Main extends JFrame implements KeyListener {
         public void paint(Graphics g){
             g.drawImage(background, 0, 0, null);
 
-            // Adding components
-            add(playGame);
-            playGame.setBounds(playGame.getX(), playGame.getY(), playGame.getWidth(), playGame.getHeight());
-            add(options);
-            options.setBounds(options.getX(), options.getY(), options.getWidth(), options.getHeight());
         }
 
         // Event Methods
@@ -173,9 +175,9 @@ class EnhancedButton extends JPanel{        //
 
         // Setting up the image
         try{
-            unpressed = ImageIO.read(new File("./images/menu/_BUT1.png"));
-            pressed = ImageIO.read(new File("./images/menu/_BUT2.png"));
-        } catch(IOException e){ }
+            unpressed = ImageIO.read(new File("./images/menu/_BTN0.png"));
+            pressed = ImageIO.read(new File("./images/menu/_BTN1.png"));
+        } catch(IOException e){ System.out.println("Button images not loaded."); }
     }
 
     // Methods
@@ -184,7 +186,6 @@ class EnhancedButton extends JPanel{        //
     public int getWidth() { return width; }
     public int getHeight() { return height; }
     public boolean isSelected() { return selected; }
-    public void setFont(Font f) { font = f; }
 
     // Graphics method
     @Override
@@ -196,6 +197,6 @@ class EnhancedButton extends JPanel{        //
                 g.drawImage(unpressed, 0, 0, width, height, null);
         } catch(NullPointerException e) {}
 
-        g.drawString(message, width / 2 - message.length() * 5, height / 2 - 20);
+        g.drawString(message, 0, 0);
     }
 }
