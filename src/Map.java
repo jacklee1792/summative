@@ -17,6 +17,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 class Map extends JFrame {
+
+    //Main Test
+    public static void main(String[] args) throws NullPointerException {
+        Map test = new Map();
+        System.out.println(test.saveMap(new File("./src/-test_save2.txt")));
+    }
+
     //Instance variables
     private MapComponent[][][] map, subMap;
     private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
@@ -28,12 +35,13 @@ class Map extends JFrame {
     private DrawArea mapArea;
     private MissionTextArea mta;
 
-    private char MOVE_UP;
-    private char MOVE_LEFT;
-    private char MOVE_DOWN;
-    private char MOVE_RIGHT;
-    private char DROP;
+    // note that caps don't work
+    private char MOVE_UP = 'w';
+    private char MOVE_LEFT = 'a';
+    private char MOVE_DOWN = 's';
+    private char MOVE_RIGHT = 'd';
 
+    // for final mission
     public static int totalMonsters = 0;
 
     final static int GROUND_LAYER = 0;
@@ -51,6 +59,7 @@ class Map extends JFrame {
 
     final static int WASD = 0;
     final static int ARROW_KEYS = 1;
+    public static char DROP_KEY = 'q';
 
     static Player p;
 
@@ -60,7 +69,7 @@ class Map extends JFrame {
         File directory = new File("./");
         System.out.println(directory.getAbsolutePath());
 
-        setTitle("Binecraft");
+        setTitle("Survival Island");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setUndecorated(true);
         setVisible(true);
@@ -118,7 +127,8 @@ class Map extends JFrame {
             MapComponent.importTextures();
             Item.importTextures();
             //Player.importTextures();
-        } catch(IOException e) { System.out.println("Image import error!"); }
+        }
+        catch(IOException e) { System.out.println("Image import error!"); }
 
         //DrawArea
         mapArea = new DrawArea(subMapWidth * tileSize, subMapHeight * tileSize);
@@ -161,6 +171,9 @@ class Map extends JFrame {
     }
 
     // Methods
+    /*
+    subMap contains the area that the player can see at the moment, for efficiency
+     */
     public void setSubMap(Tile t) throws ArrayIndexOutOfBoundsException {
         MapComponent[][][] temp = new MapComponent[2][subMapHeight][subMapWidth]; //we need a temp because we don't want to change subMap if this throws an exception
         //Copy map to subMap
@@ -185,7 +198,7 @@ class Map extends JFrame {
     }
 
     public void updatePlayer() {
-        if(System.currentTimeMillis() - p.getLastMovement() > 1000 / p.getMovementSpeed()) {
+        if(System.currentTimeMillis() - p.getLastMovement() > 1000 / p.getMovementSpeed()) { // ensures that the player has a cap on movement
             if(keys[MOVE_UP]) {
                 walk(NORTH);
             } else if (keys[MOVE_LEFT]) {
@@ -206,10 +219,11 @@ class Map extends JFrame {
     public void updateMonster() {
         MapComponent[][][] newSubMap = Monster.updateMonster(subMap, playerTile);
         setMapFromSubMap();
-        p.monsterAttack(subMap, playerTile);
+        p.monsterAttack(subMap, playerTile); // checks for monsters attacking the player
         repaint();
     }
 
+    // handles collision for player
     public boolean collision(Tile t, int direction) { //for subMap
         MapComponent target1 = new MapComponent(), target2 = new MapComponent();
         if(direction == NORTH) {
@@ -229,6 +243,7 @@ class Map extends JFrame {
         return !(target1.getWalkable() && target2.getWalkable()); //if both ground and item layer are ok, then is no collision
     }
 
+    // used to allow the player to walk
     public void walk(int direction) {
         Tile temp = new Tile(subMapTile.getRow(), subMapTile.getColumn()); //so tile is changed only is new subMap is valid
 
@@ -257,9 +272,10 @@ class Map extends JFrame {
         try {
             setSubMap(temp); //change the submap
             subMapTile = temp; //if line above doesn't throw exception
-        } catch (ArrayIndexOutOfBoundsException ex) {}
+        } catch (ArrayIndexOutOfBoundsException ex) {} // creates invisible walls at the border to prevent errors
     }
 
+    // attempts to fit native resolution
     public void adaptToScreen() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         tileSize = (int)(screenSize.getWidth() / subMapWidth);
@@ -270,9 +286,10 @@ class Map extends JFrame {
         System.out.println("what a bro moment. ");
     }
     public static void loseGame(){
-
+        System.out.println("you are a nibber");
     }
 
+    // uses data from mouseListener for interactions
     public void updateSelected(int mouseX, int mouseY) {
         selectedTile = new Tile(mouseY / tileSize, mouseX / tileSize);
         int dX = Math.abs(selectedTile.getColumn() - playerTile.getColumn());
@@ -287,6 +304,7 @@ class Map extends JFrame {
     //DrawArea and KeyListener and InventoryBar
     class DrawArea extends JPanel {
 
+        // to draw HUD
         public DrawArea(int width, int height) {
             setPreferredSize(new Dimension(width, height));
             setLayout(null); //Required for setBounds
@@ -349,6 +367,7 @@ class Map extends JFrame {
 
     }
 
+    // combines all the listeners
     class ActionProcessor implements KeyListener, MouseMotionListener, MouseListener {
 
         @Override
@@ -366,7 +385,7 @@ class Map extends JFrame {
             if(key >= '1' && key <= '5') {
                 p.updateSelectedIndex(key - '1');
                 updateSelected((int) MouseInfo.getPointerInfo().getLocation().getX(), (int) MouseInfo.getPointerInfo().getLocation().getY());
-            } else if(key == DROP) {
+            } else if(key == DROP_KEY) {
                 p.dropItem();
             }
         }
@@ -508,6 +527,7 @@ class Map extends JFrame {
         }
     }
 
+    // To communicate missions to the player
     class MissionTextArea extends JPanel {
         // Instance variables
         private ArrayList<String> missions;
@@ -532,6 +552,7 @@ class Map extends JFrame {
             missions = new ArrayList<>();
             currentMission = 0;
 
+            // missions hardcoded in
             missions.add("INTRODUCTION !!! Hi. I am the Wise Rock. You just woke up from a plane crash killing all but you. Click on the map to continue.");
             missions.add("INTRODUCTION !!! Let me show you around. First, find me and click on me so we can go talk.");
             missions.add("MISSION 1 !!! First things first. I want you to go and search the plane for a survival kit. It is near the nose.");

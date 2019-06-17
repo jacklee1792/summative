@@ -140,21 +140,20 @@ class Player {
             System.out.println("You attacked that nibber for " + attackDamage);
             System.out.println("That nibber has " + m.getHealth() + " health left");
 
-            if (inventory[selectedIndex].getUsage() == 1)
-                dropItem();
-        } else if(m.getMapComponentID() == MapComponent.SMALL_TREE && !m.isExpended()) {
+            try {
+                if (inventory[selectedIndex].getUsage() == 1)
+                    dropItem();
+            }
+            catch (NullPointerException ex) {}
+            } else if(m.getMapComponentID() == MapComponent.SMALL_TREE) {
             addItem(new Item(Item.STICK));
-            m.expend();
-        } else if(m.getMapComponentID() == MapComponent.ROCKS && !m.isExpended()) {
+            } else if(m.getMapComponentID() == MapComponent.ROCKS) {
             addItem(new Item(Item.ROCK));
-            m.expend();
-        } else if(m.getMapComponentID() == MapComponent.CHEST && !m.isExpended()) {
+            } else if(m.getMapComponentID() == MapComponent.CHEST) {
             addItem(new Item(Item.KNIFE)); // CHANGE THIS TO A KNIFE
-            m.expend();
-        } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH && !m.isExpended()) {
+            } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH) {
             addItem(new Item(Item.BERRY));
-            m.expend();
-        } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
+            } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
             for (int i = 0; i < inventoryCap; i++) {
                 if (inventory[i] == null) {
                     selectedIndex = i;
@@ -209,20 +208,15 @@ class Player {
             catch (NullPointerException wes) {}
         }
 
-        else if (m.getMapComponentID() == MapComponent.ANTENNA) {
+        else if (m.getMapComponentID() == MapComponent.ANTENNA)
             rad1 = true;
-            m.turnNull();
-        }
-        else if (m.getMapComponentID() == MapComponent.TRANSMITTER) {
+        else if (m.getMapComponentID() == MapComponent.TRANSMITTER)
             rad2 = true;
-            m.turnNull();
-        }
-        else if (m.getMapComponentID() == MapComponent.CIRCUIT_BOARD) {
+        else if (m.getMapComponentID() == MapComponent.CIRCUIT_BOARD)
             rad3 = true;
-            m.turnNull();
-        }
 
-        else if (m.getMapComponentID() == MapComponent.WISE_ROCK) {         // crafting
+        else if (m.getMapComponentID() == MapComponent.WISE_ROCK) {
+
             boolean hasBowAndArrow = false;
             for (int j = 0; j < inventoryCap; j++) {
                 try {
@@ -268,16 +262,6 @@ class Player {
                 craftCampfire();
 
         }
-        else if(m.getMapComponentID() == MapComponent.CAMPFIRE){
-            if(inventory[selectedIndex].getItemID() == Item.MEAT){
-                int meatCount = inventory[selectedIndex].getStackSize();
-                inventory[selectedIndex] = new Item(Item.COOKED_MEAT, meatCount);
-            }
-            else if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.BERRY){
-                int berryCount = inventory[selectedIndex].getStackSize();
-                inventory[selectedIndex] = new Item(Item.COOKED_FRUIT, berryCount);
-            }
-        }
 
         try {
             attackDamage = inventory[selectedIndex].getDamage();
@@ -317,7 +301,10 @@ class Player {
             }
         }
         else if(currentMission == 8){
-            return m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.BERRY;
+            if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.BERRY){
+                inventory[selectedIndex] = new Item(Item.COOKED_FRUIT);
+                return true;
+            }
         }
         else if(currentMission == 10){
             return m.getMapComponentID() == MapComponent.STRING_GROUNDED;
@@ -332,7 +319,10 @@ class Player {
             return m.getMapComponentID() == MapComponent.DEAD_RABBIT;
         }
         else if(currentMission == 13){
-            return m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.MEAT;
+            if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.MEAT){
+                inventory[selectedIndex] = new Item(Item.COOKED_MEAT);
+                return true;
+            }
         }
         else if(currentMission == 15){
             if(m.getMapComponentID() == MapComponent.ANTENNA){
@@ -758,8 +748,11 @@ class Player {
     }
 
     public void dropItem(){
-        inventory[selectedIndex].increaseStackSize(-1);
-        if(inventory[selectedIndex].getStackSize() == 0) inventory[selectedIndex] = null;
+        try {
+            inventory[selectedIndex].increaseStackSize(-1);
+            if (inventory[selectedIndex].getStackSize() == 0) inventory[selectedIndex] = null;
+        }
+        catch(NullPointerException ex) {}
     }
 
 }
