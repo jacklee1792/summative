@@ -18,7 +18,7 @@ class MapComponent {
 
     //Static variables and their properties
 
-    static int numOfComponents = 24; //Number of currently implemented components
+    static int numOfComponents = 25; //Number of currently implemented components
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
@@ -48,6 +48,7 @@ class MapComponent {
     final static int CIRCUIT_BOARD = 21;
     final static int BOSS_MONSTER = 22;
     final static int BOSS_REMAINS = 23;
+    final static int SMALL_BUSH_EXPENDED = 24;
 
     private int health, maxHealth, attackDamage, attackRange;
 

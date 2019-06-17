@@ -573,7 +573,7 @@ class Map extends JFrame {
             missions.add("MISSION 10 !!! You just need to find the three pieces of the radio. First, look for the antenna.");
             missions.add("MISSION 11 !!! Find the transmitter. You need this to call for help.");
             missions.add("MISSION 12 !!! You're almost there. I need you to find the circuit board.");
-            missions.add("MISSION 13 !!! You can't call for help yet. I want to you to eliminate all the monsters. Let the final battle begin!");
+            missions.add("MISSION 13 !!! You can't call for help yet. You need to defeat one of the boss monsters. Let the final battle begin!");
             missions.add("CONCLUSION !!! Congratulations! You vanquished all the monsters. Now, the rescue crews are on their way...");
 
             try {

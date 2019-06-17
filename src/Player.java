@@ -182,24 +182,28 @@ class Player {
             catch (NullPointerException ex) {}
             }
 
-        else if(m.getMapComponentID() == MapComponent.SMALL_TREE) {
-            addItem(new Item(Item.STICK));
-            } else if(m.getMapComponentID() == MapComponent.ROCKS) {
-            addItem(new Item(Item.ROCK));
+        else if(m.getMapComponentID() == MapComponent.SMALL_TREE && !m.isExpended()) {
+                addItem(new Item(Item.STICK));
+                m.expend();
+
+            } else if(m.getMapComponentID() == MapComponent.ROCKS && !m.isExpended()) {
+                addItem(new Item(Item.ROCK));
+                m.expend();
             } else if(m.getMapComponentID() == MapComponent.CHEST) {
-            addItem(new Item(Item.MAGIC_WAND)); // CHANGE THIS TO A KNIFE
-            } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH) {
-            addItem(new Item(Item.BERRY));
+                addItem(new Item(Item.KNIFE)); // CHANGE THIS TO A KNIFE
+            } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH && !m.isExpended()) {
+                addItem(new Item(Item.BERRY));
+                m.expend();
             } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
-            for (int i = 0; i < inventoryCap; i++) {
-                if (inventory[i] == null) {
-                    selectedIndex = i;
-                    addItem(new Item(Item.MEAT));
-                    m.turnNull();
-                    break;
+                for (int i = 0; i < inventoryCap; i++) {
+                    if (inventory[i] == null) {
+                        selectedIndex = i;
+                        addItem(new Item(Item.MEAT));
+                        m.turnNull();
+                        break;
+                    }
                 }
             }
-        }
 
         else if(m.getMapComponentID() == MapComponent.DEAD_BIRD) {
             for (int i = 0; i < inventoryCap; i++) {
