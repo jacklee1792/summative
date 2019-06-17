@@ -22,6 +22,7 @@ class MapComponent {
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
+    private boolean expended = false;
 
     final static int NULL = 0;
     final static int GRASS = 1;
@@ -83,9 +84,13 @@ class MapComponent {
         maxHealth = old.maxHealth;
         attackDamage = old.attackDamage;
         attackRange = old.attackRange;
+        expended = old.expended;
     }
 
     //Methods
+    public boolean isExpended() { return expended; }
+    public void expend() { expended = true; }
+
     public static void importTextures() throws IOException { //import textures
         for(int i = 0; i < numOfComponents; i++) {
             texture[i] = ImageIO.read(new File("./images/textures/_TEX" + i + ".png"));
@@ -172,10 +177,8 @@ class MapComponent {
     public void turnCampfire() {MC_ID = CAMPFIRE; }
 
     public boolean isFire() {
-        if (MC_ID == CAMPFIRE)
-            return true;
-        else
-            return false;
+        return MC_ID == CAMPFIRE;
     }
+
 
 }
