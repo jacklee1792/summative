@@ -91,7 +91,11 @@ class MapComponent {
 
     //Methods
     public boolean isExpended() { return expended; }
-    public void expend() { expended = true; }
+    public void expend() {
+        expended = true;
+        if (MC_ID == SMALL_BUSH)
+            MC_ID = SMALL_BUSH_EXPENDED;
+    }
 
     public static void importTextures() throws IOException { //import textures
         for(int i = 0; i < numOfComponents; i++) {
@@ -155,6 +159,7 @@ class MapComponent {
         else if (MC_ID == CIRCUIT_BOARD) {d = new Dimension(1, 1); }
         else if (MC_ID == BOSS_MONSTER) {d = new Dimension(1, 1); }
         else if (MC_ID == BOSS_REMAINS) {d = new Dimension(1, 1); }
+        else if (MC_ID == SMALL_BUSH_EXPENDED) {d = new Dimension(1, 1); }
         return d;
     }
 
@@ -184,6 +189,9 @@ class MapComponent {
         return MC_ID == CAMPFIRE;
     }
 
-
+//    public void setExpended (boolean b) {
+//        expended = b;
+//        if ()
+//    }
 
 }

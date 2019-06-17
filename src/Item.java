@@ -20,7 +20,7 @@ class Item {
 
     final static int[][] statsSheet = // now a nibber on the floor talking to the athletes
             {
-                    {1, 2, 0, 0, 0, 1}, // NULL
+                    {1,2, 0, 0, 0, 1}, // NULL
                     {10, 3, 0, 0, 1, 10}, // STICK
                     {1000, 8, 0, 0, 0, 1}, // SWORD
                     {34, 1, 0, 0, 0, 1}, // KNIFE

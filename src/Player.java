@@ -32,7 +32,7 @@ class Player {
     final static int WALK_R = 2;
 
     public Player() {
-        name = "ppman";
+        name = "Player";
         health = 100; // for number of hearts
         maxHealth = 100;
         hunger = 100;
@@ -186,7 +186,7 @@ class Player {
                 addItem(new Item(Item.STICK));
                 m.expend();
 
-            } else if(m.getMapComponentID() == MapComponent.ROCKS && !m.isExpended()) {
+            } else if(m.getMapComponentID() == MapComponent.ROCKS && !m.isExpended())    {
                 addItem(new Item(Item.ROCK));
                 m.expend();
             } else if(m.getMapComponentID() == MapComponent.CHEST) {
