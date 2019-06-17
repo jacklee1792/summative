@@ -39,7 +39,7 @@ class Main extends JFrame implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyChar() == 'n' || e.getKeyChar() == 'N')      // starting a new game
-            map = new Map(aspectRatio, movementChoice);
+            map = new Map(aspectRatio, movementChoice, dropKey);
         else if(e.getKeyChar() == 's' || e.getKeyChar() == 'S')
             options();
     }

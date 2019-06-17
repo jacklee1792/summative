@@ -20,7 +20,7 @@ class Map extends JFrame {
 
     //Main Test
     public static void main(String[] args) throws NullPointerException {
-        Map test = new Map();
+        Map test = new Map(Map.ASPECT_16_9, Map.WASD, 'q');
         System.out.println(test.saveMap(new File("./src/-test_save2.txt")));
     }
 
@@ -40,6 +40,7 @@ class Map extends JFrame {
     private char MOVE_LEFT = 'a';
     private char MOVE_DOWN = 's';
     private char MOVE_RIGHT = 'd';
+    private char DROP = 'q';
 
     // for final mission
     public static int totalMonsters = 0;
@@ -64,7 +65,7 @@ class Map extends JFrame {
     static Player p;
 
     //Constructor
-    public Map(int aspectRatio, int movementChoice) {
+    public Map(int aspectRatio, int movementChoice, char dropKey) {
         //Set up the window
         File directory = new File("./");
         System.out.println(directory.getAbsolutePath());
@@ -78,6 +79,7 @@ class Map extends JFrame {
         // Setting up options
         setAspectRatio(aspectRatio);
         setMovementKeys(movementChoice);
+        DROP = dropKey;
 
         //Map
         map = new MapComponent[2][mapHeight][mapWidth];
@@ -726,4 +728,7 @@ class Map extends JFrame {
             mc = null;
         System.out.println("where the love go");
     }
+
+
+
 }
