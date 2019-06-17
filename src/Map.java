@@ -124,7 +124,7 @@ class Map extends JFrame {
 
             }
         };
-        monsterTimer.schedule(monsterTick, 0, 300); //Every 500 ms
+        monsterTimer.schedule(monsterTick, 0, 420); //Every 500 ms
         Timer playerTimer = new Timer();
         TimerTask playerTick = new TimerTask(){
             @Override

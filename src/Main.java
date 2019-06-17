@@ -1,8 +1,10 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 class Main extends JFrame implements KeyListener {
@@ -16,18 +18,30 @@ class Main extends JFrame implements KeyListener {
     private int aspectRatio = Map.ASPECT_16_9;
     private int movementChoice = Map.WASD;
     private char dropKey = 'q';
+    private MainPage mp = new MainPage();
     private OptionsPage op = new OptionsPage();
 
+    // Constants
+    final int frameWidth = 720;
+    final int frameHeight = 720;
+
     public Main(){
+        // Window settings
+        setLayout(null);
+        setVisible(true);
+        setTitle("Island Invasion");
+        setLocationRelativeTo(null);
+        setSize(frameWidth, frameHeight);
 
+        // Adding components
+        add(mp, BorderLayout.CENTER);
+        add(op, BorderLayout.CENTER);
+        mp.setVisible(true);
+        op.setVisible(false);
     }
 
-    // Methods
-    private void options(){                 // runs the options for the game
-
-    }
-
-    class OptionsPage extends JFrame {
+    // Mehtods
+    private void options(){
 
     }
 
@@ -46,5 +60,142 @@ class Main extends JFrame implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    // Main and menu JPanels
+    class OptionsPage extends JPanel implements MouseListener {
+        // Instance variables
+
+        // Mouse Events
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
+
+    class MainPage extends JPanel implements MouseListener{
+        // Instance variables
+        private EnhancedButton playGame, options;
+        private BufferedImage background;
+
+        // Constructors
+        public MainPage(){
+            // Initializing components
+            playGame = new EnhancedButton(10, 10, 50, 50, "PLAY");
+            options = new EnhancedButton(50, 70, 50, 50, "OPTIONS");
+            try {
+                background = ImageIO.read(new File("./images/menu/_BKG0.png"));
+            } catch(IOException e) { }
+        }
+
+        // Graphical methods
+        @Override
+        public void paint(Graphics g){
+            g.drawImage(background, 0, 0, null);
+
+            // Adding components
+            add(playGame);
+            playGame.setBounds(playGame.getX(), playGame.getY(), playGame.getWidth(), playGame.getHeight());
+            add(options);
+            options.setBounds(options.getX(), options.getY(), options.getWidth(), options.getHeight());
+        }
+
+        // Event Methods
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if(e.getX() >= playGame.getX() && e.getX() <= playGame.getX() + playGame.getWidth() && e.getY() >= playGame.getY() && e.getY() <= playGame.getY() + playGame.getHeight()){
+                map = new Map(aspectRatio, movementChoice, dropKey);
+                this.setVisible(false);
+            }
+            if(e.getX() >= options.getX() && e.getX() <= options.getX() + options.getWidth() && e.getY() >= options.getY() && e.getY() <= options.getY() + options.getHeight()){
+                this.setVisible(false);
+                op.setVisible(true);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
+}
+
+class EnhancedButton extends JPanel{        //
+    // Instance variables
+    private int x, y, width, height;
+    private String message;
+    private boolean selected;
+    private Font font = new Font("Comic Sans MS", Font.BOLD, 24);
+    private BufferedImage unpressed, pressed;
+
+    // Constructors
+    public EnhancedButton(int x, int y, int width, int height, String message){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.message = message;
+
+        // Setting up the image
+        try{
+            unpressed = ImageIO.read(new File("./images/menu/_BUT1.png"));
+            pressed = ImageIO.read(new File("./images/menu/_BUT2.png"));
+        } catch(IOException e){ }
+    }
+
+    // Methods
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
+    public boolean isSelected() { return selected; }
+    public void setFont(Font f) { font = f; }
+
+    // Graphics method
+    @Override
+    public void paint(Graphics g){
+        try{
+            if(selected)
+                g.drawImage(pressed, 0, 0, width, height, null);
+            else
+                g.drawImage(unpressed, 0, 0, width, height, null);
+        } catch(NullPointerException e) {}
+
+        g.drawString(message, width / 2 - message.length() * 5, height / 2 - 20);
     }
 }

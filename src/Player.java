@@ -38,7 +38,7 @@ class Player {
         hunger = 100;
         maxHunger = 100;
         walkState = 0;
-        movementSpeed = 5;
+        movementSpeed = 8;
         attackDamage = 5;
         range = 2;
 
