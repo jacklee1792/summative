@@ -183,7 +183,6 @@ class MapComponent {
         return MC_ID == CAMPFIRE;
     }
 
-    public void turnFire() {MC_ID = CAMPFIRE; }
 
 
 }

@@ -129,6 +129,35 @@ class Player {
         }
         catch (NullPointerException ex) {}
 
+        if (selectedItemID == Item.MAGIC_WAND) {
+            if (m.getMapComponentID() == MapComponent.MONSTER ||
+                    m.getMapComponentID() == MapComponent.RABBIT ||
+                    m.getMapComponentID() == MapComponent.BIRD ||
+                    m.getMapComponentID() == MapComponent.BOSS_MONSTER) {
+                int magicDamage = m.getHealth() / 2;
+
+                m.addHealth(-1 * (magicDamage)); // deals half the monster's health, rounded down
+                System.out.println("That entity has " + m.getHealth() + " health left");
+                System.out.println("jennifer");
+
+
+            } else if (m.getMapComponentID() == MapComponent.NULL ||
+                    m.getMapComponentID() == MapComponent.FILLED_NULL ||
+                    m.getMapComponentID() == MapComponent.GRASS ||
+                    m.getMapComponentID() == MapComponent.SAND ||
+                    m.getMapComponentID() == MapComponent.SOIL) {
+                if (t.getRow() == playerTile.getRow() && t.getColumn() == playerTile.getColumn()) {
+                    addHealth(1);
+                    addHunger(-4);
+                }
+                else
+                    m.turnCampfire();
+            }
+            else if (m.getMapComponentID() == MapComponent.CAMPFIRE)
+                m.turnNull();
+
+        }
+
         if (m.getMapComponentID() == MapComponent.MONSTER ||
                 m.getMapComponentID() == MapComponent.RABBIT ||
                 m.getMapComponentID() == MapComponent.BIRD ||
@@ -151,40 +180,14 @@ class Player {
                     dropItem();
             }
             catch (NullPointerException ex) {}
-            } else if (selectedItemID == Item.MAGIC_WAND) {
-            if (m.getMapComponentID() == MapComponent.MONSTER ||
-                    m.getMapComponentID() == MapComponent.RABBIT ||
-                    m.getMapComponentID() == MapComponent.BIRD ||
-                    m.getMapComponentID() == MapComponent.BOSS_MONSTER) {
-                if (m.getHealth() <= attackDamage) {
-                    if (m.getMapComponentID() == MapComponent.MONSTER || m.getMapComponentID() == MapComponent.BOSS_MONSTER)
-                        monstersKilled++;
-                    else if (m.getMapComponentID() == MapComponent.RABBIT)
-                        rabbitsKilled++;
-                    else if (m.getMapComponentID() == MapComponent.BIRD)
-                        birdsKilled++;
-                }
-                m.addHealth(-1 * (m.getHealth() / 2)); // deals half the monster's health, rounded down
-                System.out.println("You attacked for " + attackDamage);
-                System.out.println("That entity has " + m.getHealth() + " health left");
-
-
-            } else if (m.getMapComponentID() == MapComponent.NULL ||
-                    m.getMapComponentID() == MapComponent.FILLED_NULL ||
-                    m.getMapComponentID() == MapComponent.GRASS ||
-                    m.getMapComponentID() == MapComponent.SAND ||
-                    m.getMapComponentID() == MapComponent.SOIL)
-                m.turnFire();
-            else if (m.getMapComponentID() == MapComponent.CAMPFIRE)
-                m.turnNull();
-        }
+            }
 
         else if(m.getMapComponentID() == MapComponent.SMALL_TREE) {
             addItem(new Item(Item.STICK));
             } else if(m.getMapComponentID() == MapComponent.ROCKS) {
             addItem(new Item(Item.ROCK));
             } else if(m.getMapComponentID() == MapComponent.CHEST) {
-            addItem(new Item(Item.KNIFE)); // CHANGE THIS TO A KNIFE
+            addItem(new Item(Item.MAGIC_WAND)); // CHANGE THIS TO A KNIFE
             } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH) {
             addItem(new Item(Item.BERRY));
             } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {

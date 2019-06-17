@@ -38,7 +38,7 @@ class Item {
                     {1, 8, 0, 0, 0, 1}, // FISHING_ROD
                     {0, 1, 5, 20, 1, 10}, // FISH
                     {0, 0, 0, 30, 1, 1}, // COOKED_FISH
-                    {0, 8, -1, 1, 0, 1} // MAGIC_WAND
+                    {0, 8, 0, 1, 0, 1} // MAGIC_WAND
             };
 
     final static int NULL = 0;
