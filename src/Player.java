@@ -140,17 +140,20 @@ class Player {
             System.out.println("You attacked that nibber for " + attackDamage);
             System.out.println("That nibber has " + m.getHealth() + " health left");
 
-            if (inventory[selectedIndex].getUsage() == 1)
-                dropItem();
-        } else if(m.getMapComponentID() == MapComponent.SMALL_TREE) {
+            try {
+                if (inventory[selectedIndex].getUsage() == 1)
+                    dropItem();
+            }
+            catch (NullPointerException ex) {}
+            } else if(m.getMapComponentID() == MapComponent.SMALL_TREE) {
             addItem(new Item(Item.STICK));
-        } else if(m.getMapComponentID() == MapComponent.ROCKS) {
+            } else if(m.getMapComponentID() == MapComponent.ROCKS) {
             addItem(new Item(Item.ROCK));
-        } else if(m.getMapComponentID() == MapComponent.CHEST) {
+            } else if(m.getMapComponentID() == MapComponent.CHEST) {
             addItem(new Item(Item.KNIFE)); // CHANGE THIS TO A KNIFE
-        } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH) {
+            } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH) {
             addItem(new Item(Item.BERRY));
-        } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
+            } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
             for (int i = 0; i < inventoryCap; i++) {
                 if (inventory[i] == null) {
                     selectedIndex = i;
@@ -745,8 +748,11 @@ class Player {
     }
 
     public void dropItem(){
-        inventory[selectedIndex].increaseStackSize(-1);
-        if(inventory[selectedIndex].getStackSize() == 0) inventory[selectedIndex] = null;
+        try {
+            inventory[selectedIndex].increaseStackSize(-1);
+            if (inventory[selectedIndex].getStackSize() == 0) inventory[selectedIndex] = null;
+        }
+        catch(NullPointerException ex) {}
     }
 
 }

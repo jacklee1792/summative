@@ -42,7 +42,7 @@ class Item {
 
     final static int NULL = 0;
     final static int STICK = 1;
-    final static int SWORD = 2;
+    final static int SWORD = 2; // debug item
     final static int KNIFE = 3;
     final static int SLINGSHOT = 4;
     final static int BOWANDARROW = 5;
@@ -50,7 +50,7 @@ class Item {
     final static int STRING = 7;
     final static int FEATHER = 8;
 
-    final static int APPLE = 9;
+    final static int APPLE = 9; // debug item
     final static int BERRY = 10;
     final static int MEAT = 11;
     final static int COOKED_FRUIT = 12;
@@ -62,20 +62,19 @@ class Item {
     final static int FISH = 16;
     final static int COOKED_FISH = 17;
 
+    // Normal constructor
     public Item(int ItemID) {
         I_ID = ItemID;
         stackSize = 1;
     }
 
+    // Copy constructor
     public Item(Item old) {
         I_ID = old.I_ID;
         stackSize = old.stackSize;
     }
 
-    public int getItemID() {
-        return I_ID;
-    }
-
+    // for GUI
     static BufferedImage[] texture = new BufferedImage[numItems];
 
     //Methods
@@ -83,6 +82,10 @@ class Item {
         for(int i = 0; i < numItems; i++) {
             texture[i] = ImageIO.read(new File("./images/items/_ITM" + i + ".png"));
         }
+    }
+
+    public int getItemID() {
+        return I_ID;
     }
 
     public int getDamage() {return statsSheet[I_ID][DAMAGE_LAYER]; }
