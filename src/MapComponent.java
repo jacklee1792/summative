@@ -95,6 +95,8 @@ class MapComponent {
         expended = true;
         if (MC_ID == SMALL_BUSH)
             MC_ID = SMALL_BUSH_EXPENDED;
+        if (MC_ID == ROCKS)
+            MC_ID = NULL;
     }
 
     public static void importTextures() throws IOException { //import textures
@@ -186,7 +188,13 @@ class MapComponent {
     public void turnCampfire() {MC_ID = CAMPFIRE; }
 
     public boolean isFire() {
-        return MC_ID == CAMPFIRE;
+        boolean isCampfire = false;
+        try {
+            if (MC_ID == CAMPFIRE)
+                isCampfire = true;
+        }
+        catch (NullPointerException ex) {}
+        return isCampfire;
     }
 
 //    public void setExpended (boolean b) {

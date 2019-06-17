@@ -161,7 +161,7 @@ public class MapGenerator { //I'll add getters and setters on map later
                         map[Map.GROUND_LAYER][r][c].getWalkable() && //Spawn on walkable land
                         map[Map.ITEM_LAYER][r][c].getWalkable() && //Do not spawn inside an item
                         (Math.abs(r - spawnTile.getRow()) > 20 || Math.abs(c - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
-                    map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.MONSTER, 100, 1, 1); //You're a monster bro
+                    map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.MONSTER, 100, 5, 1); //You're a monster bro
                     Map.totalMonsters++;
                 }
             }

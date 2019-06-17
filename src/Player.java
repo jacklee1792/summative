@@ -38,7 +38,7 @@ class Player {
         hunger = 100;
         maxHunger = 100;
         walkState = 0;
-        movementSpeed = 5;
+        movementSpeed = 15;
         attackDamage = 5;
         range = 2;
 
@@ -138,7 +138,6 @@ class Player {
 
                 m.addHealth(-1 * (magicDamage)); // deals half the monster's health, rounded down
                 System.out.println("That entity has " + m.getHealth() + " health left");
-                System.out.println("jennifer");
 
 
             } else if (m.getMapComponentID() == MapComponent.NULL ||
@@ -183,17 +182,86 @@ class Player {
             }
 
         else if(m.getMapComponentID() == MapComponent.SMALL_TREE && !m.isExpended()) {
-                addItem(new Item(Item.STICK));
-                m.expend();
+            boolean indexFound = false;
+            for (int i = 0; i < inventoryCap; i++) {
+                try {
+                    if (inventory[i].getItemID() == Item.STICK && !indexFound) {
+                        selectedIndex = i;
+                        addItem(new Item(Item.STICK));
+                        m.expend();
+                        indexFound = true;
+                        break;
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int i = 0; i < inventoryCap; i++) {
+                try {
+                    if (inventory[i] == null && !indexFound) {
+                        selectedIndex = i;
+                        addItem(new Item(Item.STICK));
+                        m.expend();
+                        break;
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
 
-            } else if(m.getMapComponentID() == MapComponent.ROCKS && !m.isExpended())    {
-                addItem(new Item(Item.ROCK));
-                m.expend();
+
+        } else if(m.getMapComponentID() == MapComponent.ROCKS && !m.isExpended())    {
+            boolean indexFound = false;
+            for (int i = 0; i < inventoryCap; i++) {
+                try {
+                    if (inventory[i].getItemID() == Item.ROCK && !indexFound) {
+                        selectedIndex = i;
+                        addItem(new Item(Item.ROCK));
+                        m.expend();
+                        indexFound = true;
+                        break;
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
+            for (int i = 0; i < inventoryCap; i++) {
+                try {
+                    if (inventory[i] == null && !indexFound) {
+                        selectedIndex = i;
+                        addItem(new Item(Item.ROCK));
+                        m.expend();
+                        break;
+                    }
+                }
+                catch (NullPointerException ex) {}
+            }
             } else if(m.getMapComponentID() == MapComponent.CHEST) {
-                addItem(new Item(Item.KNIFE)); // CHANGE THIS TO A KNIFE
+                addItem(new Item(Item.FISHING_ROD)); // CHANGE THIS TO A KNIFE
             } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH && !m.isExpended()) {
-                addItem(new Item(Item.BERRY));
-                m.expend();
+
+                boolean indexFound = false;
+                for (int i = 0; i < inventoryCap; i++) {
+                    try {
+                        if (inventory[i].getItemID() == Item.BERRY && !indexFound) {
+                            selectedIndex = i;
+                            addItem(new Item(Item.BERRY));
+                            m.expend();
+                            indexFound = true;
+                            break;
+                        }
+                    }
+                    catch (NullPointerException ex) {}
+                }
+                for (int i = 0; i < inventoryCap; i++) {
+                    try {
+                        if (inventory[i] == null && !indexFound) {
+                            selectedIndex = i;
+                            addItem(new Item(Item.BERRY));
+                            m.expend();
+                            break;
+                        }
+                    }
+                    catch (NullPointerException ex) {}
+                }
+
             } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
                 for (int i = 0; i < inventoryCap; i++) {
                     if (inventory[i] == null) {
@@ -241,8 +309,33 @@ class Player {
             try {
                 if (inventory[selectedIndex].getItemID() == Item.FISHING_ROD) {
                     int randy = (int)(Math.random() * 100);
-                    if (randy < 100) // 10% chance
-                        addItem(new Item(Item.FISH));
+                    if (randy < 20) {// 20% chance
+
+                        boolean indexFound = false;
+                        for (int i = 0; i < inventoryCap; i++) {
+                            try {
+                                if (inventory[i].getItemID() == Item.FISH && !indexFound && inventory[i].getStackSize() < inventory[i].getStackMax()) {
+                                    selectedIndex = i;
+                                    addItem(new Item(Item.FISH));
+                                    m.expend();
+                                    indexFound = true;
+                                    break;
+                                }
+                            }
+                            catch (NullPointerException ex) {}
+                        }
+                        for (int i = 0; i < inventoryCap; i++) {
+                            try {
+                                if (inventory[i] == null && !indexFound) {
+                                    selectedIndex = i;
+                                    addItem(new Item(Item.FISH));
+                                    m.expend();
+                                    break;
+                                }
+                            }
+                            catch (NullPointerException ex) {}
+                        }
+                    }
                     addHunger(-3); // reduces hunger by 4 in total
                 }
             }
