@@ -20,7 +20,16 @@ class Map extends JFrame {
 
     //Main Test
     public static void main(String[] args) throws NullPointerException {
-        Map test = new Map(Map.ASPECT_16_9, Map.WASD, 'q');
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double screenRatio = screenSize.getWidth() / screenSize.getHeight();
+        System.out.println(screenSize.getWidth() + " " + screenSize.getHeight());
+        int screenRatioIndex = ASPECT_16_9; // default to 16:9
+        if (screenRatio - 4.0 / 3 <= 0.01) // accounts for some error
+            screenRatioIndex = ASPECT_4_3;
+        else if (screenRatio - 5.0 / 4 <= 0.01)
+            screenRatioIndex = ASPECT_5_4;
+
+        Map test = new Map(screenRatioIndex, WASD, 'q');
         System.out.println(test.saveMap(new File("./src/-test_save2.txt")));
     }
 
@@ -57,6 +66,7 @@ class Map extends JFrame {
 
     final static int ASPECT_16_9 = 0;
     final static int ASPECT_4_3 = 1;
+    final static int ASPECT_5_4 = 2;
 
     final static int WASD = 0;
     final static int ARROW_KEYS = 1;
@@ -114,7 +124,7 @@ class Map extends JFrame {
 
             }
         };
-        monsterTimer.schedule(monsterTick, 0, 500); //Every 500 ms
+        monsterTimer.schedule(monsterTick, 0, 300); //Every 500 ms
         Timer playerTimer = new Timer();
         TimerTask playerTick = new TimerTask(){
             @Override
@@ -155,6 +165,11 @@ class Map extends JFrame {
             subMapHeight = 12;
             subMapWidth = 16;
         }
+        else if(ratio == ASPECT_5_4) {
+            subMapHeight = 12;
+            subMapWidth = 15;
+        }
+
     }
 
     public void setMovementKeys(int bind){

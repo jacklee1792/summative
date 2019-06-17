@@ -38,7 +38,7 @@ class Player {
         hunger = 100;
         maxHunger = 100;
         walkState = 0;
-        movementSpeed = 15;
+        movementSpeed = 5;
         attackDamage = 5;
         range = 2;
 
@@ -116,7 +116,7 @@ class Player {
                         inventory[selectedIndex] = new Item(Item.COOKED_FRUIT);
                     else if (inventory[selectedIndex].getItemID() == Item.MEAT)
                         inventory[selectedIndex] = new Item(Item.COOKED_MEAT);
-                    else if (inventory[selectedIndex].getItemID() == Item.COOKED_FISH)
+                    else if (inventory[selectedIndex].getItemID() == Item.FISH)
                         inventory[selectedIndex] = new Item(Item.COOKED_FISH);
                 }
             }
@@ -234,7 +234,7 @@ class Player {
                 catch (NullPointerException ex) {}
             }
             } else if(m.getMapComponentID() == MapComponent.CHEST) {
-                addItem(new Item(Item.FISHING_ROD)); // CHANGE THIS TO A KNIFE
+                addItem(new Item(Item.MAGIC_WAND)); // CHANGE THIS TO A KNIFE
             } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH && !m.isExpended()) {
 
                 boolean indexFound = false;
