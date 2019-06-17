@@ -121,7 +121,13 @@ class Player {
                 }
             }
         }
-        catch (NullPointerException jennifer) {}
+        catch (NullPointerException ex) {}
+
+        int selectedItemID = 0; // used for magic wand
+        try {
+            selectedItemID = inventory[selectedIndex].getItemID();
+        }
+        catch (NullPointerException ex) {}
 
         if (m.getMapComponentID() == MapComponent.MONSTER ||
                 m.getMapComponentID() == MapComponent.RABBIT ||
@@ -137,15 +143,43 @@ class Player {
                     birdsKilled++;
             }
             m.addHealth(-1 * attackDamage);
-            System.out.println("You attacked that nibber for " + attackDamage);
-            System.out.println("That nibber has " + m.getHealth() + " health left");
+            System.out.println("You attacked for " + attackDamage);
+            System.out.println("That entity has " + m.getHealth() + " health left");
 
             try {
                 if (inventory[selectedIndex].getUsage() == 1)
                     dropItem();
             }
             catch (NullPointerException ex) {}
-            } else if(m.getMapComponentID() == MapComponent.SMALL_TREE) {
+            } else if (selectedItemID == Item.MAGIC_WAND) {
+            if (m.getMapComponentID() == MapComponent.MONSTER ||
+                    m.getMapComponentID() == MapComponent.RABBIT ||
+                    m.getMapComponentID() == MapComponent.BIRD ||
+                    m.getMapComponentID() == MapComponent.BOSS_MONSTER) {
+                if (m.getHealth() <= attackDamage) {
+                    if (m.getMapComponentID() == MapComponent.MONSTER || m.getMapComponentID() == MapComponent.BOSS_MONSTER)
+                        monstersKilled++;
+                    else if (m.getMapComponentID() == MapComponent.RABBIT)
+                        rabbitsKilled++;
+                    else if (m.getMapComponentID() == MapComponent.BIRD)
+                        birdsKilled++;
+                }
+                m.addHealth(-1 * (m.getHealth() / 2)); // deals half the monster's health, rounded down
+                System.out.println("You attacked for " + attackDamage);
+                System.out.println("That entity has " + m.getHealth() + " health left");
+
+
+            } else if (m.getMapComponentID() == MapComponent.NULL ||
+                    m.getMapComponentID() == MapComponent.FILLED_NULL ||
+                    m.getMapComponentID() == MapComponent.GRASS ||
+                    m.getMapComponentID() == MapComponent.SAND ||
+                    m.getMapComponentID() == MapComponent.SOIL)
+                m.turnFire();
+            else if (m.getMapComponentID() == MapComponent.CAMPFIRE)
+                m.turnNull();
+        }
+
+        else if(m.getMapComponentID() == MapComponent.SMALL_TREE) {
             addItem(new Item(Item.STICK));
             } else if(m.getMapComponentID() == MapComponent.ROCKS) {
             addItem(new Item(Item.ROCK));
@@ -200,9 +234,9 @@ class Player {
             try {
                 if (inventory[selectedIndex].getItemID() == Item.FISHING_ROD) {
                     int randy = (int)(Math.random() * 100);
-                    if (randy < 10) // 10% chance
+                    if (randy < 100) // 10% chance
                         addItem(new Item(Item.FISH));
-                    addHunger(-4); // reduces hunger by 5 in total
+                    addHunger(-3); // reduces hunger by 4 in total
                 }
             }
             catch (NullPointerException wes) {}
@@ -262,6 +296,20 @@ class Player {
                 craftCampfire();
 
         }
+
+        else if (m.getMapComponentID() == MapComponent.BOSS_REMAINS) {
+            for (int i = 0; i < inventoryCap; i++) {
+                if (inventory[i] == null) {
+                    selectedIndex = i;
+                    addItem(new Item(Item.MAGIC_WAND));
+                    m.turnNull();
+                    break;
+                }
+            }
+        }
+
+
+
 
         try {
             attackDamage = inventory[selectedIndex].getDamage();

@@ -135,18 +135,19 @@ class Monster extends MapComponent {
                         if (randy <= 5) // 60% chance of dropping meat
                             subMap[Map.ITEM_LAYER][row][column] = new MapComponent(DEAD_RABBIT);
                     }
-                    else if (currentMonster.getMapComponentID() == BIRD) {
-                        if (randy <= 34) // 40% chance
-                            subMap[Map.ITEM_LAYER][row][column] = new MapComponent(DEAD_BIRD);
-                    }
+//                    else if (currentMonster.getMapComponentID() == BIRD) {
+//                        if (randy <= 34) // 40% chance
+//                            subMap[Map.ITEM_LAYER][row][column] = new MapComponent(DEAD_BIRD);
+//                    }
                     System.out.println("you have killed " + Player.monstersKilled + " monsters");
                 }
             }
 
-            if (currentMonster.getMapComponentID() == BIRD && currentMonster.getHealth() > 0) {
+            if (currentMonster.getMapComponentID() == BIRD) {
                 int direction = (int) (Math.random() * 4);
                 boolean hasMoved = false;
-                if (currentMonster.getHealth() == currentMonster.getMaxHealth()) {
+
+                if (currentMonster.getHealth() == currentMonster.getMaxHealth()) { // if its at full health, it just moves randomly
                     if (direction == 0) {
                         try {
                             if (subMap[Map.ITEM_LAYER][row][column + 1].getWalkable() && subMap[Map.GROUND_LAYER][row][column + 1].getWalkable() && (column + 1 != ptColumn || row != ptRow)) {
@@ -184,7 +185,7 @@ class Monster extends MapComponent {
                             subMap[Map.ITEM_LAYER][row][column] = currentMonster;
                     }
 
-                else if (currentMonster.getHealth() < currentMonster.getMaxHealth() && currentMonster.getHealth() > 0) {// if its been hit
+                if (currentMonster.getHealth() < currentMonster.getMaxHealth() && currentMonster.getHealth() > 0) {// if its been hit
                     int[] walkPriority = {0, 0, 0, 0}; //0 = cannot walk, 1 = can walk, 2 = can walk towards player
                     try {
                         if (subMap[Map.ITEM_LAYER][row - 1][column].getWalkable() && subMap[Map.GROUND_LAYER][row - 1][column].getWalkable() && (row - 1 != ptRow || column != ptColumn) && !(subMap[Map.ITEM_LAYER][row - 1][column].isFire()))
@@ -206,14 +207,14 @@ class Monster extends MapComponent {
                             walkPriority[Map.EAST] = 1;
                     } catch (Exception ex) {
                     }
-//                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
-//                    walkPriority[Map.NORTH] = 0;
-//                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
-//                    walkPriority[Map.SOUTH] = 0;
-//                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
-//                    walkPriority[Map.WEST] = 0;
-//                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
-//                    walkPriority[Map.EAST] = 0;
+                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
+                    walkPriority[Map.NORTH] = 0;
+                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
+                    walkPriority[Map.SOUTH] = 0;
+                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
+                    walkPriority[Map.WEST] = 0;
+                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
+                    walkPriority[Map.EAST] = 0;
 
                     // reversed from monster
                     if (row < ptRow) walkPriority[Map.NORTH] *= 2;
@@ -242,14 +243,20 @@ class Monster extends MapComponent {
                         else if (choice == Map.SOUTH) subMap[Map.ITEM_LAYER][row + 1][column] = currentMonster;
                         else if (choice == Map.WEST) subMap[Map.ITEM_LAYER][row][column - 1] = currentMonster;
                         else if (choice == Map.EAST) subMap[Map.ITEM_LAYER][row][column + 1] = currentMonster;
-                    } else {// if dead
+
+                    }
+
+                    }
+
+
+                if (currentMonster.getHealth() < 0) {// if dead
                         int randy = (int) (Math.random() * 10);
-                        if (randy <= 3) // 40% chance of dropping feather
+                        if (randy <= 34) // 40% chance of dropping feather
                             subMap[Map.ITEM_LAYER][row][column] = new MapComponent(DEAD_BIRD);
                         System.out.println("you have killed " + Player.monstersKilled + " monsters");
                     }
 
-                }
+
             }
 
         }

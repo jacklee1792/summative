@@ -9,7 +9,7 @@ class Item {
     private int stackSize;
 
     // UPDATE THIS WHENEVER YOU ADD A NEW ITEM
-    final static int numItems = 18;
+    final static int numItems = 19;
 
     final static int DAMAGE_LAYER = 0;
     final static int RANGE_LAYER = 1;
@@ -22,7 +22,7 @@ class Item {
             {
                     {1, 2, 0, 0, 0, 1}, // NULL
                     {10, 3, 0, 0, 1, 10}, // STICK
-                    {1000, 3, 0, 0, 0, 1}, // SWORD
+                    {1000, 8, 0, 0, 0, 1}, // SWORD
                     {34, 1, 0, 0, 0, 1}, // KNIFE
                     {18, 7, 0, 0, 0, 1}, // SLINGSHOT
                     {40, 6, 0, 0, 0, 1}, // BOW_AND_ARROW
@@ -37,7 +37,8 @@ class Item {
                     {0, 2, 0, 0, 1, 1}, // FIRE
                     {1, 8, 0, 0, 0, 1}, // FISHING_ROD
                     {0, 1, 5, 20, 1, 10}, // FISH
-                    {0, 0, 0, 30, 1, 1} // COOKED_FISH
+                    {0, 0, 0, 30, 1, 1}, // COOKED_FISH
+                    {0, 8, -1, 1, 0, 1} // MAGIC_WAND
             };
 
     final static int NULL = 0;
@@ -61,6 +62,8 @@ class Item {
     final static int FISHING_ROD = 15;
     final static int FISH = 16;
     final static int COOKED_FISH = 17;
+
+    final static int MAGIC_WAND = 18; // secret item
 
     // Normal constructor
     public Item(int ItemID) {
