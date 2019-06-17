@@ -71,6 +71,12 @@ class Item {
         stackSize = 1;
     }
 
+    //Constructor with size parameter
+    public Item(int ItemID, int stackSize) {
+        I_ID = ItemID;
+        this.stackSize = stackSize;
+    }
+
     // Copy constructor
     public Item(Item old) {
         I_ID = old.I_ID;

@@ -311,9 +311,6 @@ class Player {
             }
         }
 
-
-
-
         try {
             attackDamage = inventory[selectedIndex].getDamage();
             range = inventory[selectedIndex].getRange();
@@ -353,7 +350,7 @@ class Player {
         }
         else if(currentMission == 8){
             if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.BERRY){
-                inventory[selectedIndex] = new Item(Item.COOKED_FRUIT);
+                inventory[selectedIndex] = new Item(Item.COOKED_FRUIT, inventory[selectedIndex].getStackSize());
                 return true;
             }
         }
@@ -371,7 +368,7 @@ class Player {
         }
         else if(currentMission == 13){
             if(m.getMapComponentID() == MapComponent.CAMPFIRE && inventory[selectedIndex].getItemID() == Item.MEAT){
-                inventory[selectedIndex] = new Item(Item.COOKED_MEAT);
+                inventory[selectedIndex] = new Item(Item.COOKED_MEAT, inventory[selectedIndex].getStackSize());
                 return true;
             }
         }
