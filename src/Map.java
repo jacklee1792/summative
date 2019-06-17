@@ -17,13 +17,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 class Map extends JFrame {
-
-    //Main Test
-    public static void main(String[] args) throws NullPointerException {
-        Map test = new Map();
-        System.out.println(test.saveMap(new File("./src/-test_save2.txt")));
-    }
-
     //Instance variables
     private MapComponent[][][] map, subMap;
     private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
@@ -35,10 +28,11 @@ class Map extends JFrame {
     private DrawArea mapArea;
     private MissionTextArea mta;
 
-    private char MOVE_UP = 'w';
-    private char MOVE_LEFT = 'a';
-    private char MOVE_DOWN = 's';
-    private char MOVE_RIGHT = 'd';
+    private char MOVE_UP;
+    private char MOVE_LEFT;
+    private char MOVE_DOWN;
+    private char MOVE_RIGHT;
+    private char DROP;
 
     public static int totalMonsters = 0;
 
@@ -57,12 +51,11 @@ class Map extends JFrame {
 
     final static int WASD = 0;
     final static int ARROW_KEYS = 1;
-    public static char DROP_KEY = 'q';
 
     static Player p;
 
     //Constructor
-    public Map() {
+    public Map(int aspectRatio, int movementChoice) {
         //Set up the window
         File directory = new File("./");
         System.out.println(directory.getAbsolutePath());
@@ -74,8 +67,8 @@ class Map extends JFrame {
         adaptToScreen(); //Set tile size based on screen resolution
 
         // Setting up options
-        setAspectRatio(ASPECT_16_9);
-        setMovementKeys(WASD);
+        setAspectRatio(aspectRatio);
+        setMovementKeys(movementChoice);
 
         //Map
         map = new MapComponent[2][mapHeight][mapWidth];
@@ -201,7 +194,7 @@ class Map extends JFrame {
                 walk(SOUTH);
             } else if (keys[MOVE_RIGHT]) {
                 walk(EAST);
-            } else if (keys[DROP_KEY]) {
+            } else if (keys[DROP]) {
                 p.dropItem();
             }
             p.setLastMovement(System.currentTimeMillis());
@@ -373,7 +366,7 @@ class Map extends JFrame {
             if(key >= '1' && key <= '5') {
                 p.updateSelectedIndex(key - '1');
                 updateSelected((int) MouseInfo.getPointerInfo().getLocation().getX(), (int) MouseInfo.getPointerInfo().getLocation().getY());
-            } else if(key == DROP_KEY) {
+            } else if(key == DROP) {
                 p.dropItem();
             }
         }
