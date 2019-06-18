@@ -29,7 +29,7 @@ class Map extends JFrame {
         else if (screenRatio - 5.0 / 4 <= 0.01)
             screenRatioIndex = ASPECT_5_4;
 
-        Map test = new Map(screenRatioIndex, WASD, 'q', "Name");
+        Map test = new Map(screenRatioIndex, WASD, 'q', "Jahseh");
         System.out.println(test.saveMap(new File("./src/-test_save2.txt")));
     }
 
@@ -377,15 +377,15 @@ class Map extends JFrame {
             g.drawImage(p.getTexture(), playerTile.getColumn() * tileSize, playerTile.getRow() * tileSize, tileSize, tileSize, null );
             g.setFont(new Font("Comic Sans MS", Font.BOLD, (int)(tileSize / 5.9)));
             g.setColor(Color.white);
-            g.drawString(p.getName(), playerTile.getColumn() * tileSize, playerTile.getRow() * tileSize);      // Figure out how to center this
+            g.drawString(p.getName(), playerTile.getColumn() * tileSize + tileSize / 2 - g.getFontMetrics().stringWidth(p.getName()) / 2, (int)((playerTile.getRow() - 0.2) * tileSize));
 
             //Selected tile
             g.setColor(Color.WHITE);
             if(isSelecting) g.drawRect(selectedTile.getColumn() * tileSize, selectedTile.getRow() * tileSize, tileSize, tileSize);
 
             // Quit option
-            g.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-            g.drawString("[P] Quit and Save", 0, 20);
+            g.setFont(new Font("Comic Sans MS", Font.BOLD, tileSize / 5));
+            g.drawString("[P] Quit and Save", tileSize / 2, tileSize / 2);
         }
 
     }
