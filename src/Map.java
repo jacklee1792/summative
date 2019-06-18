@@ -29,7 +29,7 @@ class Map extends JFrame {
         else if (screenRatio - 5.0 / 4 <= 0.01)
             screenRatioIndex = ASPECT_5_4;
 
-        Map test = new Map(screenRatioIndex, WASD, 'q');
+        Map test = new Map(screenRatioIndex, WASD, 'q', "Name");
         System.out.println(test.saveMap(new File("./src/-test_save2.txt")));
     }
 
@@ -75,13 +75,13 @@ class Map extends JFrame {
     static Player p;
 
     //Constructor
-    public Map(int aspectRatio, int movementChoice, char dropKey) {
+    public Map(int aspectRatio, int movementChoice, char dropKey, String playerName) {
         //Set up the window
         File directory = new File("./");
         System.out.println(directory.getAbsolutePath());
 
         setTitle("Survival Island");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setVisible(true);
         adaptToScreen(); //Set tile size based on screen resolution
@@ -110,7 +110,7 @@ class Map extends JFrame {
         mta = new MissionTextArea();
 
         //Player
-        p = new Player();
+        p = new Player(playerName);
         try {
             Player.importTextures();
         } catch (IOException ex) {}
@@ -375,11 +375,17 @@ class Map extends JFrame {
 
             //Player
             g.drawImage(p.getTexture(), playerTile.getColumn() * tileSize, playerTile.getRow() * tileSize, tileSize, tileSize, null );
+            g.setFont(new Font("Comic Sans MS", Font.BOLD, (int)(tileSize / 5.9)));
+            g.setColor(Color.white);
+            g.drawString(p.getName(), playerTile.getColumn() * tileSize, playerTile.getRow() * tileSize);      // Figure out how to center this
 
             //Selected tile
             g.setColor(Color.WHITE);
             if(isSelecting) g.drawRect(selectedTile.getColumn() * tileSize, selectedTile.getRow() * tileSize, tileSize, tileSize);
 
+            // Quit option
+            g.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+            g.drawString("[P] Quit and Save", 0, 20);
         }
 
     }
@@ -394,8 +400,11 @@ class Map extends JFrame {
         @Override
         public void keyPressed(KeyEvent e) {
             char key = e.getKeyChar();
-            if(key == 61 || key == 43)
-                saveMap(new File("./src/-test_save.txt"));
+            if(key == 'p' || key == 'P') {
+                saveMap(new File("./src/-save_map.txt"));
+                setVisible(false);
+                dispose();
+            }
             try {
                 keys[key] = true;
             } catch (ArrayIndexOutOfBoundsException ex) {}

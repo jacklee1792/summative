@@ -31,8 +31,8 @@ class Player {
     final static int WALK_L = 1;
     final static int WALK_R = 2;
 
-    public Player() {
-        name = "Player";
+    public Player(String playerName) {
+        name = playerName;
         health = 100; // for number of hearts
         maxHealth = 100;
         hunger = 100;
@@ -71,7 +71,7 @@ class Player {
                 }
             }
         }
-        addHealth(-1 *damageDealt);
+        addHealth(-1 * damageDealt);
     }
 
     public BufferedImage getTexture() {
@@ -81,6 +81,7 @@ class Player {
     public int getSelectedIndex() {
         return selectedIndex;
     }
+    public String getName() { return name; }
 
     public void updateSelectedIndex(int index) {
         selectedIndex = index;
