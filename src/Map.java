@@ -155,8 +155,92 @@ class Map extends JFrame {
         pack();
     }
 
+    public Map(int aspectRatio, int movementChoice, char dropKey, String playerName, File loadFile) {
+        //Set up the window
+        File directory = new File("./");
+        System.out.println(directory.getAbsolutePath());
+
+        setTitle("Survival Island");
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setUndecorated(true);
+        setVisible(true);
+        adaptToScreen(); //Set tile size based on screen resolution
+
+        // Setting up options
+        setAspectRatio(aspectRatio);
+        setMovementKeys(movementChoice);
+        DROP = dropKey;
+
+        //Map
+        map = new MapComponent[2][mapHeight][mapWidth];
+
+        //Generate map, player tile, subMap tile
+//        MapGenerator m = new MapGenerator(2121);
+//        m.generate(mapHeight, mapWidth);
+//        map = m.getMap();
+//        Tile spawnTile = m.getSpawnTile();
+
+        Tile spawnTile = new Tile(150, 150);
+
+        subMapTile = new Tile(spawnTile.getRow() - playerTile.getRow(), spawnTile.getColumn() - playerTile.getColumn());
+        System.out.println(subMapTile.getRow() + " " + subMapTile.getColumn());
+
+        //subMap
+        setSubMap(subMapTile);
+
+        // Mission Text Area
+        mta = new MissionTextArea();
+
+        //Player
+        p = new Player(playerName);
+        try {
+            Player.importTextures();
+        } catch (IOException ex) {}
+
+        //Monster timer
+        Timer monsterTimer = new Timer();
+        TimerTask monsterTick = new TimerTask(){
+            @Override
+            public void run() {
+                updateMonster();
+
+            }
+        };
+        monsterTimer.schedule(monsterTick, 0, 420); //Every 500 ms
+        Timer playerTimer = new Timer();
+        TimerTask playerTick = new TimerTask(){
+            @Override
+            public void run() {
+                updatePlayer();
+            }
+        };
+        playerTimer.schedule(playerTick, 0, 17); //~60Hz
+
+        //Initialize textures
+        try {
+            MapComponent.importTextures();
+            Item.importTextures();
+            //Player.importTextures();
+        }
+        catch(IOException e) { System.out.println("Image import error!"); }
+
+        //DrawArea
+        mapArea = new DrawArea(subMapWidth * tileSize, subMapHeight * tileSize);
+        add(mapArea, BorderLayout.CENTER);
+
+        //KeyListener
+        addKeyListener(new ActionProcessor());
+        addMouseMotionListener(new ActionProcessor());
+        addMouseListener(new ActionProcessor());
+        // addKeyListener(new AttackListener());
+
+        loadMap(loadFile);
+
+        pack();
+    }
+
     public Map(File loadFile){
-//Set up the window
+        //Set up the window
         File directory = new File("./");
         System.out.println(directory.getAbsolutePath());
 
@@ -172,10 +256,13 @@ class Map extends JFrame {
         DROP = 'q';
 
         //Map
-        map = new MapComponent[2][mapHeight][mapWidth];
+        //map = new MapComponent[2][mapHeight][mapWidth];
 
         // Mission Text Area
         mta = new MissionTextArea();
+
+        p = new Player("");
+        loadMap(loadFile);
 
         //Monster timer
         Timer monsterTimer = new Timer();
@@ -213,9 +300,6 @@ class Map extends JFrame {
         addMouseMotionListener(new ActionProcessor());
         addMouseListener(new ActionProcessor());
         // addKeyListener(new AttackListener());
-
-        p = new Player("");
-        loadMap(loadFile);
         pack();
     }
 
@@ -734,17 +818,16 @@ class Map extends JFrame {
                 bw.write(LINE_SEPARATOR + "\n");
             }
 
+            bw.write(p.getName() + "\n");                   // saving player name
+            bw.write(subMapTile.getRow() + " " + subMapTile.getColumn() + "\n");
+            bw.write(mta.getCurrentMission() + "\n");
+
             for(Item i : p.inventory){                          // saving the inventory
                 try {
-                    bw.write(i.getItemID() + " ");
+                    bw.write(i.getItemID() + " " + i.getStackSize() + LINE_SEPARATOR);
                 }
                 catch(NullPointerException e) {}
             }
-            if(p.inventory.length == 0)
-                bw.write(" ");
-            bw.newLine();
-
-            bw.write(mta.getCurrentMission());                      // mission progress
 
             bw.close();
             return true;
@@ -756,21 +839,44 @@ class Map extends JFrame {
     }
 
     public boolean loadMap(File loadFile){
-        ArrayList<String> inputData = new ArrayList<>(200);
         String line = " ";
+
         try {
             FileReader fw = new FileReader(loadFile);
             BufferedReader br = new BufferedReader(fw);
 
-            while(line != null && !line.equals(LINE_SEPARATOR)){     // ground layer
-                inputData.add(line);
+            line = br.readLine();
+            String[] dimensions = line.split(" ");
+            mapWidth = Integer.parseInt(dimensions[0]);
+            System.out.println(mapWidth);
+            mapHeight = Integer.parseInt(dimensions[1]);
+            System.out.println(mapHeight);
+
+            map = new MapComponent[2][mapHeight][mapWidth];
+
+            for(int i = 0; i < 2; i++){                                     // reading the map
+                for(int j = 0; j < mapHeight; j++){
+                    line = br.readLine();
+                    String[] tmp = line.split(" ");
+                    for(int k = 0; k < mapWidth; k++){
+                        System.out.println(i + " " + j + " " + k);
+                        try {
+                            map[i][j][k] = new MapComponent(Integer.parseInt(tmp[k]));
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            //System.out.println("index out of bounds");
+                        }
+                    }
+                }
+                line = br.readLine();
+//                if(!line.equals(LINE_SEPARATOR))
+//                    break;
             }
-            fillLayer(GROUND_LAYER, inputData);
-            inputData.clear();
-            while(line != null && !line.equals(LINE_SEPARATOR)){     // textures layer
-                inputData.add(line);
-            }
-            fillLayer(ITEM_LAYER, inputData);
+
+            line = br.readLine();                                   // player name
+            p = new Player(line);
+            try {
+                Player.importTextures();
+            } catch (IOException ex) {}
 
             line = br.readLine();                                   // player's current tile
             String[] current_tile = line.split(" ");
@@ -788,12 +894,6 @@ class Map extends JFrame {
             } catch (Exception e) {
                 mta.setCurrentMission(0);
             }
-
-            line = br.readLine();                                   // player name
-            p = new Player(line);
-            try {
-                Player.importTextures();
-            } catch (IOException ex) {}
 
             p.inventory = new Item[5];                                   // inventory
             line = br.readLine();
