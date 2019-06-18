@@ -155,90 +155,6 @@ class Map extends JFrame {
         pack();
     }
 
-    public Map(int aspectRatio, int movementChoice, char dropKey, String playerName, File loadFile) {
-        //Set up the window
-        File directory = new File("./");
-        System.out.println(directory.getAbsolutePath());
-
-        setTitle("Survival Island");
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setUndecorated(true);
-        setVisible(true);
-        adaptToScreen(); //Set tile size based on screen resolution
-
-        // Setting up options
-        setAspectRatio(aspectRatio);
-        setMovementKeys(movementChoice);
-        DROP = dropKey;
-
-        //Map
-        map = new MapComponent[2][mapHeight][mapWidth];
-
-        //Generate map, player tile, subMap tile
-//        MapGenerator m = new MapGenerator(2121);
-//        m.generate(mapHeight, mapWidth);
-//        map = m.getMap();
-//        Tile spawnTile = m.getSpawnTile();
-
-        Tile spawnTile = new Tile(150, 150);
-
-        subMapTile = new Tile(spawnTile.getRow() - playerTile.getRow(), spawnTile.getColumn() - playerTile.getColumn());
-        System.out.println(subMapTile.getRow() + " " + subMapTile.getColumn());
-
-        //subMap
-        setSubMap(subMapTile);
-
-        // Mission Text Area
-        mta = new MissionTextArea();
-
-        //Player
-        p = new Player(playerName);
-        try {
-            Player.importTextures();
-        } catch (IOException ex) {}
-
-        //Monster timer
-        Timer monsterTimer = new Timer();
-        TimerTask monsterTick = new TimerTask(){
-            @Override
-            public void run() {
-                updateMonster();
-
-            }
-        };
-        monsterTimer.schedule(monsterTick, 0, 420); //Every 500 ms
-        Timer playerTimer = new Timer();
-        TimerTask playerTick = new TimerTask(){
-            @Override
-            public void run() {
-                updatePlayer();
-            }
-        };
-        playerTimer.schedule(playerTick, 0, 17); //~60Hz
-
-        //Initialize textures
-        try {
-            MapComponent.importTextures();
-            Item.importTextures();
-            //Player.importTextures();
-        }
-        catch(IOException e) { System.out.println("Image import error!"); }
-
-        //DrawArea
-        mapArea = new DrawArea(subMapWidth * tileSize, subMapHeight * tileSize);
-        add(mapArea, BorderLayout.CENTER);
-
-        //KeyListener
-        addKeyListener(new ActionProcessor());
-        addMouseMotionListener(new ActionProcessor());
-        addMouseListener(new ActionProcessor());
-        // addKeyListener(new AttackListener());
-
-        loadMap(loadFile);
-
-        pack();
-    }
-
     public Map(File loadFile){
         //Set up the window
         File directory = new File("./");
@@ -255,13 +171,8 @@ class Map extends JFrame {
         setMovementKeys(Map.WASD);
         DROP = 'q';
 
-        //Map
-        //map = new MapComponent[2][mapHeight][mapWidth];
+        mta = new MissionTextArea();            // mission text area
 
-        // Mission Text Area
-        mta = new MissionTextArea();
-
-        p = new Player("");
         loadMap(loadFile);
 
         //Monster timer
@@ -342,6 +253,7 @@ class Map extends JFrame {
     public void setSubMap(Tile t) throws ArrayIndexOutOfBoundsException {
         MapComponent[][][] temp = new MapComponent[2][subMapHeight][subMapWidth]; //we need a temp because we don't want to change subMap if this throws an exception
         //Copy map to subMap
+        System.out.println(subMapHeight + " " + subMapWidth);
         for(int h = 0; h < 2; h++) {
             for(int r = 0; r < subMapHeight; r++) {
                 for(int c = 0; c < subMapWidth; c++) {
@@ -807,6 +719,8 @@ class Map extends JFrame {
             FileWriter fw = new FileWriter(saveFile);
             BufferedWriter bw = new BufferedWriter(fw);
 
+            bw.write(mapWidth + " " + mapHeight + "\n");            // saving dimensions
+
             for (MapComponent[][] i : map) {                        // saving the map
                 for (MapComponent[] j : i) {
                     for (MapComponent k : j) {
@@ -881,7 +795,7 @@ class Map extends JFrame {
             line = br.readLine();                                   // player's current tile
             String[] current_tile = line.split(" ");
             try{
-                subMapTile = new Tile(Integer.parseInt(current_tile[0]) - playerTile.getRow(), Integer.parseInt(current_tile[1]) - playerTile.getColumn());
+                subMapTile = new Tile(Integer.parseInt(current_tile[0]), Integer.parseInt(current_tile[1]));
 
             } catch(Exception e){
                 System.out.println("Error setting the sub map tile");
