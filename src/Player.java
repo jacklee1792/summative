@@ -43,9 +43,6 @@ class Player {
         range = 2;
 
         inventory = new Item[inventoryCap];
-//        for(int i = 0; i < inventoryCap; i++){          // initializing the inventory
-//            inventory[i] = new Item(Item.NULL);
-//        }
     }
 
     static BufferedImage[] texture = new BufferedImage[3];
@@ -163,12 +160,12 @@ class Player {
                 m.getMapComponentID() == MapComponent.BIRD ||
                 m.getMapComponentID() == MapComponent.BOSS_MONSTER) {
 
-            if(m.getHealth() <= attackDamage){
-                if(m.getMapComponentID() == MapComponent.MONSTER || m.getMapComponentID() == MapComponent.BOSS_MONSTER)
+            if (m.getHealth() <= attackDamage) {
+                if (m.getMapComponentID() == MapComponent.MONSTER || m.getMapComponentID() == MapComponent.BOSS_MONSTER)
                     monstersKilled++;
-                else if(m.getMapComponentID() == MapComponent.RABBIT)
+                else if (m.getMapComponentID() == MapComponent.RABBIT)
                     rabbitsKilled++;
-                else if(m.getMapComponentID() == MapComponent.BIRD)
+                else if (m.getMapComponentID() == MapComponent.BIRD)
                     birdsKilled++;
             }
             m.addHealth(-1 * attackDamage);
@@ -178,122 +175,42 @@ class Player {
             try {
                 if (inventory[selectedIndex].getUsage() == 1)
                     dropItem();
-            }
-            catch (NullPointerException ex) {}
-            }
-
-        else if(m.getMapComponentID() == MapComponent.SMALL_TREE && !m.isExpended()) {
-            boolean indexFound = false;
-            for (int i = 0; i < inventoryCap; i++) {
-                try {
-                    if (inventory[i].getItemID() == Item.STICK && !indexFound) {
-                        selectedIndex = i;
-                        addItem(new Item(Item.STICK));
-                        m.expend();
-                        indexFound = true;
-                        break;
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
-            for (int i = 0; i < inventoryCap; i++) {
-                try {
-                    if (inventory[i] == null && !indexFound) {
-                        selectedIndex = i;
-                        addItem(new Item(Item.STICK));
-                        m.expend();
-                        break;
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
-
-
-        } else if(m.getMapComponentID() == MapComponent.ROCKS && !m.isExpended())    {
-            boolean indexFound = false;
-            for (int i = 0; i < inventoryCap; i++) {
-                try {
-                    if (inventory[i].getItemID() == Item.ROCK && !indexFound) {
-                        selectedIndex = i;
-                        addItem(new Item(Item.ROCK));
-                        m.expend();
-                        indexFound = true;
-                        break;
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
-            for (int i = 0; i < inventoryCap; i++) {
-                try {
-                    if (inventory[i] == null && !indexFound) {
-                        selectedIndex = i;
-                        addItem(new Item(Item.ROCK));
-                        m.expend();
-                        break;
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
-            } else if(m.getMapComponentID() == MapComponent.CHEST) {
-                addItem(new Item(Item.MAGIC_WAND)); // CHANGE THIS TO A KNIFE
-            } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH && !m.isExpended()) {
-
-                boolean indexFound = false;
-                for (int i = 0; i < inventoryCap; i++) {
-                    try {
-                        if (inventory[i].getItemID() == Item.BERRY && !indexFound) {
-                            selectedIndex = i;
-                            addItem(new Item(Item.BERRY));
-                            m.expend();
-                            indexFound = true;
-                            break;
-                        }
-                    }
-                    catch (NullPointerException ex) {}
-                }
-                for (int i = 0; i < inventoryCap; i++) {
-                    try {
-                        if (inventory[i] == null && !indexFound) {
-                            selectedIndex = i;
-                            addItem(new Item(Item.BERRY));
-                            m.expend();
-                            break;
-                        }
-                    }
-                    catch (NullPointerException ex) {}
-                }
-
-            } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
-                for (int i = 0; i < inventoryCap; i++) {
-                    if (inventory[i] == null) {
-                        selectedIndex = i;
-                        addItem(new Item(Item.MEAT));
-                        m.turnNull();
-                        break;
-                    }
-                }
-            }
-
-        else if(m.getMapComponentID() == MapComponent.DEAD_BIRD) {
-            for (int i = 0; i < inventoryCap; i++) {
-                if (inventory[i] == null) {
-                    selectedIndex = i;
-                    addItem(new Item(Item.FEATHER));
-                    m.turnNull();
-                    break;
-                }
+            } catch (NullPointerException ex) {
             }
         }
 
+        else if(m.getMapComponentID() == MapComponent.SMALL_TREE && !m.isExpended()) {
+            boolean added = smartAdd(new Item(Item.STICK));
+            if(added)
+                m.expend();
+        } else if(m.getMapComponentID() == MapComponent.ROCKS && !m.isExpended())    {
+            boolean added = smartAdd(new Item(Item.ROCK));
+            if (added)
+                m.expend();
+
+        } else if(m.getMapComponentID() == MapComponent.PLANE) {
+                addItem(new Item(Item.KNIFE)); // CHANGE THIS TO A KNIFE
+        } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH && !m.isExpended()) {
+            boolean added = smartAdd(new Item(Item.BERRY));
+            if (added)
+                m.expend();
+
+        } else if (m.getMapComponentID() == MapComponent.DEAD_RABBIT) {
+            boolean added = smartAdd(new Item(Item.MEAT));
+            if(added)
+                m.turnNull();
+        }
+
+        else if(m.getMapComponentID() == MapComponent.DEAD_BIRD) {
+            boolean added = smartAdd(new Item(Item.FEATHER));
+            if(added)
+                m.turnNull();
+        }
+
         else if(m.getMapComponentID() == MapComponent.STRING_GROUNDED) {
-            for (int i = 0; i < inventoryCap; i++) {
-                if (inventory[i] == null) {
-                    selectedIndex = i;
-                    addItem(new Item(Item.STRING));
-                    m.turnNull();
-                    break;
-                }
-            }
+            boolean added = smartAdd(new Item(Item.STRING));
+            if(added)
+                m.turnNull();
         }
 
         else if (m.getWalkable()) {
@@ -312,30 +229,7 @@ class Player {
                     int randy = (int)(Math.random() * 100);
                     if (randy < 20) {// 20% chance
 
-                        boolean indexFound = false;
-                        for (int i = 0; i < inventoryCap; i++) {
-                            try {
-                                if (inventory[i].getItemID() == Item.FISH && !indexFound && inventory[i].getStackSize() < inventory[i].getStackMax()) {
-                                    selectedIndex = i;
-                                    addItem(new Item(Item.FISH));
-                                    m.expend();
-                                    indexFound = true;
-                                    break;
-                                }
-                            }
-                            catch (NullPointerException ex) {}
-                        }
-                        for (int i = 0; i < inventoryCap; i++) {
-                            try {
-                                if (inventory[i] == null && !indexFound) {
-                                    selectedIndex = i;
-                                    addItem(new Item(Item.FISH));
-                                    m.expend();
-                                    break;
-                                }
-                            }
-                            catch (NullPointerException ex) {}
-                        }
+                        boolean added = smartAdd(new Item(Item.FISH));
                     }
                     addHunger(-3); // reduces hunger by 4 in total
                 }
@@ -399,14 +293,8 @@ class Player {
         }
 
         else if (m.getMapComponentID() == MapComponent.BOSS_REMAINS) {
-            for (int i = 0; i < inventoryCap; i++) {
-                if (inventory[i] == null) {
-                    selectedIndex = i;
-                    addItem(new Item(Item.MAGIC_WAND));
-                    m.turnNull();
-                    break;
-                }
-            }
+            smartAdd(new Item(Item.MAGIC_WAND));
+            m.turnNull();
         }
 
         try {
@@ -516,27 +404,6 @@ class Player {
         }
     }
 
-//    public void addItem(Item i) {
-//        Item selectedItem;
-//        int tempindex = selectedIndex;
-//
-//        try {
-//            selectedItem = new Item(inventory[selectedIndex]);
-//        } catch (NullPointerException ex) {
-//            inventory[selectedIndex] = i;
-//            return;
-//        }
-//
-//        for (int k = 0; k < inventoryCap; k++) {
-//            if (inventory[k].getItemID() == i.getItemID() && i.getStackSize() <= selectedItem.getStackMax() - selectedItem.getStackSize())
-//                tempindex = k;
-//        }
-//
-//        if(selectedItem.getItemID() == i.getItemID() && i.getStackSize() <= selectedItem.getStackMax() - selectedItem.getStackSize()) {
-//            inventory[tempindex].increaseStackSize(i.getStackSize());
-//        }
-//    }
-
 
 
     public int getWalkState() { return walkState;}
@@ -621,23 +488,16 @@ class Player {
 
         if (numSticks >= 2 && numString >= 1) {
             // to remove two sticks
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STICK) {
-                        selectedIndex = j;
-                        dropItem();
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < inventoryCap; j++) {
+                    try {
+                        if (inventory[j].getItemID() == Item.STICK) {
+                            selectedIndex = j;
+                            dropItem();
+                        }
+                    } catch (NullPointerException ex) {
                     }
                 }
-                catch (NullPointerException ex) {}
-            }
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STICK) {
-                        selectedIndex = j;
-                        dropItem();
-                    }
-                }
-                catch (NullPointerException ex) {}
             }
             // to remove one string
             for (int j = 0; j < inventoryCap; j++) {
@@ -684,25 +544,17 @@ class Player {
                 }
             }
             // to remove two rocks
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.ROCK) {
-                        selectedIndex = j;
-                        dropItem();
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < inventoryCap; j++) {
+                    try {
+                        if (inventory[j].getItemID() == Item.ROCK) {
+                            selectedIndex = j;
+                            dropItem();
+                        }
+                    } catch (NullPointerException ex) {
                     }
                 }
-                catch (NullPointerException ex) {}
             }
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.ROCK) {
-                        selectedIndex = j;
-                        dropItem();
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
-
             inventory[selectedIndex] = new Item(Item.FIRE);
             return true;
         }
@@ -728,33 +580,18 @@ class Player {
 
         if (numSticks >= 2 && numString >= 1 && numFeathers >= 3) {
             // to remove three sticks
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STICK) {
-                        selectedIndex = j;
-                        dropItem();
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < inventoryCap; j++) {
+                    try {
+                        if (inventory[j].getItemID() == Item.STICK) {
+                            selectedIndex = j;
+                            dropItem();
+                        }
+                    } catch (NullPointerException ex) {
                     }
                 }
-                catch (NullPointerException ex) {}
             }
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STICK) {
-                        selectedIndex = j;
-                        dropItem();
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STICK) {
-                        selectedIndex = j;
-                        dropItem();
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
+
             // to remove one string
             for (int j = 0; j < inventoryCap; j++) {
                 try {
@@ -767,33 +604,18 @@ class Player {
             }
 
             // to remove three feathers
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.FEATHER) {
-                        selectedIndex = j;
-                        dropItem();
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < inventoryCap; j++) {
+                    try {
+                        if (inventory[j].getItemID() == Item.FEATHER) {
+                            selectedIndex = j;
+                            dropItem();
+                        }
+                    } catch (NullPointerException ex) {
                     }
                 }
-                catch (NullPointerException ex) {}
             }
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.FEATHER) {
-                        selectedIndex = j;
-                        dropItem();
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.FEATHER) {
-                        selectedIndex = j;
-                        dropItem();
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
+
             inventory[selectedIndex] = new Item(Item.BOWANDARROW);
             return true;
         }
@@ -819,61 +641,30 @@ class Player {
 
         if (numSticks >= 4 && numString >= 2 && numMeat >= 1) {
             // to remove four sticks
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STICK) {
-                        selectedIndex = j;
-                        dropItem();
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < inventoryCap; j++) {
+                    try {
+                        if (inventory[j].getItemID() == Item.STICK) {
+                            selectedIndex = j;
+                            dropItem();
+                        }
+                    } catch (NullPointerException ex) {
                     }
                 }
-                catch (NullPointerException ex) {}
-            }
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STICK) {
-                        selectedIndex = j;
-                        dropItem();
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STICK) {
-                        selectedIndex = j;
-                        dropItem();
-                    }
-                }
-                catch (NullPointerException ex) {}
-            }
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STICK) {
-                        selectedIndex = j;
-                        dropItem();
-                    }
-                }
-                catch (NullPointerException ex) {}
             }
 
             // to remove two string
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STRING) {
-                        selectedIndex = j;
-                        dropItem();
+
+            for (int i = 0; i < 2; i ++) {
+                for (int j = 0; j < inventoryCap; j++) {
+                    try {
+                        if (inventory[j].getItemID() == Item.STRING) {
+                            selectedIndex = j;
+                            dropItem();
+                        }
+                    } catch (NullPointerException ex) {
                     }
                 }
-                catch (NullPointerException ex) {}
-            }
-            for (int j = 0; j < inventoryCap; j++) {
-                try {
-                    if (inventory[j].getItemID() == Item.STRING) {
-                        selectedIndex = j;
-                        dropItem();
-                    }
-                }
-                catch (NullPointerException ex) {}
             }
 
             // to remove one meat
@@ -899,6 +690,34 @@ class Player {
             if (inventory[selectedIndex].getStackSize() == 0) inventory[selectedIndex] = null;
         }
         catch(NullPointerException ex) {}
+    }
+
+    public boolean smartAdd(Item item) {
+        boolean hasFound = false;
+        for (int j = 0; j < inventoryCap; j++) {
+            try {
+                if (inventory[j].getItemID() == item.getItemID() && inventory[j].getStackSize() < inventory[j].getStackMax()) {
+                    selectedIndex = j;
+                    addItem(new Item(item.getItemID()));
+                    hasFound = true;
+                    break;
+                }
+            }
+            catch (NullPointerException ex) {}
+        }
+
+        for (int i = 0; i < inventoryCap; i++) {
+            try {
+                if (inventory[i] == null && !hasFound) {
+                    selectedIndex = i;
+                    addItem(new Item(item.getItemID()));
+                    hasFound = true;
+                    break;
+                }
+            }
+            catch (NullPointerException ex) {}
+        }
+        return hasFound; // returns whether or not the item was successfully added
     }
 
 }
