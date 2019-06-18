@@ -5,7 +5,7 @@ import java.lang.Math;
 
 class Monster extends MapComponent {
 
-    public static MapComponent[][][] updateMonster(MapComponent[][][] subMap, Tile playerTile) {
+    public static MapComponent[][][] updateMonster(MapComponent[][][] subMap, Tile playerTile) throws NullPointerException{
 
         int ptRow = playerTile.getRow(), ptColumn = playerTile.getColumn();
 

@@ -190,7 +190,7 @@ class Map extends JFrame {
         Timer playerTimer = new Timer();
         TimerTask playerTick = new TimerTask(){
             @Override
-            public void run() {
+            public void run() throws NullPointerException{
                 updatePlayer();
             }
         };
@@ -278,7 +278,7 @@ class Map extends JFrame {
         }
     }
 
-    public void updatePlayer() {
+    public void updatePlayer() throws NullPointerException {
         if(System.currentTimeMillis() - p.getLastMovement() > 1000 / p.getMovementSpeed()) { // ensures that the player has a cap on movement
             if(keys[MOVE_UP]) {
                 walk(NORTH);
@@ -297,7 +297,7 @@ class Map extends JFrame {
         repaint();
     }
 
-    public void updateMonster() {
+    public void updateMonster() throws NullPointerException{
         MapComponent[][][] newSubMap = Monster.updateMonster(subMap, playerTile);
         setMapFromSubMap();
         p.monsterAttack(subMap, playerTile); // checks for monsters attacking the player
@@ -756,7 +756,7 @@ class Map extends JFrame {
     }
 
     public boolean loadMap(File loadFile){
-        ArrayList<String> inputData = new ArrayList<>();
+        ArrayList<String> inputData = new ArrayList<>(200);
         String line = " ";
         try {
             FileReader fw = new FileReader(loadFile);

@@ -76,7 +76,7 @@ public class MainMenu extends JFrame implements ActionListener {
         }
         else if(e.getActionCommand().equals(loadBtnName)){
             try {
-                m = new Map(new File(".src/-save_map.txt"));
+                m = new Map(new File("./src/-save_map.txt"));
             } catch(Exception ex){
                 System.out.println("Bruh moment");
             }
