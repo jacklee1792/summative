@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class MainMenu extends JFrame implements ActionListener {
     // Constants
-    private final String playBtnName = "Play", optionsBtnName = "Options", quitBtnName = "Quit";
+    private final String playBtnName = "Play Game", loadBtnName = "Load Game", quitBtnName = "Quit";
     private final int frameWidth = 700, frameHeight = 700;
 
     // Instance variables
@@ -19,7 +19,7 @@ public class MainMenu extends JFrame implements ActionListener {
 
     private BufferedImage backgroundImage;
     private JButton newGame = new JButton(playBtnName);
-    private JButton options = new JButton(optionsBtnName);
+    private JButton loadGame = new JButton(loadBtnName);
     private JButton quit = new JButton(quitBtnName);
     private JTextField nameTF = new JTextField(20);
     private JPanel buttons = new JPanel();
@@ -40,7 +40,7 @@ public class MainMenu extends JFrame implements ActionListener {
         buttons.add(new JLabel("Name:"));
         buttons.add(nameTF);
         buttons.add(newGame);
-        buttons.add(options);
+        buttons.add(loadGame);
         buttons.add(quit);
 
         add(backgroundImg, BorderLayout.CENTER);
@@ -50,7 +50,7 @@ public class MainMenu extends JFrame implements ActionListener {
 
         // Adding action listeners
         newGame.addActionListener(this);
-        options.addActionListener(this);
+        loadGame.addActionListener(this);
         quit.addActionListener(this);
 
         // Window settings
@@ -74,8 +74,12 @@ public class MainMenu extends JFrame implements ActionListener {
         if(e.getActionCommand().equals(playBtnName)){
             m = new Map(aspectRatio, movementChoice, dropKey, nameTF.getText());
         }
-        else if(e.getActionCommand().equals(optionsBtnName)){
-
+        else if(e.getActionCommand().equals(loadBtnName)){
+            try {
+                m = new Map(new File(".src/-save_map.txt"));
+            } catch(Exception ex){
+                System.out.println("Bruh moment");
+            }
         }
         else if(e.getActionCommand().equals(quitBtnName)){
             setVisible(false);

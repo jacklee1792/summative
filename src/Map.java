@@ -155,6 +155,70 @@ class Map extends JFrame {
         pack();
     }
 
+    public Map(File loadFile){
+//Set up the window
+        File directory = new File("./");
+        System.out.println(directory.getAbsolutePath());
+
+        setTitle("Survival Island");
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setUndecorated(true);
+        setVisible(true);
+        adaptToScreen(); //Set tile size based on screen resolution
+
+        // Setting up options
+        setAspectRatio(Map.ASPECT_16_9);
+        setMovementKeys(Map.WASD);
+        DROP = 'q';
+
+        //Map
+        map = new MapComponent[2][mapHeight][mapWidth];
+
+        // Mission Text Area
+        mta = new MissionTextArea();
+
+        //Monster timer
+        Timer monsterTimer = new Timer();
+        TimerTask monsterTick = new TimerTask(){
+            @Override
+            public void run() {
+                updateMonster();
+
+            }
+        };
+        monsterTimer.schedule(monsterTick, 0, 420); //Every 500 ms
+        Timer playerTimer = new Timer();
+        TimerTask playerTick = new TimerTask(){
+            @Override
+            public void run() {
+                updatePlayer();
+            }
+        };
+        playerTimer.schedule(playerTick, 0, 17); //~60Hz
+
+        //Initialize textures
+        try {
+            MapComponent.importTextures();
+            Item.importTextures();
+            //Player.importTextures();
+        }
+        catch(IOException e) { System.out.println("Image import error!"); }
+
+        //DrawArea
+        mapArea = new DrawArea(subMapWidth * tileSize, subMapHeight * tileSize);
+        add(mapArea, BorderLayout.CENTER);
+
+        //KeyListener
+        addKeyListener(new ActionProcessor());
+        addMouseMotionListener(new ActionProcessor());
+        addMouseListener(new ActionProcessor());
+        // addKeyListener(new AttackListener());
+
+        p = new Player("");
+        loadMap(loadFile);
+        pack();
+    }
+
     // Methods for options
     public void setAspectRatio(int ratio){
         if(ratio == ASPECT_16_9){
@@ -708,9 +772,43 @@ class Map extends JFrame {
             }
             fillLayer(ITEM_LAYER, inputData);
 
-            line = br.readLine();                                   // inventory
-            String[] items_arr = line.split(" ");
-            p.inventory = new Item[5];
+            line = br.readLine();                                   // player's current tile
+            String[] current_tile = line.split(" ");
+            try{
+                subMapTile = new Tile(Integer.parseInt(current_tile[0]) - playerTile.getRow(), Integer.parseInt(current_tile[1]) - playerTile.getColumn());
+
+            } catch(Exception e){
+                System.out.println("Error setting the sub map tile");
+            }
+            setSubMap(subMapTile);
+
+            line = br.readLine();                                   // mission
+            try {
+                mta.setCurrentMission(Integer.parseInt(line));
+            } catch (Exception e) {
+                mta.setCurrentMission(0);
+            }
+
+            line = br.readLine();                                   // player name
+            p = new Player(line);
+            try {
+                Player.importTextures();
+            } catch (IOException ex) {}
+
+            p.inventory = new Item[5];                                   // inventory
+            line = br.readLine();
+            String[] items_arr = line.split(LINE_SEPARATOR);
+            for(int i = 0; i < items_arr.length; i++){
+                if(i <= 4){
+                    String[] tmp = items_arr[i].split(" ");
+
+                    try{
+                        p.inventory[i] = new Item(Integer.parseInt(tmp[0], Integer.parseInt(tmp[1])));
+                    } catch(Exception e) { }
+                }
+
+            }
+
             /*
             for(String i : items_arr){
                 p.inventory.add(new Item(Integer.parseInt(i)));

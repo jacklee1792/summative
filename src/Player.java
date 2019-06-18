@@ -81,7 +81,9 @@ class Player {
     public int getSelectedIndex() {
         return selectedIndex;
     }
+
     public String getName() { return name; }
+    public void setName(String n) { name = n; }
 
     public void updateSelectedIndex(int index) {
         selectedIndex = index;
