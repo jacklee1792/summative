@@ -135,7 +135,7 @@ public class MapGenerator {
         }
         map[Map.ITEM_LAYER][spawnTile.getRow() + 1][spawnTile.getColumn()] = new MapComponent(MapComponent.PLANE); //top left corner of plane
 
-        // Miscellaneous
+        // Wise rock
         while(true) {
             int row = spawnTile.getRow() + rand.nextInt(11) - 5; // up to 5 away
             int column = spawnTile.getColumn() + rand.nextInt(11) - 5;
@@ -144,15 +144,38 @@ public class MapGenerator {
                 map[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.WISE_ROCK);
                 rockTile = new Tile(row, column);
 
-                /*
-                int chestR = row + (int)(Math.random() * 4 - 3);
-                int chestC = column + (int)(Math.random() * 4 - 3);
+                break; //exit the loop
+            }
+        }
 
-//                if(map[Map.ITEM_LAYER][chestR][chestC].getMapComponentID() != MapComponent.WISE_ROCK)
-//                    map[Map.ITEM_LAYER][chestR][chestC] = new MapComponent(MapComponent.CHEST); // add chest object
-                //map[Map.ITEM_LAYER][row-2][column-2] = new MapComponent(MapComponent.CAMPFIRE); // add chest object
-                System.out.println(row + " " + column);
-                 */
+        //Radio parts
+        while(true) {
+            int row = spawnTile.getRow() + rand.nextInt(31) - 15; // up to 15 away
+            int column = spawnTile.getColumn() + rand.nextInt(31) - 15;
+            if(map[Map.GROUND_LAYER][row][column].getMapComponentID() != MapComponent.WATER && //if ground not water and what is above it empty
+                    map[Map.ITEM_LAYER][row][column].getMapComponentID() == MapComponent.NULL) {
+                map[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.ANTENNA);
+                System.out.println("Antenna: " + "(" + column + ", " + row + ")");
+                break; //exit the loop
+            }
+        }
+        while(true) {
+            int row = spawnTile.getRow() + rand.nextInt(31) - 15; // up to 15 away
+            int column = spawnTile.getColumn() + rand.nextInt(31) - 15;
+            if(map[Map.GROUND_LAYER][row][column].getMapComponentID() != MapComponent.WATER && //if ground not water and what is above it empty
+                    map[Map.ITEM_LAYER][row][column].getMapComponentID() == MapComponent.NULL) {
+                map[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.TRANSMITTER);
+                System.out.println("Transmitter: " + "(" + column + ", " + row + ")");
+                break; //exit the loop
+            }
+        }
+        while(true) {
+            int row = spawnTile.getRow() + rand.nextInt(31) - 15; // up to 15 away
+            int column = spawnTile.getColumn() + rand.nextInt(31) - 15;
+            if(map[Map.GROUND_LAYER][row][column].getMapComponentID() != MapComponent.WATER && //if ground not water and what is above it empty
+                    map[Map.ITEM_LAYER][row][column].getMapComponentID() == MapComponent.NULL) {
+                map[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.CIRCUIT_BOARD);
+                System.out.println("Circuit board: " + "(" + column + ", " + row + ")");
                 break; //exit the loop
             }
         }
@@ -202,54 +225,6 @@ public class MapGenerator {
         }
 
 
-        boolean placedAntenna = false;
-        boolean placedTransmitter = false;
-        boolean placedCircuitBoard = false;
-
-        int antennaR = (int) (Math.random() * (height - 20) + 4);
-        int antennaC = (int) (Math.random() * (width - 20) + 4);
-        int transmitterR = (int) (Math.random() * (height - 20) + 4);
-        int transmitterC = (int) (Math.random() * (width - 20) + 4);
-        int circuitboardR = (int) (Math.random() * (height - 20) + 4);
-        int circuitboardC = (int) (Math.random() * (width - 20) + 4);
-
-        // antenna
-        if (map[Map.GROUND_LAYER][antennaR][width - antennaC].getWalkable() && //Spawn on walkable land
-                map[Map.ITEM_LAYER][antennaR][width - antennaC].getWalkable() && //Do not spawn inside an item
-                map[Map.ITEM_LAYER][height - antennaR][antennaC].getWalkable() &&
-                (Math.abs(antennaR - spawnTile.getRow()) > 20 || Math.abs((height - antennaC) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
-            map[Map.ITEM_LAYER][height - antennaR][antennaC] = new MapComponent(MapComponent.ANTENNA, 30, 0, 0);
-            placedAntenna = true;
-            System.out.println("antenna: " + (height - antennaR) + ", " + antennaC);
-        }
-
-        // transmitter
-        if (map[Map.GROUND_LAYER][transmitterR][width - transmitterC].getWalkable() && //Spawn on walkable land
-                map[Map.ITEM_LAYER][transmitterR][width - transmitterC].getWalkable() && //Do not spawn inside an item
-                map[Map.ITEM_LAYER][height - transmitterR][transmitterC].getWalkable() &&
-                (Math.abs(transmitterR - spawnTile.getRow()) > 20 || Math.abs((height - transmitterC) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
-            map[Map.ITEM_LAYER][height - transmitterR][transmitterC] = new MapComponent(MapComponent.TRANSMITTER, 30, 0, 0);
-            placedTransmitter = true;
-            System.out.println("transmitter: " + (height - transmitterR) + ", " + transmitterC);
-        }
-
-        // circuit board
-        if (map[Map.GROUND_LAYER][circuitboardR][width - circuitboardC].getWalkable() && //Spawn on walkable land
-                map[Map.ITEM_LAYER][circuitboardR][width - circuitboardC].getWalkable() && //Do not spawn inside an item
-                map[Map.ITEM_LAYER][height - circuitboardR][circuitboardC].getWalkable() &&
-                (Math.abs(circuitboardR - spawnTile.getRow()) > 20 || Math.abs((height - circuitboardC) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
-            map[Map.ITEM_LAYER][height - circuitboardR][circuitboardC] = new MapComponent(MapComponent.CIRCUIT_BOARD, 30, 0, 0);
-            placedCircuitBoard = true;
-            System.out.println("circuit board: " + (height - circuitboardR) + ", " + circuitboardC);
-        }
-
-        // just in case the above thing didn't work
-        if (!placedAntenna)
-            map[Map.ITEM_LAYER][spawnTile.getRow() - 10][spawnTile.getColumn() - 10] = new MapComponent(MapComponent.ANTENNA, 30, 0, 0);
-        if (!placedTransmitter)
-            map[Map.ITEM_LAYER][height - 10 ][width - 8] = new MapComponent(MapComponent.TRANSMITTER, 30, 0, 0);
-        if (!placedCircuitBoard)
-            map[Map.ITEM_LAYER][8][8] = new MapComponent(MapComponent.CIRCUIT_BOARD, 30, 0, 0);
 
         // String
         for(int r = 0; r < height; r++) {

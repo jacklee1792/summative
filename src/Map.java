@@ -101,9 +101,9 @@ class Map extends JFrame {
         m.generate(mapHeight, mapWidth);
         map = m.getMap();
         Tile spawnTile = m.getSpawnTile();
+        System.out.println("Spawn: " + "(" + spawnTile.getColumn() + ", " + spawnTile.getRow() + ")");
 
         subMapTile = new Tile(spawnTile.getRow() - playerTile.getRow(), spawnTile.getColumn() - playerTile.getColumn());
-        System.out.println(subMapTile.getRow() + " " + subMapTile.getColumn());
 
         //subMap
         setSubMap(subMapTile);
