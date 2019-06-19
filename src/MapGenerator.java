@@ -169,9 +169,9 @@ public class MapGenerator { //I'll add getters and setters on map later
 
         // Boss Monster
         map[Map.ITEM_LAYER][8][8] = new MapComponent(MapComponent.BOSS_MONSTER, 1000, 14, 2);
-        map[Map.ITEM_LAYER][height - 8][8] = new MapComponent(MapComponent.BOSS_MONSTER, 5000, 30, 1);
-        map[Map.ITEM_LAYER][height - 8][width - 8] = new MapComponent(MapComponent.BOSS_MONSTER, 60, 30, 3);
-        map[Map.ITEM_LAYER][8][width - 8] = new MapComponent(MapComponent.BOSS_MONSTER, 200, 1, 5);
+        map[Map.ITEM_LAYER][height - 8][8] = new MapComponent(MapComponent.BOSS_MONSTER2, 5000, 30, 1);
+        map[Map.ITEM_LAYER][height - 8][width - 8] = new MapComponent(MapComponent.BOSS_MONSTER3, 60, 30, 3);
+        map[Map.ITEM_LAYER][8][width - 8] = new MapComponent(MapComponent.BOSS_MONSTER4, 200, 1, 5);
 
 
         // Rabbits

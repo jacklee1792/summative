@@ -25,7 +25,7 @@ class Monster extends MapComponent {
             MapComponent currentMonster = subMap[Map.ITEM_LAYER][row][column];
             subMap[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.NULL);
 
-            if (currentMonster.getMapComponentID() == MONSTER || currentMonster.getMapComponentID() == BOSS_MONSTER) {
+            if (currentMonster.getMapComponentID() == MONSTER || currentMonster.getMapComponentID() == BOSS_MONSTER || currentMonster.getMapComponentID() == BOSS_MONSTER2 || currentMonster.getMapComponentID() == BOSS_MONSTER3 || currentMonster.getMapComponentID() == BOSS_MONSTER4) {
                 int[] walkPriority = {0, 0, 0, 0}; //0 = cannot walk, 1 = can walk, 2 = can walk towards player
                 try {
                     if (subMap[Map.ITEM_LAYER][row - 1][column].getWalkable() && subMap[Map.GROUND_LAYER][row - 1][column].getWalkable() && (row - 1 != ptRow || column != ptColumn) && !(subMap[Map.ITEM_LAYER][row - 1][column].isFire()))

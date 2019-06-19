@@ -18,7 +18,7 @@ class MapComponent {
 
     //Static variables and their properties
 
-    static int numOfComponents = 25; //Number of currently implemented components
+    static int numOfComponents = 28; //Number of currently implemented components
     static BufferedImage[] texture = new BufferedImage[numOfComponents];
     static Dimension[] size = new Dimension[numOfComponents];
     static boolean[] walkable = new boolean[numOfComponents];
@@ -49,6 +49,44 @@ class MapComponent {
     final static int BOSS_MONSTER = 22;
     final static int BOSS_REMAINS = 23;
     final static int SMALL_BUSH_EXPENDED = 24;
+    final static int BOSS_MONSTER2 = 25;
+    final static int BOSS_MONSTER3 = 26;
+    final static int BOSS_MONSTER4 = 27;
+
+    final static int[][] stats = {
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {100, 5, 1},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {0, 0, 0},
+            {1000, 14, 2},
+            {0, 0, 0},
+            {0, 0, 0},
+            {5000, 30, 1},
+            {60, 30, 3},
+            {200, 1, 5}
+    };
+
+    final static int MAX_HEALTH = 0;
+    final static int ATTACK_DAMAGE = 1;
+    final static int ATTACK_RANGE = 2;
 
     private int health, maxHealth, attackDamage, attackRange;
 
@@ -60,8 +98,8 @@ class MapComponent {
         MC_ID = MapComponentID;
         this.health = health;
         maxHealth = health;
-        attackDamage = 1;
-        attackRange = 1;
+        attackDamage = stats[MC_ID][ATTACK_DAMAGE];
+        attackRange = stats[MC_ID][ATTACK_DAMAGE];
     }
 
     public MapComponent (int MapComponentID, int health, int damage, int range) {
@@ -74,10 +112,10 @@ class MapComponent {
 
     public MapComponent (int MapComponentID) {
         MC_ID = MapComponentID;
-        health = 9999;
-        maxHealth = 9999;
-        attackDamage = 1;
-        attackRange = 1;
+        health = stats[MC_ID][MAX_HEALTH];
+        maxHealth = stats[MC_ID][MAX_HEALTH];
+        attackDamage = stats[MC_ID][ATTACK_DAMAGE];
+        attackRange = stats[MC_ID][ATTACK_DAMAGE];
     }
 
     public MapComponent (MapComponent old) {

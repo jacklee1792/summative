@@ -35,7 +35,7 @@ class Map extends JFrame {
 
     //Instance variables
     private MapComponent[][][] map, subMap;
-    private int mapHeight = 100, mapWidth = 100, subMapHeight = 9, subMapWidth = 16, tileSize;
+    private int mapHeight = 225, mapWidth = 225, subMapHeight = 9, subMapWidth = 16, tileSize;
     private Tile subMapTile, playerTile = new Tile((subMapHeight - 1) / 2, (subMapWidth - 1) / 2);
     private Tile selectedTile;
     private boolean isSelecting = false;
@@ -253,7 +253,6 @@ class Map extends JFrame {
     public void setSubMap(Tile t) throws ArrayIndexOutOfBoundsException {
         MapComponent[][][] temp = new MapComponent[2][subMapHeight][subMapWidth]; //we need a temp because we don't want to change subMap if this throws an exception
         //Copy map to subMap
-        System.out.println(subMapHeight + " " + subMapWidth);
         for(int h = 0; h < 2; h++) {
             for(int r = 0; r < subMapHeight; r++) {
                 for(int c = 0; c < subMapWidth; c++) {
@@ -631,7 +630,7 @@ class Map extends JFrame {
         final Font textFont = new Font("Comic Sans MS", Font.PLAIN, (int)(tileSize / 5.1));
         final Color titleColour = Color.black;
         final Color textColour = Color.black;
-        //final int[] cutoffIndices = {60, 59, 57, 60, 57, 56, 53, -1, -1, 57, 56};
+
 
         // Constructor
         public MissionTextArea() {
@@ -645,7 +644,7 @@ class Map extends JFrame {
             missions.add("MISSION 2 !!! Good. Now, I want you to find a water source and fill up your canteen.");
             missions.add("MISSION 3 !!! That should last you a few days. Now, you need to find some food. Wander around, see if you can find some berries.");
             missions.add("  !!! Great. You can eat them by pressing the tile of your character. Or, you can cook them.");
-            missions.add("  !!! Make sure you select a new inventory slot by either using your mouse or 1 through 5 before picking something else up.");
+            missions.add("  !!! There are other food sources and items. You can craft by bringing items to me. If it's a match, I'll reward you with an item.");
             missions.add("MISSION 4 !!! Let's go make a campfire. Collect 2 rocks and 10 twigs and bring them back to me.");
             missions.add("MISSION 5 !!! Let's try throwing those berries into the campfire. Choose a place where you want to set up your fire.");
             missions.add("  !!! Nice. Now you have cooked berries. As you might have found out, not everything is safe to eat raw.");
@@ -762,9 +761,7 @@ class Map extends JFrame {
             line = br.readLine();
             String[] dimensions = line.split(" ");
             mapWidth = Integer.parseInt(dimensions[0]);
-            System.out.println(mapWidth);
             mapHeight = Integer.parseInt(dimensions[1]);
-            System.out.println(mapHeight);
 
             map = new MapComponent[2][mapHeight][mapWidth];
 
@@ -773,11 +770,10 @@ class Map extends JFrame {
                     line = br.readLine();
                     String[] tmp = line.split(" ");
                     for(int k = 0; k < mapWidth; k++){
-                        System.out.println(i + " " + j + " " + k);
                         try {
                             map[i][j][k] = new MapComponent(Integer.parseInt(tmp[k]));
                         } catch (ArrayIndexOutOfBoundsException e) {
-                            //System.out.println("index out of bounds");
+                            System.out.println("index out of bounds");
                         }
                     }
                 }
@@ -803,60 +799,30 @@ class Map extends JFrame {
             setSubMap(subMapTile);
 
             line = br.readLine();                                   // mission
-            try {
-                mta.setCurrentMission(Integer.parseInt(line));
-            } catch (Exception e) {
-                mta.setCurrentMission(0);
-            }
+
+            mta.setCurrentMission(Integer.parseInt(line));
+
 
             p.inventory = new Item[5];                                   // inventory
-            line = br.readLine();
-            String[] items_arr = line.split(LINE_SEPARATOR);
-            for(int i = 0; i < items_arr.length; i++){
-                if(i <= 4){
-                    String[] tmp = items_arr[i].split(" ");
-
-                    try{
-                        p.inventory[i] = new Item(Integer.parseInt(tmp[0], Integer.parseInt(tmp[1])));
-                    } catch(Exception e) { }
-                }
-
-            }
-
-            /*
-            for(String i : items_arr){
-                p.inventory.add(new Item(Integer.parseInt(i)));
-            }
-             */
-
-            line = br.readLine();
             try {
-                mta.setCurrentMission(Integer.parseInt(line));
-            }
-            catch(Exception e){
-                mta.setCurrentMission(0);
-            }
+                line = br.readLine();
+                String[] items_arr = line.split(LINE_SEPARATOR);
+                for (int i = 0; i < items_arr.length; i++) {
+                    if (i <= 4) {
+                        String[] tmp = items_arr[i].split(" ");
 
-            return true;
+                        try {
+                            p.inventory[i] = new Item(Integer.parseInt(tmp[0], Integer.parseInt(tmp[1])));
+                        } catch (ArrayIndexOutOfBoundsException e) { }
+                    }
+
+                }
+            } catch(Exception e) { System.out.println("No inventory"); }
         }
         catch(IOException e){
             return false;
         }
-    }
-
-    private void fillLayer(int layer, ArrayList<String> data){      // helper method
-        mapHeight = data.size();
-        int row = 0, col = 0;
-        for(String i : data){
-            String[] data_split = i.split(" ");
-            mapWidth = data_split.length;
-
-            for(String j : data_split){
-                map[layer][row][col] = new MapComponent(Integer.parseInt(j));
-                col++;
-            }
-            row++;
-        }
+        return true;
     }
 
     public void checkComponentDeath(MapComponent mc) {
