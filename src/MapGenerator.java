@@ -146,8 +146,8 @@ public class MapGenerator { //I'll add getters and setters on map later
                 int chestR = row + (int)(Math.random() * 4 - 3);
                 int chestC = column + (int)(Math.random() * 4 - 3);
 
-                if(map[Map.ITEM_LAYER][chestR][chestC].getMapComponentID() != MapComponent.WISE_ROCK)
-                    map[Map.ITEM_LAYER][chestR][chestC] = new MapComponent(MapComponent.CHEST); // add chest object
+//                if(map[Map.ITEM_LAYER][chestR][chestC].getMapComponentID() != MapComponent.WISE_ROCK)
+//                    map[Map.ITEM_LAYER][chestR][chestC] = new MapComponent(MapComponent.CHEST); // add chest object
                 //map[Map.ITEM_LAYER][row-2][column-2] = new MapComponent(MapComponent.CAMPFIRE); // add chest object
                 System.out.println(row + " " + column);
                 break; //exit the loop
@@ -161,14 +161,14 @@ public class MapGenerator { //I'll add getters and setters on map later
                         map[Map.GROUND_LAYER][r][c].getWalkable() && //Spawn on walkable land
                         map[Map.ITEM_LAYER][r][c].getWalkable() && //Do not spawn inside an item
                         (Math.abs(r - spawnTile.getRow()) > 20 || Math.abs(c - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
-                    map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.MONSTER, 100, 5, 1); //You're a monster bro
+                    map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.MONSTER, 100, 1, 1); //You're a monster bro
                     Map.totalMonsters++;
                 }
             }
         }
 
         // Boss Monster
-        map[Map.ITEM_LAYER][8][8] = new MapComponent(MapComponent.BOSS_MONSTER, 1000, 14, 2);
+        map[Map.ITEM_LAYER][8][8] = new MapComponent(MapComponent.BOSS_MONSTER, 1000, 14, 1);
         map[Map.ITEM_LAYER][height - 8][8] = new MapComponent(MapComponent.BOSS_MONSTER2, 5000, 30, 1);
         map[Map.ITEM_LAYER][height - 8][width - 8] = new MapComponent(MapComponent.BOSS_MONSTER3, 60, 30, 3);
         map[Map.ITEM_LAYER][8][width - 8] = new MapComponent(MapComponent.BOSS_MONSTER4, 200, 1, 5);
@@ -197,58 +197,6 @@ public class MapGenerator { //I'll add getters and setters on map later
                 }
             }
         }
-
-        // Radio parts
-//        boolean placedAntenna = false;
-//        boolean placedTransmitter = false;
-//        boolean placedCircuitBoard = false;
-//        for(int r = 4; r < height - 4; r++) { // so it doesn't spawn somewhere unreachable
-//            for(int c = 4; c < width - 4; c++) {
-//                boolean notAllPlaced = !(placedAntenna && placedTransmitter && placedCircuitBoard);
-//                while (notAllPlaced) {
-//
-//                    if (chance(0.01) && // 1/1000 chance of spawning
-//                            map[Map.GROUND_LAYER][height - r][c].getWalkable() && //Spawn on walkable land
-//                            map[Map.ITEM_LAYER][height - r][c].getWalkable() && //Do not spawn inside an item
-//                            (Math.abs((height - r) - spawnTile.getRow()) > 20 || Math.abs(c - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
-//
-//                        if (!placedAntenna) {
-//                            map[Map.ITEM_LAYER][height - r][c] = new MapComponent(MapComponent.ANTENNA, 30, 0, 0);
-//                            placedAntenna = true;
-//                            System.out.println("antenna: " + (height - r) + ", " + c);
-//                        }
-//
-//                    }
-//                    if (chance(0.01) && // 1/1000 chance of spawning
-//                            map[Map.GROUND_LAYER][r][c].getWalkable() && //Spawn on walkable land
-//                            map[Map.ITEM_LAYER][r][c].getWalkable() && //Do not spawn inside an item
-//                            (Math.abs(r - spawnTile.getRow()) > 20 || Math.abs(c - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
-//
-//                        if (!placedAntenna) {
-//                            map[Map.ITEM_LAYER][r][c] = new MapComponent(MapComponent.TRANSMITTER, 30, 0, 0);
-//                            placedAntenna = true;
-//                            System.out.println("transmitter: " + r + ", " + c);
-//                        }
-//
-//                    }
-//                    if (chance(0.01) && // 1/1000 chance of spawning
-//                            map[Map.GROUND_LAYER][r][width - c].getWalkable() && //Spawn on walkable land
-//                            map[Map.ITEM_LAYER][r][width - c].getWalkable() && //Do not spawn inside an item
-//                            (Math.abs(r - spawnTile.getRow()) > 20 || Math.abs((height - c) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
-//
-//                        if (!placedAntenna) {
-//                            map[Map.ITEM_LAYER][r][width - c] = new MapComponent(MapComponent.CIRCUIT_BOARD, 30, 0, 0);
-//                            placedAntenna = true;
-//                            System.out.println("circuit board: " + r + ", " + (width - c));
-//                        }
-//
-//                    }
-//                    notAllPlaced = !(placedAntenna && placedTransmitter && placedCircuitBoard);
-//                }
-//            }
-//        }
-//
-//
 
 
         boolean placedAntenna = false;
@@ -293,9 +241,9 @@ public class MapGenerator { //I'll add getters and setters on map later
         if (!placedAntenna)
             map[Map.ITEM_LAYER][spawnTile.getRow() - 10][spawnTile.getColumn() - 10] = new MapComponent(MapComponent.ANTENNA, 30, 0, 0);
         if (!placedTransmitter)
-            map[Map.ITEM_LAYER][spawnTile.getRow() - 11][spawnTile.getColumn() - 11] = new MapComponent(MapComponent.TRANSMITTER, 30, 0, 0);
+            map[Map.ITEM_LAYER][height - 10 ][width - 8] = new MapComponent(MapComponent.TRANSMITTER, 30, 0, 0);
         if (!placedCircuitBoard)
-            map[Map.ITEM_LAYER][spawnTile.getRow() - 12][spawnTile.getColumn() - 12] = new MapComponent(MapComponent.CIRCUIT_BOARD, 30, 0, 0);
+            map[Map.ITEM_LAYER][8][8] = new MapComponent(MapComponent.CIRCUIT_BOARD, 30, 0, 0);
 
         // String
         for(int r = 0; r < height; r++) {

@@ -191,7 +191,7 @@ class Player {
                 m.expend();
 
         } else if(m.getMapComponentID() == MapComponent.PLANE) {
-                addItem(new Item(Item.KNIFE)); // CHANGE THIS TO A KNIFE
+                smartAdd(new Item(Item.KNIFE)); // CHANGE THIS TO A KNIFE
         } else if(m.getMapComponentID() == MapComponent.SMALL_BUSH && !m.isExpended()) {
             boolean added = smartAdd(new Item(Item.BERRY));
             if (added)
