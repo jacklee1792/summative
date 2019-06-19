@@ -18,14 +18,14 @@ class Item {
     final static int USAGE_LAYER = 4; // 0 if it can be used infinitely, 1 if single use
     final static int STACK_MAX_LAYER = 5;
 
-    final static int[][] statsSheet = // now a nibber on the floor talking to the athletes
+    final static int[][] statsSheet = // contains information for all items in the appropriate layers as shown above
             {
                     {1,2, 0, 0, 0, 1}, // NULL
-                    {10, 3, 0, 0, 1, 10}, // STICK
+                    {20, 3, 0, 0, 1, 10}, // STICK
                     {1000, 8, 0, 0, 0, 1}, // SWORD
-                    {34, 1, 0, 0, 0, 1}, // KNIFE
-                    {18, 7, 0, 0, 0, 1}, // SLINGSHOT
-                    {40, 6, 0, 0, 0, 1}, // BOW_AND_ARROW
+                    {50, 1, 0, 0, 0, 1}, // KNIFE
+                    {34, 7, 0, 0, 0, 1}, // SLINGSHOT
+                    {100, 6, 0, 0, 0, 1}, // BOW_AND_ARROW
                     {20, 5, 0, 0, 1, 10}, // ROCK
                     {0, 2, 0, 0, 0, 10}, // STRING
                     {0, 1, 0, 0, 0, 10}, // FEATHER

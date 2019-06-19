@@ -207,14 +207,26 @@ class Monster extends MapComponent {
                             walkPriority[Map.EAST] = 1;
                     } catch (Exception ex) {
                     }
-                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
-                    walkPriority[Map.NORTH] = 0;
-                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
-                    walkPriority[Map.SOUTH] = 0;
-                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
-                    walkPriority[Map.WEST] = 0;
-                if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
-                    walkPriority[Map.EAST] = 0;
+                    try {
+                        if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
+                            walkPriority[Map.NORTH] = 0;
+                    }
+                    catch (ArrayIndexOutOfBoundsException ex) {}
+                    try {
+                        if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
+                            walkPriority[Map.SOUTH] = 0;
+                    }
+                    catch (ArrayIndexOutOfBoundsException ex) {}
+                    try {
+                        if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
+                            walkPriority[Map.WEST] = 0;
+                    }
+                    catch (ArrayIndexOutOfBoundsException ex) {}
+                    try {
+                        if (subMap[Map.ITEM_LAYER][row - 1][column].isFire())
+                            walkPriority[Map.EAST] = 0;
+                    }
+                    catch (ArrayIndexOutOfBoundsException ex) {}
 
                     // reversed from monster
                     if (row < ptRow) walkPriority[Map.NORTH] *= 2;
