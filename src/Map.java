@@ -29,20 +29,21 @@ class Map extends JFrame {
         else if (screenRatio - 5.0 / 4 <= 0.01)
             screenRatioIndex = ASPECT_5_4;
 
-        Map test = new Map(screenRatioIndex, WASD, 'q', "Jahseh");
+        Map test = new Map(screenRatioIndex, WASD, 'q', "Jahseh", 21);
         System.out.println(test.saveMap(new File("./src/-test_save2.txt")));
     }
 
     //Instance variables
     private MapComponent[][][] map, subMap;
-    private int mapHeight = 225, mapWidth = 225, subMapHeight = 9, subMapWidth = 16, tileSize;
-    private Tile subMapTile, playerTile = new Tile((subMapHeight - 1) / 2, (subMapWidth - 1) / 2);
+    private int mapHeight = 225, mapWidth = 225, subMapHeight, subMapWidth, tileSize;
+    private Tile subMapTile, playerTile;
     private Tile selectedTile;
     private boolean isSelecting = false;
     private boolean dead = false;
     private boolean[] keys = new boolean[255];
     private DrawArea mapArea;
     private MissionTextArea mta;
+    private Tile rockTile;
 
     // note that caps don't work
     private char MOVE_UP = 'w';
@@ -75,7 +76,7 @@ class Map extends JFrame {
     static Player p;
 
     //Constructor
-    public Map(int aspectRatio, int movementChoice, char dropKey, String playerName) {
+    public Map(int aspectRatio, int movementChoice, char dropKey, String playerName, int seed) {
         //Set up the window
         File directory = new File("./");
         System.out.println(directory.getAbsolutePath());
@@ -84,10 +85,11 @@ class Map extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setVisible(true);
-        adaptToScreen(); //Set tile size based on screen resolution
 
         // Setting up options
         setAspectRatio(aspectRatio);
+        adaptToScreen(); //Set tile size based on screen resolution
+        playerTile = new Tile((subMapHeight - 1) / 2, (subMapWidth - 1) / 2);
         setMovementKeys(movementChoice);
         DROP = dropKey;
 
@@ -95,7 +97,7 @@ class Map extends JFrame {
         map = new MapComponent[2][mapHeight][mapWidth];
 
         //Generate map, player tile, subMap tile
-        MapGenerator m = new MapGenerator(2121);
+        MapGenerator m = new MapGenerator(seed);
         m.generate(mapHeight, mapWidth);
         map = m.getMap();
         Tile spawnTile = m.getSpawnTile();
@@ -114,6 +116,9 @@ class Map extends JFrame {
         try {
             Player.importTextures();
         } catch (IOException ex) {}
+
+        //Rock
+        rockTile = m.getRockTile();
 
         //Monster timer
         Timer monsterTimer = new Timer();
@@ -164,10 +169,11 @@ class Map extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setVisible(true);
-        adaptToScreen(); //Set tile size based on screen resolution
 
         // Setting up options
         setAspectRatio(Map.ASPECT_16_9);
+        adaptToScreen(); //Set tile size based on screen resolution
+        playerTile = new Tile((subMapHeight - 1) / 2, (subMapWidth - 1) / 2);
         setMovementKeys(Map.WASD);
         DROP = 'q';
 
@@ -445,6 +451,12 @@ class Map extends JFrame {
             // Quit option
             g.setFont(new Font("Comic Sans MS", Font.BOLD, tileSize / 5));
             g.drawString("[P] Quit and Save", tileSize / 2, tileSize / 2);
+
+            //Rock coordinates
+            String rockCoords = "Wise Rock: (" + rockTile.getColumn() + ", " + rockTile.getRow() + ")";
+            g.drawString(rockCoords, subMapWidth * tileSize - tileSize / 2 - g.getFontMetrics().stringWidth(rockCoords), tileSize / 2);
+            String playerCoords = "You: (" + (playerTile.getColumn() + subMapTile.getColumn()) + ", " + (playerTile.getRow() + subMapTile.getRow()) + ")";
+            g.drawString(playerCoords, subMapWidth * tileSize - tileSize / 2 - g.getFontMetrics().stringWidth(playerCoords), tileSize);
         }
 
     }
@@ -642,22 +654,22 @@ class Map extends JFrame {
             missions.add("INTRODUCTION !!! Let me show you around. First, find me and click on me so we can go talk.");
             missions.add("MISSION 1 !!! First things first. I want you to go and search the plane for a survival kit. It is near the nose.");
             missions.add("MISSION 2 !!! Good. Now, I want you to find a water source and fill up your canteen.");
-            missions.add("MISSION 3 !!! That should last you a few days. Now, you need to find some food. Wander around, see if you can find some berries.");
+            missions.add("MISSION 3 !!! That should last you a few days. Now, you need to find some food. Wander around, and try to find some berries.");
             missions.add("  !!! Great. You can eat them by pressing the tile of your character. Or, you can cook them.");
-            missions.add("  !!! There are other food sources and items. You can craft by bringing items to me. If it's a match, I'll reward you with an item.");
+            missions.add("  !!! You can craft items by bringing items to me. If it matches, I'll reward you with an item!");
             missions.add("MISSION 4 !!! Let's go make a campfire. Collect 2 rocks and 10 twigs and bring them back to me.");
             missions.add("MISSION 5 !!! Let's try throwing those berries into the campfire. Choose a place where you want to set up your fire.");
             missions.add("  !!! Nice. Now you have cooked berries. As you might have found out, not everything is safe to eat raw.");
-            missions.add("MISSION 6 !!! You're not bad. Now, I want you to find some string. I can help you make a slingshot.");
-            missions.add("MISSION 7 !!! You're almost set. How about collecting some twigs? Bring me 2 sticks piles and I'll help you craft a slingshot.");
+            missions.add("MISSION 6 !!! You're not bad. Now, I want you to find some long grass. I can braid it to help you make a slingshot.");
+            missions.add("MISSION 7 !!! You're almost set. How about collecting some twigs? Just bring me 2 sticks and I'll help you craft a slingshot.");
             missions.add("MISSION 8 !!! Cool. Now let's go out and adventure. Kill a rabbit and get its meat.");
             missions.add("MISSION 9 !!! Nice work. I hope you know not to eat raw food, so head on back to the campfire to cook up that meat.");
             missions.add("  !!! I think you're getting the hang of survival. Now, let's try to get out of here");
             missions.add("MISSION 10 !!! You just need to find the three pieces of the radio. First, look for the antenna.");
             missions.add("MISSION 11 !!! Find the transmitter. You need this to call for help.");
             missions.add("MISSION 12 !!! You're almost there. I need you to find the circuit board.");
-            missions.add("MISSION 13 !!! You can't call for help yet. You need to defeat one of the boss monsters. Let the final battle begin!");
-            missions.add("CONCLUSION !!! Congratulations! You vanquished all the monsters. Now, the rescue crews are on their way...");
+            missions.add("MISSION 13 !!! You can't call for help yet. You'll need to defeat several monsters to prove your worth. Let the final battle begin!");
+            missions.add("CONCLUSION !!! Congratulations! You have proven yourself to be a worthy survivor!. Now, the rescue crews are on their way...");
 
             try {
                 textBox = ImageIO.read(new File("./images/hud/_HUD2.png"));

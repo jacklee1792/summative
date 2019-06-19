@@ -379,7 +379,7 @@ class Player {
             }
         }
         else if(currentMission == 18){
-            return monstersKilled >= 5;
+            return monstersKilled >= 10;
         }
         else if(currentMission == 19){           // winning
             try {

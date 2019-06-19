@@ -4,7 +4,7 @@ public class MapGenerator { //I'll add getters and setters on map later
 
     static Random rand;
     MapComponent[][][] map;
-    Tile spawnTile;
+    Tile spawnTile, rockTile;
     int h, w;
 
     public MapGenerator(int seed) {
@@ -142,7 +142,9 @@ public class MapGenerator { //I'll add getters and setters on map later
             if(map[Map.GROUND_LAYER][row][column].getMapComponentID() != MapComponent.WATER && //if ground not water and what is above it empty
                     map[Map.ITEM_LAYER][row][column].getMapComponentID() == MapComponent.NULL) {
                 map[Map.ITEM_LAYER][row][column] = new MapComponent(MapComponent.WISE_ROCK);
+                rockTile = new Tile(row, column);
 
+                /*
                 int chestR = row + (int)(Math.random() * 4 - 3);
                 int chestC = column + (int)(Math.random() * 4 - 3);
 
@@ -150,6 +152,7 @@ public class MapGenerator { //I'll add getters and setters on map later
                     map[Map.ITEM_LAYER][chestR][chestC] = new MapComponent(MapComponent.CHEST); // add chest object
                 //map[Map.ITEM_LAYER][row-2][column-2] = new MapComponent(MapComponent.CAMPFIRE); // add chest object
                 System.out.println(row + " " + column);
+                 */
                 break; //exit the loop
             }
         }
@@ -362,6 +365,10 @@ public class MapGenerator { //I'll add getters and setters on map later
     }
     public Tile getSpawnTile() {
         return spawnTile;
+    }
+
+    public Tile getRockTile() {
+        return rockTile;
     }
 
 }

@@ -9,21 +9,22 @@ import java.io.IOException;
 public class MainMenu extends JFrame implements ActionListener {
     // Constants
     private final String playBtnName = "Play Game", loadBtnName = "Load Game", quitBtnName = "Quit";
-    private final int frameWidth = 700, frameHeight = 700;
 
     // Instance variables
     private Map m;
     private int aspectRatio = Map.ASPECT_16_9;
     private int movementChoice = Map.WASD;
     private char dropKey = 'q';
+    private int seed;
 
     private BufferedImage backgroundImage;
     private JButton newGame = new JButton(playBtnName);
     private JButton loadGame = new JButton(loadBtnName);
     private JButton quit = new JButton(quitBtnName);
-    private JTextField nameTF = new JTextField(20);
+    private JButton randomSeed = new JButton("Random seed");
+    private JTextField nameTF = new JTextField(10);
+    private JTextField seedTF = new JTextField(10);
     private JPanel buttons = new JPanel();
-    private DrawArea backgroundImg = new DrawArea();
     private JFrame optionFrame = new JFrame();
 
     // Constructors
@@ -36,35 +37,45 @@ public class MainMenu extends JFrame implements ActionListener {
         }
 
         // Adding components
-        setFont(new Font("Comic Sans MS", Font.BOLD, 18));          // doesn't do anything yet
         buttons.add(new JLabel("Name:"));
         buttons.add(nameTF);
+        buttons.add(new JLabel("Generation seed:"));
+        buttons.add(seedTF);
+        buttons.add(randomSeed);
         buttons.add(newGame);
         buttons.add(loadGame);
         buttons.add(quit);
 
-        add(backgroundImg, BorderLayout.CENTER);
+        DrawArea drawArea = new DrawArea(800, 450);
+        add(drawArea, BorderLayout.CENTER);
         add(buttons, BorderLayout.SOUTH);
 
         nameTF.setText("Name");
+        seedTF.setText("Seed");
 
         // Adding action listeners
         newGame.addActionListener(this);
         loadGame.addActionListener(this);
         quit.addActionListener(this);
+        randomSeed.addActionListener(this);
 
         // Window settings
+        pack();
         setTitle("Survival Island");
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(frameWidth, frameHeight);
     }
 
     // Graphics class
     class DrawArea extends JPanel{
+
+        public DrawArea(int width, int height) {
+            setPreferredSize(new Dimension(width, height));
+        }
+
         @Override
-        public void paint(Graphics g){
-            g.drawImage(backgroundImage, 0, 0,frameWidth, frameHeight - 50, null);
+        public void paintComponent(Graphics g){
+            g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), null);
         }
     }
 
@@ -72,7 +83,12 @@ public class MainMenu extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals(playBtnName)){
-            m = new Map(aspectRatio, movementChoice, dropKey, nameTF.getText());
+            try {
+                seed = Integer.parseInt(seedTF.getText());
+            } catch (Exception ex) {
+                seed = (int)(Math.random() * 1000000000);
+            }
+            m = new Map(aspectRatio, movementChoice, dropKey, nameTF.getText(), seed);
         }
         else if(e.getActionCommand().equals(loadBtnName)){
 //            try {
@@ -86,6 +102,9 @@ public class MainMenu extends JFrame implements ActionListener {
         else if(e.getActionCommand().equals(quitBtnName)){
             setVisible(false);
             System.exit(0);
+        }
+        else if(e.getActionCommand().equals("Random seed")) {
+            seedTF.setText("" + (int)(Math.random() * 1000000000));
         }
     }
 
