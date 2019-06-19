@@ -15,7 +15,10 @@ class Monster extends MapComponent {
                 if(subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER ||
                         subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.RABBIT ||
                         subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BIRD ||
-                        subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER)
+                        subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER ||
+                        subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER2 ||
+                        subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER3 ||
+                        subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER4)
                     locations.add(new Tile(r, c));
             }
         }
@@ -84,7 +87,12 @@ class Monster extends MapComponent {
                     else if (choice == Map.EAST) subMap[Map.ITEM_LAYER][row][column + 1] = currentMonster;
                 }
                 else {// if its dead
-                    System.out.println("you have lynched " + Player.monstersKilled + " neighbours");
+                    System.out.println("you have killed " + Player.monstersKilled + " monsters");
+                    if (currentMonster.getMapComponentID() == BOSS_MONSTER ||
+                            currentMonster.getMapComponentID() == BOSS_MONSTER2 ||
+                            currentMonster.getMapComponentID() == BOSS_MONSTER3 ||
+                            currentMonster.getMapComponentID() == BOSS_MONSTER4)
+                        subMap[Map.ITEM_LAYER][row][column] = new MapComponent(BOSS_REMAINS);
                 }
             }
 
