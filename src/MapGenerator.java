@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class MapGenerator { //I'll add getters and setters on map later
+public class MapGenerator {
 
     static Random rand;
     MapComponent[][][] map;
@@ -19,14 +19,14 @@ public class MapGenerator { //I'll add getters and setters on map later
         //Fill the thing with empty crap so it doesn't bother you and say huRr huRr NullPointerException
         for (int l = 0; l < 2; l++) {
             for (int r = 0; r < h; r++) {
-                for (int c = 0; c < w; c++) { //C++ hehe
+                for (int c = 0; c < w; c++) {
                     map[l][r][c] = new MapComponent(MapComponent.NULL);
                 }
             }
         }
 
         for (int r = 0; r < h; r++) {
-            for (int c = 0; c < w; c++) { //C++ hehe
+            for (int c = 0; c < w; c++) {
                 map[Map.GROUND_LAYER][r][c] = new MapComponent(MapComponent.GRASS);
             }
         }
@@ -216,6 +216,7 @@ public class MapGenerator { //I'll add getters and setters on map later
         // antenna
         if (map[Map.GROUND_LAYER][antennaR][width - antennaC].getWalkable() && //Spawn on walkable land
                 map[Map.ITEM_LAYER][antennaR][width - antennaC].getWalkable() && //Do not spawn inside an item
+                map[Map.ITEM_LAYER][height - antennaR][antennaC].getWalkable() &&
                 (Math.abs(antennaR - spawnTile.getRow()) > 20 || Math.abs((height - antennaC) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
             map[Map.ITEM_LAYER][height - antennaR][antennaC] = new MapComponent(MapComponent.ANTENNA, 30, 0, 0);
             placedAntenna = true;
@@ -225,6 +226,7 @@ public class MapGenerator { //I'll add getters and setters on map later
         // transmitter
         if (map[Map.GROUND_LAYER][transmitterR][width - transmitterC].getWalkable() && //Spawn on walkable land
                 map[Map.ITEM_LAYER][transmitterR][width - transmitterC].getWalkable() && //Do not spawn inside an item
+                map[Map.ITEM_LAYER][height - transmitterR][transmitterC].getWalkable() &&
                 (Math.abs(transmitterR - spawnTile.getRow()) > 20 || Math.abs((height - transmitterC) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
             map[Map.ITEM_LAYER][height - transmitterR][transmitterC] = new MapComponent(MapComponent.TRANSMITTER, 30, 0, 0);
             placedTransmitter = true;
@@ -234,6 +236,7 @@ public class MapGenerator { //I'll add getters and setters on map later
         // circuit board
         if (map[Map.GROUND_LAYER][circuitboardR][width - circuitboardC].getWalkable() && //Spawn on walkable land
                 map[Map.ITEM_LAYER][circuitboardR][width - circuitboardC].getWalkable() && //Do not spawn inside an item
+                map[Map.ITEM_LAYER][height - circuitboardR][circuitboardC].getWalkable() &&
                 (Math.abs(circuitboardR - spawnTile.getRow()) > 20 || Math.abs((height - circuitboardC) - spawnTile.getColumn()) > 20)) { //At least one coordinate has to be >20 blocks away
             map[Map.ITEM_LAYER][height - circuitboardR][circuitboardC] = new MapComponent(MapComponent.CIRCUIT_BOARD, 30, 0, 0);
             placedCircuitBoard = true;

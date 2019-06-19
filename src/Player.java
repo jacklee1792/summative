@@ -53,14 +53,19 @@ class Player {
 
         for(int r = 0; r < subMap[0].length; r++) {
             for(int c = 0; c < subMap[0][0].length; c++) {
-                if(subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER || subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER){
+                if(subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.MONSTER || subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER ||
+                subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER2 || subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER3 ||
+                        subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER4){
                     if (Math.abs(ptRow - r) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange() && Math.abs(ptColumn - c) <= subMap[Map.ITEM_LAYER][r][c].getAttackRange()) {
                         damageDealt += (subMap[Map.ITEM_LAYER][r][c].getAttackDamage());
                     }
                 }
 
-                if (subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER)
-                    subMap[Map.ITEM_LAYER][r][c].addHealth(5); // regenerates 1 health per tick
+                if (subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER ||
+                        subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER2 ||
+                        subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER3 ||
+                        subMap[Map.ITEM_LAYER][r][c].getMapComponentID() == MapComponent.BOSS_MONSTER4)
+                    subMap[Map.ITEM_LAYER][r][c].addHealth(1); // regenerates 1 health per tick
 
                 else if (subMap[Map.ITEM_LAYER][r][c].getMapComponentID()== MapComponent.CAMPFIRE) {
                     if (r == ptRow && c == ptColumn)
