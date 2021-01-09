@@ -365,10 +365,8 @@ class Map extends JFrame {
 
     // Win and lose conditions
     public static void winGame(){               // the win condition of the game
-        System.out.println("what a bro moment. ");
     }
     public static void loseGame(){
-        System.out.println("you are a nibber");
     }
 
     // uses data from mouseListener for interactions
@@ -840,7 +838,6 @@ class Map extends JFrame {
     public void checkComponentDeath(MapComponent mc) {
         if (mc.getHealth() <= 0)
             mc = null;
-        System.out.println("where the love go");
     }
 
 
